@@ -26,7 +26,7 @@ public class SiteFilePluginContentConsumer extends ContentConsumer {
 	/**
 	 * Constructor for FileSite
 	 */
-	public SiteFilePluginContentConsumer(IPluginEntry feature,ISite site){
+	public SiteFilePluginContentConsumer(IPluginEntry pluginEntry,ISite site){
 		this.pluginEntry = pluginEntry;
 		this.site = site;
 	}

@@ -51,10 +51,10 @@ public class SiteURLContentProvider extends SiteContentProvider {
 	/*
 	 * @see ISiteContentProvider#getArchiveReference(String)
 	 */
-	public ContentReference getArchiveReference(String archiveId)  throws CoreException {
-		ContentReference content = null;
+	public URL getArchiveReference(String archiveId)  throws CoreException {
+		URL contentURL = null;
 		try {
-			URL contentURL = getArchiveURLfor(archiveId);
+			contentURL = getArchiveURLfor(archiveId);
 			
 			// if there is no mapping in the site.xml
 			// for this archiveId, use the default one
@@ -65,13 +65,12 @@ public class SiteURLContentProvider extends SiteContentProvider {
 				contentURL = new URL(protocol,host,path+archiveId);
 			}
 			
-			content= new ContentReference(null,contentURL);
 		} catch (MalformedURLException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR,id,IStatus.OK,"Error creating URL",e);
 			throw new CoreException(status);	
 		}		
-		return content;
+		return contentURL;
 	}
 
 	/**

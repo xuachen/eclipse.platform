@@ -51,9 +51,10 @@ public class TestInstall extends UpdateManagerTestCase {
 	}
 
 	private IFeature getFeature1(ISite site) throws MalformedURLException, CoreException {
-		URL id = UpdateManagerUtils.getURL(site.getURL(), "features/org.eclipse.update.core.tests.feature1_1.0.4.jar", null);
-		FeaturePackaged remoteFeature = new FeaturePackaged(id, site);
-		//remoteFeature.initializeFeature();
+		URL url = UpdateManagerUtils.getURL(site.getURL(), "features/org.eclipse.update.core.tests.feature1_1.0.4.jar", null);
+		Feature remoteFeature = createPackagedFeature(url,site);
+		//remoteFeature.setFeatureIdentifier("org.eclipse.update.core.tests.feature1");
+		//remoteFeature.setFeatureVersion("1.0.4");		
 		return remoteFeature;
 	}
 
@@ -80,9 +81,10 @@ public class TestInstall extends UpdateManagerTestCase {
 
 	}
 	private IFeature getFeature2(ISite site) throws MalformedURLException, CoreException {
-		URL id = UpdateManagerUtils.getURL(site.getURL(), "features/features2.jar", null);
-		FeaturePackaged remoteFeature = new FeaturePackaged(id, site);
-		//remoteFeature.initializeFeature();
+		URL url = UpdateManagerUtils.getURL(site.getURL(), "features/org.eclipse.update.core.tests.feature1_1.0.4.jar", null);
+		Feature remoteFeature = createPackagedFeature(url,site);
+		//remoteFeature.setFeatureIdentifier("oorg.eclipse.update.core.tests.feature1");
+		//remoteFeature.setFeatureVersion("1.0.4");		
 		return remoteFeature;
 	}
 
@@ -236,5 +238,25 @@ public class TestInstall extends UpdateManagerTestCase {
 		
 	}
 	
+	
+		/**
+	 * 
+	 */
+	private Feature createPackagedFeature(URL url,ISite site) throws CoreException {
+		String packagedFeatureType = site.getDefaultInstallableFeatureType();
+		Feature result = null;
+		if (packagedFeatureType != null) {
+			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(packagedFeatureType);
+			result = (Feature)factory.createFeature(url, site);
+		}
+		return result;
+	}
+	/*
+	 * @see ISite#getDefaultInstallableFeatureType()
+	 */
+	public String getDefaultInstallableFeatureType() {
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
+		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
+	}	
 	
 }

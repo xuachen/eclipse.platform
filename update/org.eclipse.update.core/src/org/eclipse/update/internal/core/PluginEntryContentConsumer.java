@@ -27,20 +27,12 @@ public class PluginEntryContentConsumer extends ContentConsumer {
 
 	private boolean closed = false;
 
-	
-	/**
-	 * Feature
-	 */
-	private IPluginEntry pluginEntry;
-		
-
 	private IContentConsumer contentConsumer;
 		
 	/**
 	 * Constructor
 	 */
-	public PluginEntryContentConsumer(IPluginEntry pluginEntry,IContentConsumer contentConsumer){
-		this.pluginEntry = pluginEntry;
+	public PluginEntryContentConsumer(IContentConsumer contentConsumer){
 		this.contentConsumer = contentConsumer;
 	}
 

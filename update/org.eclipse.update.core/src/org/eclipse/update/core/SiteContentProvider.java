@@ -57,17 +57,9 @@ public abstract class SiteContentProvider implements ISiteContentProvider {
 	}
 
 	/*
-	 * @see ISiteContentProvider#getSiteManifestReference()
-	 */
-
-	/*
 	 * @see ISiteContentProvider#getArchivesReferences(String)
 	 */
-	public abstract ContentReference getArchiveReference(String archiveID) throws CoreException;
-
-	/*
-	 * @see ISiteContentProvider#getFeatureArchivesReferences(IFeature)
-	 */
+	public abstract URL getArchiveReference(String archiveID) throws CoreException;
 
 	/**
 	 * Sets the site.

@@ -57,6 +57,11 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	 * The content provider of the Site
 	 */
 	private ISiteContentProvider siteContentProvider;
+	
+	/**
+	 * plugin entries 
+	 */
+	private List pluginEntries = new ArrayList(0);	
 
 	/**
 	 * Constructor for Site
@@ -180,15 +185,6 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 		return result;
 	}
 
-	/**
-	 * returns true if we need to optimize the install by copying the 
-	 * archives in teh TEMP directory prior to install
-	 * Default is true
-	 */
-	public boolean optimize() {
-		return true;
-	}
-
 	/*
 	 * @see ISite#getURL()
 	 */
@@ -272,7 +268,12 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see IPluginContainer#getPluginEntries()
 	 */
 	public IPluginEntry[] getPluginEntries() {
-		return null;
+		IPluginEntry[] result = new IPluginEntry[0];
+		if (!(pluginEntries==null || pluginEntries.isEmpty())){
+			result = new IPluginEntry[pluginEntries.size()];
+			pluginEntries.toArray(result);
+		}
+		return result;
 	}
 
 	/*
@@ -312,7 +313,7 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see IPluginContainer#getPluginEntryCount()
 	 */
 	public int getPluginEntryCount() {
-		return 0;
+		return getPluginEntries().length;
 	}
 
 	/*
@@ -333,6 +334,7 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see IPluginContainer#addPluginEntry(IPluginEntry)
 	 */
 	public void addPluginEntry(IPluginEntry pluginEntry) {
+		pluginEntries.add(pluginEntry);
 	}
 
 	/*

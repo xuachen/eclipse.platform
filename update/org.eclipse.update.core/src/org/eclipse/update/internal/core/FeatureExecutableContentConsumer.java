@@ -43,14 +43,14 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	 * @see IContentConsumer#open(INonPluginEntry)
 	 */
 	public IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
-		return new NonPluginEntryContentConsumer(nonPluginEntry,getContentConsumer().open(nonPluginEntry));
+		return new NonPluginEntryContentConsumer(getContentConsumer().open(nonPluginEntry));
 	}
 
 	/*
 	 * @see IContentConsumer#open(IPluginEntry)
 	 */
 	public IContentConsumer open(IPluginEntry pluginEntry) throws CoreException {
-		return new PluginEntryContentConsumer(pluginEntry,getContentConsumer().open(pluginEntry));
+		return new PluginEntryContentConsumer(getContentConsumer().open(pluginEntry));
 	}
 
 	/*

@@ -39,7 +39,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 
 		// get the URL of the Archive file that contains the plugin entry
 		ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-		URL fileURL = provider.getArchiveReference(getArchiveID(pluginEntry)).asURL();
+		URL fileURL = provider.getArchiveReference(getArchiveID(pluginEntry));
 		result = UpdateManagerUtils.getPath(fileURL);
 
 		// return the list of all subdirectories
@@ -133,7 +133,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-			URL fileURL = provider.getArchiveReference(getArchiveID(pluginEntry)).asURL();
+			URL fileURL = provider.getArchiveReference(getArchiveID(pluginEntry));
 			String fileString = UpdateManagerUtils.getPath(fileURL);
 
 			// return the list of all subdirectories
@@ -160,7 +160,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-			URL fileURL = provider.getArchiveReference(nonPluginEntry.getIdentifier()).asURL();
+			URL fileURL = provider.getArchiveReference(nonPluginEntry.getIdentifier());
 			String fileString = UpdateManagerUtils.getPath(fileURL);
 
 			// return the list of all subdirectories

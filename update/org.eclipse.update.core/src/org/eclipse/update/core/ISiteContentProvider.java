@@ -28,15 +28,15 @@ public interface ISiteContentProvider {
 			
 	
 	/**
-	 * Returns a ContentReference associated to the archiveID
+	 * Returns a URL associated to the archiveID
 	 * 
 	 * @param id the archiveId
-	 * @return a Content Reference
+	 * @return a URL
 	 * @throws CoreException 
 	 * @since 2.0 
 	 */
 
-	ContentReference getArchiveReference(String id)  throws CoreException;
+	URL getArchiveReference(String id)  throws CoreException;
 	
 	
 		

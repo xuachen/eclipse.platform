@@ -217,7 +217,7 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 					for (int j = 0; j < featureContentReference.length; j++) {
 						
 						try{
-							URL url = site.getSiteContentProvider().getArchiveReference(featureContentReference[j].getIdentifier()).asURL();
+							URL url = site.getSiteContentProvider().getArchiveReference(featureContentReference[j].getIdentifier());
 							if (url != null) {
 								// make it relative to teh site
 								String path = UpdateManagerUtils.getURLAsString(site.getURL(), url);

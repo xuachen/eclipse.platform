@@ -27,20 +27,12 @@ public class NonPluginEntryContentConsumer extends ContentConsumer {
 
 	private boolean closed = false;
 
-	
-	/**
-	 * Feature
-	 */
-	private INonPluginEntry nonPluginEntry;
-		
-
 	private IContentConsumer contentConsumer;
 		
 	/**
 	 * Constructor
 	 */
-	public NonPluginEntryContentConsumer(INonPluginEntry nonPluginEntry,IContentConsumer contentConsumer){
-		this.nonPluginEntry = nonPluginEntry;
+	public NonPluginEntryContentConsumer(IContentConsumer contentConsumer){
 		this.contentConsumer = contentConsumer;
 	}
 

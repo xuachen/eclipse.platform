@@ -315,11 +315,6 @@ public class Feature extends FeatureModel implements IFeature {
 	 */
 	public void install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException {
 
-		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
-		ISite targetSite = targetFeature.getSite();
-		IPluginEntry[] targetSitePluginEntries = (targetSite != null) ? site.getPluginEntries() : null;
-		List contentReferencesToInstall = new ArrayList();
-
 		//
 		IFeatureContentConsumer consumer = targetFeature.getContentConsumer();
 
@@ -332,6 +327,9 @@ public class Feature extends FeatureModel implements IFeature {
 		// determine list of plugins to install
 		// find the intersection between the two arrays of IPluginEntry...
 		// The one teh site contains and teh one the feature contains
+		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
+		ISite targetSite = targetFeature.getSite();
+		IPluginEntry[] targetSitePluginEntries = (targetSite != null) ? site.getPluginEntries() : new IPluginEntry[0];
 		IPluginEntry[] pluginsToInstall = intersection(sourceFeaturePluginEntries, targetSitePluginEntries);
 
 		//finds the contentReferences for this IPluginEntry
@@ -339,7 +337,7 @@ public class Feature extends FeatureModel implements IFeature {
 			IContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
 			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
-				consumer.store(references[j], monitor);
+				pluginConsumer.store(references[j], monitor);
 			}
 			pluginConsumer.close();
 		}
@@ -350,7 +348,7 @@ public class Feature extends FeatureModel implements IFeature {
 			IContentConsumer nonPluginConsumer = consumer.open(nonPluginsContentReferencesToInstall[i]);
 			references = getFeatureContentProvider().getNonPluginEntryArchiveReferences(nonPluginsContentReferencesToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
-				consumer.store(references[j], monitor);
+				nonPluginConsumer.store(references[j], monitor);
 			}
 			nonPluginConsumer.close();
 		}

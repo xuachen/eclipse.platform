@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.FeatureReference;
 import org.eclipse.update.internal.core.FeatureTypeFactory;
+import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
@@ -106,7 +107,7 @@ public class TestFeatureType extends UpdateManagerTestCase {
 		IFeature anotherFeature = factory.createFeature(feature.getURL(),site);
 		
 		assertTrue("Factory doesn't create same feature",feature.getVersionIdentifier().equals(anotherFeature.getVersionIdentifier()));
-		assertTrue(feature instanceof FeaturePackaged);
+		assertTrue(feature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider);
 		assertTrue(((FeatureReference)ref).getType().equals("org.eclipse.update.core.jar"));
 		
 	}

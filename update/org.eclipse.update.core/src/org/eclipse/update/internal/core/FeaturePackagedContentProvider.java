@@ -138,8 +138,9 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	 */
 	public ContentReference[] getPluginEntryArchiveReferences(IPluginEntry pluginEntry) throws CoreException {
 		ContentReference[] references = new ContentReference[1];
-		ContentReference remoteContentRef = feature.getSite().getSiteContentProvider().getArchiveReference(getPluginEntryArchiveID(pluginEntry));
-		references[0]= remoteContentRef;
+		String archiveID = getPluginEntryArchiveID(pluginEntry);
+		URL url = feature.getSite().getSiteContentProvider().getArchiveReference(archiveID);
+		references[0]= new JarContentReference(archiveID,url);
 		return references;
 	}
 
