@@ -24,7 +24,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * The plug-in runtime class for the AntUI plug-in.
  */
 public final class AntUIPlugin extends AbstractUIPlugin {
-
 	/**
 	 * 
 	 */
@@ -40,6 +39,7 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	
 	public static final String IMG_ANT_SCRIPT= "icons/full/eview16/ant_view.gif";
 	public static final String IMG_BUILDER= "icons/full/eview16/build_exec.gif";
+	public static final String IMG_JAR_FILE = "icons/full/eview16/jar_l_obj.gif";
 	
 	private static final String SETTINGS_COMMAND_HISTORY = "CommandHistory";
 	private static final int MAX_COMMAND_HISTORY = 15;
@@ -55,8 +55,6 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	 * The most recent debug launches
 	 */
 	private IFile[] antHistory = new IFile[MAX_HISTORY_SIZE];
-
-
 
 public IProgressMonitor getCurrentProgressMonitor() {
 	return currentProgressMonitor;
@@ -201,7 +199,4 @@ protected void initializeDefaultPreferences(IPreferenceStore prefs) {
 	PreferenceConverter.setDefault(prefs, IAntPreferenceConstants.CONSOLE_DEBUG_RGB, new RGB(0, 0, 0));			// black
 	
 }
-
-
-
 }
