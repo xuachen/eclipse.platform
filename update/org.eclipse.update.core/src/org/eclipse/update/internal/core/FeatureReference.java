@@ -6,19 +6,15 @@ package org.eclipse.update.internal.core;
  */
 
 import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.core.internal.runtime.Assert;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.model.FeatureReferenceModel;
 import org.eclipse.update.core.model.SiteMapModel;
-import org.eclipse.update.internal.core.obsolete.*;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
  *
@@ -78,7 +74,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		String type = getType();
 		if (feature == null) {
 			if (type== null || type.equals("")) {
-				if (getURL().toExternalForm().endsWith(FeaturePackaged.JAR_EXTENSION)) {
+				if (getURL().toExternalForm().endsWith(FeaturePackagedContentProvider.JAR_EXTENSION)) {
 					// if it ends with JAR, guess it is a FeaturePackaged
 					String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
 					type=(pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE);

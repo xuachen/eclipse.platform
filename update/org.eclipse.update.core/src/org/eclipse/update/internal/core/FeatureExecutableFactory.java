@@ -3,20 +3,13 @@ package org.eclipse.update.internal.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.*;
-import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureModelFactory;
-import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
 
 public class FeatureExecutableFactory extends BaseFeatureFactory {
 

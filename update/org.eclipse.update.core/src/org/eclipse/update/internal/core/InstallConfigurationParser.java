@@ -11,7 +11,6 @@ import java.util.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.obsolete.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 

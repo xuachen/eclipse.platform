@@ -8,10 +8,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.obsolete.DefaultSite;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
-import org.eclipse.update.internal.core.obsolete.DefaultFeature;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestPluginContainerAPI extends UpdateManagerTestCase {
@@ -38,7 +35,8 @@ public class TestPluginContainerAPI extends UpdateManagerTestCase {
 		if (feature == null) {
 			ISite site = getSite();
 			URL id = UpdateManagerUtils.getURL(site.getURL(),"org.eclipse.update.core.feature1_1.0.0.jar",null);						
-			feature = new FeaturePackaged(id, site);
+			feature = new DefaultFeature(site);
+			feature.setURL(id);	
 		}
 		return feature;
 	}

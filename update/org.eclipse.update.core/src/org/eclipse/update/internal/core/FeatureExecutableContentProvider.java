@@ -3,7 +3,8 @@ package org.eclipse.update.internal.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.obsolete.*;
 
 /**
  * Default implementation of an Executable DefaultFeature Content Provider

@@ -7,18 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ResourceBundle;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.xerces.parsers.SAXParser;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
-import org.eclipse.update.internal.core.obsolete.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 

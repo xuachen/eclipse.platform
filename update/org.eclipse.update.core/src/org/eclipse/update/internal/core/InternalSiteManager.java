@@ -6,8 +6,6 @@ package org.eclipse.update.internal.core;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -16,8 +14,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
-import org.eclipse.update.internal.core.obsolete.*;
-import org.xml.sax.SAXException;
 
 /**
  * 

@@ -1,21 +1,20 @@
-package org.eclipse.update.internal.core.obsolete;
+package org.eclipse.update.tests.api;
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.io.IOException;
 import java.net.URL;
-import java.util.*;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.*;
+import org.eclipse.update.core.model.ImportModel;
+import org.eclipse.update.core.model.URLEntryModel;
+import org.eclipse.update.internal.core.FeatureExecutableContentProvider;
 /**
  * Abstract Class that implements most of the behavior of a feature
  * A feature ALWAYS belongs to an ISite
- * @deprecated
  */
-public abstract class DefaultFeature extends Feature {
+public class DefaultFeature extends Feature {
 
 
 	/**
@@ -130,6 +129,18 @@ public abstract class DefaultFeature extends Feature {
 			for (int i = 0; i < pluginEntries.length; i++) {
 				addPluginEntry(pluginEntries[i]);
 			}
+		}
+	}
+
+
+	/**
+	 * sets teh URL isf not already present
+	 */
+	public void setURL(URL url) throws CoreException{
+		if (getFeatureContentProvider()==null){
+			FeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
+			this.setFeatureContentProvider(contentProvider);
+			contentProvider.setFeature(this);
 		}
 	}
 

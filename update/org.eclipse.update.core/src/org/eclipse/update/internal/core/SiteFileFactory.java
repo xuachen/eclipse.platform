@@ -13,8 +13,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.model.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.core.model.SiteMapModel;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.xml.sax.SAXException;
 
 public class SiteFileFactory extends BaseSiteFactory {
@@ -172,7 +170,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 		
 			try {
 				// handle teh installed featuresConfigured under featuresConfigured subdirectory
-				dir = featureDir.list(FeaturePackaged.filter);
+				dir = featureDir.list(FeaturePackagedContentProvider.filter);
 				for (int index = 0; index < dir.length; index++) {
 					
 					SiteFileFactory archiveFactory = new SiteFileFactory();							
@@ -241,7 +239,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 				for (int index = 0; index < plugins.length; index++) {
 					SiteFileFactory archiveFactory = new SiteFileFactory();							
 					// the id is plugins\<pluginid>_<ver>.jar as per the specs
-					String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(plugins[index].getId(), plugins[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
+					String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(plugins[index].getId(), plugins[index].getVersion()).toString() + FeaturePackagedContentProvider.JAR_EXTENSION;
 					ArchiveReferenceModel archive = archiveFactory.createArchiveReferenceModel();		
 					archive.setPath(pluginID);
 					location = plugins[index].getLocation();
@@ -278,7 +276,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 					
 		try {
 		if (pluginDir.exists()) {
-			dir = pluginDir.list(FeaturePackaged.filter);
+			dir = pluginDir.list(FeaturePackagedContentProvider.filter);
 			for (int i = 0; i < dir.length; i++) {
 				file = new File(pluginPath,dir[i]);
 				zipFile = new ZipFile(file);
@@ -297,7 +295,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 						for (int index = 0; index < models.length; index++) {
 							SiteFileFactory archiveFactory = new SiteFileFactory();							
 							// the id is plugins\<pluginid>_<ver>.jar as per the specs
-							String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(models[index].getId(), models[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
+							String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(models[index].getId(), models[index].getVersion()).toString() + FeaturePackagedContentProvider.JAR_EXTENSION;
 							ArchiveReferenceModel archive = archiveFactory.createArchiveReferenceModel();		
 							archive.setPath(pluginID);
 							archive.setURLString(file.toURL().toExternalForm());

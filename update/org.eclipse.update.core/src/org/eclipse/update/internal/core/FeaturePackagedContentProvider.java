@@ -22,6 +22,12 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	private URL rootURL;
 
 	public static final String JAR_EXTENSION = ".jar";
+
+	public static final FilenameFilter filter = new FilenameFilter(){
+		 public boolean accept(File dir, String name){
+		 	return name.endsWith(FeaturePackagedContentProvider.JAR_EXTENSION);
+		 }
+	};	
 	
 	private FeatureContentProvider.ContentSelector contentSelector = new FeatureContentProvider.ContentSelector(){
 		/*

@@ -4,16 +4,9 @@ package org.eclipse.update.internal.core;
  * All Rights Reserved.
  */
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.model.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.InvalidSiteTypeException;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
  * Site on the File System

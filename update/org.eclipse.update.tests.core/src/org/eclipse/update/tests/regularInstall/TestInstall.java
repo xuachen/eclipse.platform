@@ -10,8 +10,6 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.obsolete.*;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestInstall extends UpdateManagerTestCase {
@@ -144,10 +142,6 @@ public class TestInstall extends UpdateManagerTestCase {
 	}
 
 	public void testInstall() throws Exception {
-
-		// R2.0 STARTUP ISSUE
-		return;
-		
 		
 		// cleanup local files...
 		File localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocation(),SiteLocal.SITE_LOCAL_FILE).getFile());
@@ -208,9 +202,6 @@ public class TestInstall extends UpdateManagerTestCase {
 	
 	
 	public void testFileSiteWithoutSiteXML() throws Exception {
-		
-		// R2.0 STARTUP ISSUE
-		return;
 		
 		ISite remoteSite = SiteManager.getSite(SOURCE_FILE_SITE);
 		IFeature remoteFeature = getFeature1(remoteSite);

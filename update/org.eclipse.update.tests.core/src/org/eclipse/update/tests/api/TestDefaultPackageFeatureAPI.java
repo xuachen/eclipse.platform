@@ -9,8 +9,6 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
-import org.eclipse.update.internal.core.obsolete.DefaultFeature;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 
@@ -33,7 +31,8 @@ public class TestDefaultPackageFeatureAPI extends UpdateManagerTestCase {
 		if (remoteFeature == null){
 		ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
 		URL id = UpdateManagerUtils.getURL(site.getURL(),"org.eclipse.update.core.feature1_1.0.0.jar",null);	
-		remoteFeature = new FeaturePackaged(id,site);
+		remoteFeature = new DefaultFeature(site);
+		remoteFeature.setURL(id);
 		}
 		return remoteFeature;
 	}
@@ -52,12 +51,14 @@ public class TestDefaultPackageFeatureAPI extends UpdateManagerTestCase {
 			ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
 			
 			URL url1 = UpdateManagerUtils.getURL(site.getURL(),id1,null);			
-			remoteFeature = new FeaturePackaged(url1,site);
+			remoteFeature = new DefaultFeature(site);
+			remoteFeature.setURL(url1);
 			remoteFeature.setIdentifier(ident1);
 			assertEquals(ident1.toString(),remoteFeature.getVersionIdentifier().toString());
 		
 			 URL url2 = UpdateManagerUtils.getURL(site.getURL(),id2,null);		
-			remoteFeature = new FeaturePackaged(url2,site);
+			remoteFeature = new DefaultFeature(site);
+			remoteFeature.setURL(url2);
 			remoteFeature.setIdentifier(ident2);			
 			assertEquals(ident2.toString(),remoteFeature.getVersionIdentifier().toString());
 	}
@@ -72,7 +73,8 @@ public class TestDefaultPackageFeatureAPI extends UpdateManagerTestCase {
 			ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
 			
 			URL id = UpdateManagerUtils.getURL(site.getURL(),ident1,null);		
-			remoteFeature = new FeaturePackaged(id,site);
+			remoteFeature = new DefaultFeature(site);
+			remoteFeature.setURL(id);	
 			assertEquals(site,remoteFeature.getSite());
 
 	}

@@ -215,23 +215,16 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 					// obtain the path of the plugin directories on the site	
 					ContentReference[] featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry);
 					for (int j = 0; j < featureContentReference.length; j++) {
-						
-						try{
-							URL url = site.getSiteContentProvider().getArchiveReference(featureContentReference[j].getIdentifier());
-							if (url != null) {
-								// make it relative to teh site
-								String path = UpdateManagerUtils.getURLAsString(site.getURL(), url);
-								// add end "/"
-								path += (path.endsWith(File.separator) || path.endsWith("/")) ? "" : File.separator;
-								// add plugin.xml or fragment.xml
-								path += entry.isFragment() ? "fragment.xml" : "plugin.xml"; //FIXME: fragments
-								pluginsString.add(path);
-							}
-						} catch (IOException ex){
-							String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-							IStatus status = new Status(IStatus.ERROR, pluginID, IStatus.OK, "Unable to Retrieve URL for feature:" + featureContentReference[j].getIdentifier(), null);
-							throw new CoreException(status);
-						}						
+						URL url = site.getSiteContentProvider().getArchiveReference(featureContentReference[j].getIdentifier());
+						if (url != null) {
+							// make it relative to teh site
+							String path = UpdateManagerUtils.getURLAsString(site.getURL(), url);
+							// add end "/"
+							path += (path.endsWith(File.separator) || path.endsWith("/")) ? "" : File.separator;
+							// add plugin.xml or fragment.xml
+							path += entry.isFragment() ? "fragment.xml" : "plugin.xml"; //FIXME: fragments
+							pluginsString.add(path);
+						}
 					}
 				}
 			}

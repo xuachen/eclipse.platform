@@ -7,11 +7,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.FeatureReference;
-import org.eclipse.update.internal.core.FeatureTypeFactory;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestFeatureType extends UpdateManagerTestCase {
