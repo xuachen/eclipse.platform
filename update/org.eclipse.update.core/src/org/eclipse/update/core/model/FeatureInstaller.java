@@ -334,7 +334,7 @@ public class FeatureInstaller {
 		return featurePath;
 	}
 
-	private IFeature getInstalledFeature(VersionedIdentifier versionId, IInstalledSite site) {
+	private IFeature getInstalledFeature(VersionedIdentifier versionId, IInstalledSite site) throws CoreException {
 		IFeature[] features = site.getFeatures(null);
 		for (int i=0; i<features.length; i++) {
 			if (versionId.equals(features[i].getVersionedIdentifier()))
@@ -406,23 +406,8 @@ public class FeatureInstaller {
 			ErrorRecoveryLog.getLog().append(ErrorRecoveryLog.ALL_INSTALLED);
 		}
 		
-		//-----------------
-
 		if (closed)
 			UpdateCore.warn("Attempt to close a closed SiteFileContentConsumer", new Exception());
-
-		// create a new Feature reference to be added to the site
-		Feature feature = new Feature();
-		feature.setSite(targetSite);
-		File file = null;
-
-		try {
-			file = new File(getFeaturePath());
-			feature.setURL(file.toURL());
-		} catch (MalformedURLException e) {
-			throw Utilities.newCoreException(Policy.bind("SiteFileContentConsumer.UnableToCreateURLForFile", file.getAbsolutePath()), e);
-			//$NON-NLS-1$
-		}
 
 		//rename file back 
 		if (newPath != null) {
@@ -448,14 +433,21 @@ public class FeatureInstaller {
 			pluginInstaller.finishInstall();
 		}
 
-			commitPlugins(ref);
-			feature.markReadOnly();
 
+		// create a new Feature reference to be added to the site
+		Feature feature = new Feature();
+		feature.setSite(targetSite);
+		File file = null;
 
-		closed = true;
-		return ref;
-	
-		//-----------
+		try {
+			file = new File(getFeaturePath());
+			feature.setURL(file.toURL());
+		} catch (MalformedURLException e) {
+			throw Utilities.newCoreException(Policy.bind("SiteFileContentConsumer.UnableToCreateURLForFile", file.getAbsolutePath()), e);
+			//$NON-NLS-1$
+		}
+		commitPlugins(feature);
+		feature.markReadOnly();
 		
 		// close nested feature
 		for (int i = 0; i < featureInstallers.size(); i++) {
@@ -463,14 +455,15 @@ public class FeatureInstaller {
 			featureInstaller.finishInstall();
 		}
 							
-		return ref;
+		closed = true;
+		return feature;
 	}
 	
 	/*
 	 * commit the plugins installed as archive on the site
 	 * (creates the map between the plugin id and the location of the plugin)
 	 */
-	private void commitPlugins(IFeatureReference localFeatureReference) throws CoreException {
+	private void commitPlugins(IFeature localFeature) throws CoreException {
 	
 		// get the feature
 		 ((SiteFile) getSite()).addFeatureReferenceModel((SiteFeatureReferenceModel) localFeatureReference);

@@ -80,14 +80,14 @@ public class InstalledSiteParser {
 		File pluginPath = new File(directory, Site.DEFAULT_PLUGIN_PATH);
 
 		//PACKAGED
-		parsePackagedFeature(directory); // in case it contains JAR files
+		parsePackagedFeatures(directory); // in case it contains JAR files
 
 		parsePackagedPlugins(pluginPath);
 
 		// INSTALLED	
-		parseInstalledFeature(directory);
+		parseInstalledFeatures(directory);
 
-		parseInstalledPlugin(pluginPath);
+		parseInstalledPlugins(pluginPath);
 
 		return site;
 
@@ -97,7 +97,7 @@ public class InstalledSiteParser {
 	 * Method parseFeature.
 	 * @throws CoreException
 	 */
-	private void parseInstalledFeature(File directory) throws CoreException {
+	private void parseInstalledFeatures(File directory) throws CoreException {
 
 		File featureDir = new File(directory, Site.DEFAULT_INSTALLED_FEATURE_PATH);
 		if (featureDir.exists()) {
@@ -140,7 +140,7 @@ public class InstalledSiteParser {
 	* Method parseFeature.
 	* @throws CoreException
 	*/
-	private void parsePackagedFeature(File directory) throws CoreException {
+	private void parsePackagedFeatures(File directory) throws CoreException {
 
 		// FEATURES
 		File featureDir = new File(directory, Site.DEFAULT_FEATURE_PATH);
@@ -193,7 +193,7 @@ public class InstalledSiteParser {
 	 * @return VersionedIdentifier
 	 * @throws CoreException
 	 */
-	private void parseInstalledPlugin(File dir) throws CoreException {
+	private void parseInstalledPlugins(File dir) throws CoreException {
 		File pluginFile = null;
 
 		try {

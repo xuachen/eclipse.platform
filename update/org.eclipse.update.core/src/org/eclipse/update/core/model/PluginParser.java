@@ -8,14 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.update.internal.model;
+package org.eclipse.update.core.model;
 
 
 import java.io.*;
 import javax.xml.parsers.*;
 
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
