@@ -5,7 +5,9 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */ 
 
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An object which represents a feature reference.
@@ -19,7 +21,7 @@ public class FeatureReferenceModel extends ModelObject {
 	
 	private String type;
 	private String url;
-	private String[] categoryNames;
+	private List /* of String*/ categoryNames;
 	
 	/**
 	 * Creates an uninitialized model object.
@@ -47,13 +49,11 @@ public class FeatureReferenceModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public String[] getCategoryNames() {
+	public String[] getCategoryNames() {		
 		if (categoryNames == null)
 			return new String[0];
-
-		String[] list = new String[categoryNames.length];
-		System.arraycopy(categoryNames, 0, list, 0, categoryNames.length);
-		return list;
+			
+		return (String[]) categoryNames.toArray(new String[0]);
 	}
 
 	/**
@@ -77,6 +77,28 @@ public class FeatureReferenceModel extends ModelObject {
 	 */
 	public void setCategoryNames(String[] categoryNames) {
 		assertIsWriteable();
-		this.categoryNames = categoryNames;
+		if (categoryNames == null)
+			this.categoryNames = null;
+		else
+			this.categoryNames = Arrays.asList(categoryNames);
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	public void addCategoryName(String categoryName) {
+		assertIsWriteable();
+		if (this.categoryNames == null)
+			this.categoryNames = new ArrayList();
+		if (!this.categoryNames.contains(categoryName))
+			this.categoryNames.add(categoryName);
+	}
+	/**
+	 * @since 2.0
+	 */
+	public void removeCategoryName(String categoryName) {
+		assertIsWriteable();
+		if (this.categoryNames != null)
+			this.categoryNames.remove(categoryName);
 	}
 }

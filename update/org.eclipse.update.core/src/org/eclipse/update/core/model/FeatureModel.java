@@ -370,7 +370,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void addDiscoverySiteInfo(URLEntryModel discoverySiteInfo) {
 		assertIsWriteable();
-		if (discoverySiteInfo == null)
+		if (this.discoverySiteInfo == null)
 			this.discoverySiteInfo = new ArrayList();
 		if (!this.discoverySiteInfo.contains(discoverySiteInfo))
 			this.discoverySiteInfo.add(discoverySiteInfo);
@@ -381,7 +381,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void addImport(ImportModel importEntry) {
 		assertIsWriteable();
-		if (imports == null)
+		if (this.imports == null)
 			this.imports = new ArrayList();
 		if (!this.imports.contains(importEntry))
 			this.imports.add(importEntry);
@@ -392,7 +392,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void addPluginEntry(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
-		if (pluginEntries == null)
+		if (this.pluginEntries == null)
 			this.pluginEntries = new ArrayList();
 		if (!this.pluginEntries.contains(pluginEntry))
 			this.pluginEntries.add(pluginEntry);
@@ -403,7 +403,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void addNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
-		if (nonPluginEntries == null)
+		if (this.nonPluginEntries == null)
 			this.nonPluginEntries = new ArrayList();
 		if (!this.nonPluginEntries.contains(nonPluginEntry))
 			this.nonPluginEntries.add(nonPluginEntry);
@@ -414,7 +414,7 @@ public class FeatureModel extends ModelObject {
 	 */	
 	public void addGroupEntry(ContentGroupModel groupEntry) {
 		assertIsWriteable();
-		if (groupEntries == null)
+		if (this.groupEntries == null)
 			this.groupEntries = new ArrayList();
 		if (!this.groupEntries.contains(groupEntry))
 			this.groupEntries.add(groupEntry);
@@ -425,7 +425,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void removeDiscoverySiteInfo(URLEntryModel discoverySiteInfo) {
 		assertIsWriteable();
-		if (discoverySiteInfo != null)
+		if (this.discoverySiteInfo != null)
 			this.discoverySiteInfo.remove(discoverySiteInfo);
 	}
 
@@ -434,7 +434,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void removeImport(ImportModel importEntry) {
 		assertIsWriteable();
-		if (imports != null)
+		if (this.imports != null)
 			this.imports.remove(importEntry);
 	}
 
@@ -443,7 +443,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void removePluginEntry(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
-		if (pluginEntries != null)
+		if (this.pluginEntries != null)
 			this.pluginEntries.remove(pluginEntry);
 	}
 
@@ -452,7 +452,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void removeNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
-		if (nonPluginEntries != null)
+		if (this.nonPluginEntries != null)
 			this.nonPluginEntries.remove(nonPluginEntry);
 	}
 
@@ -461,7 +461,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void removeGroupEntry(ContentGroupModel groupEntry) {
 		assertIsWriteable();
-		if (groupEntries != null)
+		if (this.groupEntries != null)
 			this.groupEntries.remove(groupEntry);
 	}
 	

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.xerces.parsers.SAXParser;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -17,16 +16,17 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Parse the feature.xml
+ * Parse default feature.xml
  */
 
 public class DefaultFeatureParser extends DefaultHandler {
-
 
 	private SAXParser parser;
 	private FeatureModelFactory factory;
 	private FeatureModel feature;		
 	private String text;
+	
+	public static boolean DEBUG = false;
 	
 	private static final String FEATURE = "feature";
 	private static final String HANDLER = "install-handler";
@@ -51,15 +51,14 @@ public class DefaultFeatureParser extends DefaultHandler {
 		this.parser.setContentHandler(this);
 		this.factory = factory;
 	
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+		if (DEBUG)
 			debug("Created");
-		}
 	}
 	
 	/**
 	 * @since 2.0
 	 */
-	public FeatureModel parse(InputStream in) throws Exception {
+	public FeatureModel parse(InputStream in) throws SAXException, IOException {
 		parser.parse(new InputSource(in));
 		return feature;
 	}
@@ -67,14 +66,11 @@ public class DefaultFeatureParser extends DefaultHandler {
 	/**
 	 * @see DefaultHandler#startElement(String, String, String, Attributes)
 	 */
-	public void startElement(String uri, String localName,String qName, Attributes attributes)
-		throws SAXException {
+	public void startElement(String uri, String localName,String qName, Attributes attributes) {
 	
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+		if (DEBUG)
 			debug("Start Element: uri:"+uri+" local Name:"+localName+" qName:"+qName);
-		}
 		
-		try {
 		String tag = localName.trim();
 	
 		if (tag.equalsIgnoreCase(FEATURE)){
@@ -83,27 +79,32 @@ public class DefaultFeatureParser extends DefaultHandler {
 		}
 	
 		if (tag.equalsIgnoreCase(DESCRIPTION)){
-			feature.setDescription(processInfo(attributes));
+			if (feature != null)
+				feature.setDescription(processInfo(attributes));
 			return;
 		}
 		
 		if (tag.equalsIgnoreCase(COPYRIGHT)){
-			feature.setCopyright(processInfo(attributes));
+			if (feature != null)
+				feature.setCopyright(processInfo(attributes));
 			return;
 		}
 		
 		if (tag.equalsIgnoreCase(LICENSE)){
-			feature.setLicense(processInfo(attributes));
+			if (feature != null)
+				feature.setLicense(processInfo(attributes));
 			return;
 		}
 	
 		if (tag.equalsIgnoreCase(UPDATE)){
-			feature.setUpdateSiteInfo(processURLInfo(attributes));
+			if (feature != null)
+				feature.setUpdateSiteInfo(processURLInfo(attributes));
 			return;
 		}		
 		
 		if (tag.equalsIgnoreCase(DISCOVERY)){
-			feature.addDiscoverySiteInfo(processURLInfo(attributes));
+			if (feature != null)
+				feature.addDiscoverySiteInfo(processURLInfo(attributes));
 			return;
 		}		
 		
@@ -118,10 +119,6 @@ public class DefaultFeatureParser extends DefaultHandler {
 
 		if (tag.equalsIgnoreCase(DATA)){
 			processData(attributes);
-		}
-		
-		} catch (Exception e){
-			throw new SAXException("error creating temporary feature on the local file system.",e);
 		}
 	}	
 	
@@ -167,8 +164,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 		String application = attributes.getValue("application"); 
 		feature.setApplication(application);		
 		
-		// DEBUG:		
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+		if (DEBUG){
 			debug("End process Feature tag: id:"+id+" ver:"+ver+" label:"+label+" provider:"+provider);
 			debug("End process Feature tag: image:"+imageURL);
 			debug("End process Feature tag: ws:"+ws+" os:"+os+" nl:"+nl+" application:"+application); 
@@ -183,9 +179,8 @@ public class DefaultFeatureParser extends DefaultHandler {
 		String infoURL = attributes.getValue("url");
 		inf.setURLString(infoURL);
 		
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+		if (DEBUG)
 			debug("Processed Info: url:"+infoURL);
-		}
 		
 		return inf;
 	}
@@ -200,9 +195,8 @@ public class DefaultFeatureParser extends DefaultHandler {
 		inf.setURLString(infoURL);
 		inf.setAnnotation(label);
 				
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+		if (DEBUG)
 			debug("Processed URLInfo: url:"+infoURL+" label:"+label);
-		}
 		
 		return inf;
 	}
@@ -222,7 +216,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 		
 		if (feature != null) {
 			feature.addImport(imp);	
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+			if (DEBUG){
 				debug("Processed require: id:"+id+" ver:"+ver);
 				debug("Processed require: match:"+match);			
 			}
@@ -280,7 +274,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 
 		if (feature != null) {
 			feature.addPluginEntry(pluginEntry);
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+			if (DEBUG){
 				debug("Processed Plugin: id:"+id+" ver:"+ver+" fragment:"+fragment);
 				debug("Processed Plugin: os:"+os+" ws:"+ws+" nl:"+nl);			
 				debug("Processed Plugin: download size:"+download_size+" install size:"+install_size);
@@ -322,7 +316,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 
 		if (feature != null) {
 			feature.addNonPluginEntry(dataEntry);	
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+			if (DEBUG){
 				debug("Processed Data: id:"+id);
 				debug("Processed Data: download size:"+download_size+" install size:"+install_size);
 			}
@@ -341,8 +335,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 	/**
 	 * @see DefaultHandler#endElement(String, String, String)
 	 */
-	public void endElement(String uri, String localName, String qName)
-		throws SAXException {
+	public void endElement(String uri, String localName, String qName) {
 
 		if (text!= null) {
 
@@ -351,47 +344,42 @@ public class DefaultFeatureParser extends DefaultHandler {
 			if (tag.equalsIgnoreCase(DESCRIPTION) && feature != null) {
 				feature.getDescription().setAnnotation(text);
 						
-				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+				if (DEBUG)
 					debug("Found Description Text");
-				}
 			}
 
 			if (tag.equalsIgnoreCase(COPYRIGHT) && feature != null) {
 				feature.getCopyright().setAnnotation(text);
 
-				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+				if (DEBUG)
 					debug("Found Copyright Text");
-				}
 				
 			}
 
 			if (tag.equalsIgnoreCase(LICENSE) && feature != null) {
 				feature.getLicense().setAnnotation(text);
 	
-				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
-					debug("Found License Text");
-				}
-				
+				if (DEBUG)
+					debug("Found License Text");				
 			}
 			
 			// clean the text
 			text = null;
 		}
 		
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
+		if (DEBUG)
 			debug("End Element:"+uri+":"+localName+":"+qName);
-		}
 	}
 
 	/**
 	 * @see DefaultHandler#characters(char[], int, int)
 	 */
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		text = new String(ch,start,length).trim();
 	}
 	
 	private void debug(String s) {
-		UpdateManagerPlugin.getPlugin().debug("DefaultFeatureParser: "+s);
+		System.out.println("DefaultFeatureParser: "+s);
 	}
 }
 

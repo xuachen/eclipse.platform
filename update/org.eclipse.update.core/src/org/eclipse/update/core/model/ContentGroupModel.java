@@ -240,7 +240,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void addPluginEntry(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
-		if (pluginEntries == null)
+		if (this.pluginEntries == null)
 			this.pluginEntries = new ArrayList();
 		if (!this.pluginEntries.contains(pluginEntry))
 			this.pluginEntries.add(pluginEntry);
@@ -251,7 +251,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void addNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
-		if (nonPluginEntries == null)
+		if (this.nonPluginEntries == null)
 			this.nonPluginEntries = new ArrayList();
 		if (!this.nonPluginEntries.contains(nonPluginEntry))
 			this.nonPluginEntries.add(nonPluginEntry);
@@ -262,7 +262,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void addNestedGroupEntry(ContentGroupModel nestedGroupEntry) {
 		assertIsWriteable();
-		if (nestedGroupEntries == null)
+		if (this.nestedGroupEntries == null)
 			this.nestedGroupEntries = new ArrayList();
 		if (!this.nestedGroupEntries.contains(nestedGroupEntry))
 			this.nestedGroupEntries.add(nestedGroupEntry);
@@ -273,7 +273,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void removeImport(ImportModel importEntry) {
 		assertIsWriteable();
-		if (imports != null)
+		if (this.imports != null)
 			this.imports.remove(importEntry);
 	}
 
@@ -282,7 +282,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void removePluginEntry(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
-		if (pluginEntries != null)
+		if (this.pluginEntries != null)
 			this.pluginEntries.remove(pluginEntry);
 	}
 
@@ -291,7 +291,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void removeNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
-		if (nonPluginEntries != null)
+		if (this.nonPluginEntries != null)
 			this.nonPluginEntries.remove(nonPluginEntry);
 	}
 
@@ -300,7 +300,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public void removeNestedGroupEntry(ContentGroupModel nestedGroupEntry) {
 		assertIsWriteable();
-		if (nestedGroupEntries != null)
+		if (this.nestedGroupEntries != null)
 			this.nestedGroupEntries.remove(nestedGroupEntry);
 	}
 	

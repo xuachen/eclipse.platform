@@ -4,10 +4,8 @@ package org.eclipse.update.core.model;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-
-import org.eclipse.core.internal.runtime.InternalPlatform;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
+ 
+import java.io.InputStream;
 
 /**
  * An object which can create install related model objects (typically when
@@ -18,18 +16,30 @@ import org.eclipse.core.runtime.MultiStatus;
  */
 
 public class SiteModelFactory {
-	private MultiStatus status;
 	
 	/**
 	 * Creates a factory which can be used to create install model objects.
-	 * Errors and warnings during parsing etc. can be logged to the given 
-	 * status via the <code>error</code> method.
-	 *
-	 * @param status the status to which errors should be logged
 	 */
-	public SiteModelFactory(MultiStatus status) {
+	public SiteModelFactory() {
 		super();
-		this.status = status;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public boolean canParseSiteType(String type) {
+		// return true if type was not specified (ie. is null or empty string)
+		return (type == null || type.trim().equals(""));
+	}
+	
+	/**
+	 * Constructs a feature model from stream
+	 * 
+	 * @param stream feature stream
+	 */
+	public SiteMapModel parseSite(InputStream stream) throws Exception {
+		DefaultSiteParser parser = new DefaultSiteParser(this);
+		return parser.parse(stream);
 	}
 
 	/**
@@ -66,27 +76,6 @@ public class SiteModelFactory {
 	 */
 	public SiteCategoryModel createSiteCategoryModel() {
 		return new SiteCategoryModel();
-	}
-	
-	/**
-	 * Handles an error state specified by the status.  The collection of all logged status
-	 * objects can be accessed using <code>getStatus()</code>.
-	 *
-	 * @param error a status detailing the error condition
-	 */
-	public void error(IStatus error) {
-		status.add(error);
-		if (InternalPlatform.DEBUG && InternalPlatform.DEBUG_PLUGINS)
-			System.out.println(error.toString());
-	}
-	
-	/**
-	 * Returns all of the status objects logged thus far by this factory.
-	 *
-	 * @return a multi-status containing all of the logged status objects
-	 */
-	public MultiStatus getStatus() {
-		return status;
 	}
 }
 
