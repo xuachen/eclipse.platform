@@ -107,7 +107,7 @@ public class ConfigurationSite implements IConfigurationSite, IWritable {
 				// feature URL
 				String URLInfoString = null;
 				if (element.getURL() != null) {
-					ISite featureSite = ((FeatureReference) element).getSite();
+					ISite featureSite = (ISite)((FeatureReference) element).getSite();
 					URLInfoString = UpdateManagerUtils.getURLAsString(featureSite.getURL(), element.getURL());
 					w.print("url=\"" + Writer.xmlSafe(URLInfoString) + "\"");
 				}
@@ -126,7 +126,7 @@ public class ConfigurationSite implements IConfigurationSite, IWritable {
 				// feature URL
 				String URLInfoString = null;
 				if (element.getURL() != null) {
-					ISite featureSite = ((FeatureReference) element).getSite();
+					ISite featureSite = element.getSite();
 					URLInfoString = UpdateManagerUtils.getURLAsString(featureSite.getURL(), element.getURL());
 					w.print("url=\"" + Writer.xmlSafe(URLInfoString) + "\"");
 				}

@@ -39,7 +39,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		 *
 		 */
 		public String defineIdentifier(String entry){
-			return 	Site.INSTALL_FEATURE_PATH+entry+"/";
+			return 	entry;
 		}
 		
 	};
@@ -264,13 +264,13 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	 */
 	public ContentReference getFeatureManifestReference() throws CoreException {
 		ContentReference result = null;
-		try {
 		ContentReference[] featureContentReference = getFeatureEntryArchiveReferences();
-		JarContentReference localContentReference = (JarContentReference)asLocalReference(featureContentReference[0],null);
-		result = unpack(localContentReference,Feature.FEATURE_XML,contentSelector,null);
+		try {			
+			JarContentReference localContentReference = (JarContentReference)asLocalReference(featureContentReference[0],null);
+			result = unpack(localContentReference,Feature.FEATURE_XML,contentSelector,null);
 		} catch (IOException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving manifest file in  feature :" + feature.getURL().toExternalForm(), e);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving manifest file in  feature :" + featureContentReference[0].getIdentifier(), e);
 			throw new CoreException(status);			
 		}
 		return result;
@@ -316,7 +316,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 				// feature may not be known, 
 				// we may be asked for the manifest before the feature is set
 				String archiveID = (feature!=null)?contentSelector.defineIdentifier(feature.getVersionIdentifier().toString()):"";				
-				ContentReference currentReference = new ContentReference(archiveID,getURL());
+				ContentReference currentReference = new JarContentReference(archiveID,getURL());
 				currentReference = asLocalReference(currentReference,null);
 				references[0] = currentReference;
 		} catch (IOException e){
@@ -350,7 +350,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		try {
 			for (int i = 0; i < archiveIDs.length; i++) {
 				URL url = feature.getSite().getSiteContentProvider().getArchiveReference(archiveIDs[i]).asURL();
-				ContentReference currentReference = new ContentReference(archiveIDs[i],url);
+				ContentReference currentReference = new JarContentReference(archiveIDs[i],url);
 				currentReference = asLocalReference(currentReference,null);
 				references[i] = currentReference;
 			}

@@ -44,8 +44,8 @@ public class InternalSiteManager {
 		sitesTypes = new HashMap();
 
 		// assign default type to protocol		
-		sitesTypes.put("http", Site.SITE_TYPE);
-		sitesTypes.put("file", Site.SITE_TYPE);
+		sitesTypes.put("http", Site.HTTP_SITE_TYPE);
+		sitesTypes.put("file", Site.FILE_SITE_TYPE);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class InternalSiteManager {
 				site = attemptCreateSite(type, siteURL);
 
 				// same type as we forced ? do not continue
-				if (site.getType().equals(type)) {
+				if (site!=null && site.getType().equals(type)) {
 					String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 					IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "The site.xml does not contain any type and the protocol of the URL is not recognized. protocol:" + protocol, null);
 					throw new CoreException(status);

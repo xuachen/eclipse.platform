@@ -10,6 +10,7 @@ import java.util.*;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.model.*;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.FeatureReference;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
@@ -51,4 +52,32 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 	public SiteMapModel createSiteMapModel() {
 		return new Site();
 	}
+	/*
+	 * @see SiteModelFactory#createFeatureReferenceModel()
+	 */
+	public FeatureReferenceModel createFeatureReferenceModel() {
+		return new FeatureReference();
+	}
+
+	/*
+	 * @see SiteModelFactory#createArchiveReferenceModel()
+	 */
+	public ArchiveReferenceModel createArchiveReferenceModel() {
+		return new ArchiveReference();
+	}
+
+	/*
+	 * @see SiteModelFactory#createURLEntryModel()
+	 */
+	public URLEntryModel createURLEntryModel() {
+		return new URLEntry();
+	}
+
+	/*
+	 * @see SiteModelFactory#createSiteCategoryModel()
+	 */
+	public SiteCategoryModel createSiteCategoryModel() {
+		return new Category();
+	}
+
 }

@@ -10,8 +10,11 @@ import java.net.URLClassLoader;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureModelFactory;
+import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
 
 public class FeatureExecutableFactory extends BaseFeatureFactory {
 
@@ -55,6 +58,26 @@ public class FeatureExecutableFactory extends BaseFeatureFactory {
 			}
 		}
 		return feature;
+	}
+
+	/*
+	 * @see IFeatureFactory#createFeature(ISite)
+	 */
+	public IFeature createFeature(ISite site) throws CoreException {
+		Feature feature = null;
+		
+		IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(null);
+		IFeatureContentConsumer contentConsumer = new FeatureExecutableContentConsumer();
+			
+		feature = (Feature)createFeatureModel();
+		feature.setSite(site);
+			
+		feature.setFeatureContentProvider(contentProvider);
+		feature.setContentConsumer(contentConsumer);
+			
+		feature.markReadOnly();
+
+		return feature;	
 	}
 
 }

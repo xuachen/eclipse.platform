@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.model.FeatureReferenceModel;
+import org.eclipse.update.core.model.SiteMapModel;
 import org.eclipse.update.internal.core.obsolete.*;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
@@ -73,18 +74,19 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 */
 	public IFeature getFeature() throws CoreException {
 
+		String type = getType();
 		if (feature == null) {
-			if (getType() == null || getType().equals("")) {
+			if (type== null || type.equals("")) {
 				if (getURL().toExternalForm().endsWith(FeaturePackaged.JAR_EXTENSION)) {
 					// if it ends with JAR, guess it is a FeaturePackaged
 					String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
-					setType(pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE);
+					type=(pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE);
 				} else {
 					// ask the Site for the default type 
-					setType(getSite().getDefaultExecutableFeatureType());
+					type=(getSite().getDefaultInstallableFeatureType());
 				}
 			}
-		feature = createFeature(getType(),getURL(),getSite());				
+		feature = createFeature(type,getURL(),getSite());				
 		}
 		
 		return feature;
@@ -143,6 +145,20 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		if (url!=null){
 			setURLString(url.toExternalForm());
 		}
+	}
+
+	/*
+	 * @see IFeatureReference#getSite()
+	 */
+	public ISite getSite() {
+		return (ISite)getSiteModel();
+	}
+
+	/*
+	 * @see IFeatureReference#setSite(ISite)
+	 */
+	public void setSite(ISite site) {
+		setSiteModel((SiteMapModel) site);
 	}
 
 }

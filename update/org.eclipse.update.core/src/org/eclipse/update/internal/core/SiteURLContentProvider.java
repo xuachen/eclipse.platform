@@ -2,66 +2,52 @@ package org.eclipse.update.internal.core;
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
- */
+ */
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
-
-/**
- * Site on the File System
+import org.eclipse.update.internal.core.*;
+/**
+ * 
  */
-public class SiteFileContentProvider extends SiteContentProvider {
+public class SiteURLContentProvider extends SiteContentProvider {
 	
-	private String path;
-	
-	public static final String INSTALL_FEATURE_PATH = "install/features/";	
-	public static final String SITE_TYPE = "org.eclipse.update.core.file";	
+	public static final String SITE_TYPE = "org.eclipse.update.core.http";
 
 	/**
-	 * Constructor for FileSite
+	 * Constructor for HTTPSite
 	 */
-	public SiteFileContentProvider(URL url) {
+	public SiteURLContentProvider(URL url) {
 		super(url);
 	}
-
-	
-	
-	/**
- 	 * move into contentSelector, comment to provider and consumer (SiteFile)
- 	 */
-	private String getFeaturePath(VersionedIdentifier featureIdentifier) {
-		String path = UpdateManagerUtils.getPath(getURL());
-		String featurePath = path + INSTALL_FEATURE_PATH + featureIdentifier.toString();
-		return featurePath;
-	}
-
-	/**
-	 * We do not need to optimize the download
-	 * As the archives are already available on the file system
+
+	/*
+	 * @see IAdaptable#getAdapter(Class)
 	 */
-	public boolean optimize() {
-		return false;
+	public Object getAdapter(Class adapter) {
+		return null;
 	}
-		
+
 	/*
 	 * @see ISite#getDefaultExecutableFeatureType()
 	 */
 	public String getDefaultExecutableFeatureType() {
-		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
-		return pluginID+IFeatureFactory.EXECUTABLE_FEATURE_TYPE;
+		return null;
 	}
 
 	/*
 	 * @see ISite#getDefaultInstallableFeatureType()
 	 */
 	public String getDefaultInstallableFeatureType() {
-		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";		
 		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
 	}
-
 	/*
 	 * @see ISiteContentProvider#getArchiveReference(String)
 	 */
@@ -110,6 +96,8 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		}
 		return result;
 	}
-}
 
 
+
+	}
+

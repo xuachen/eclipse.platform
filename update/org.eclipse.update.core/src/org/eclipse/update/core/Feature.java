@@ -321,7 +321,7 @@ public class Feature extends FeatureModel implements IFeature {
 		List contentReferencesToInstall = new ArrayList();
 
 		//
-		IFeatureContentConsumer consumer = getContentConsumer();
+		IFeatureContentConsumer consumer = targetFeature.getContentConsumer();
 
 		//finds the contentReferences for this IFeature
 		ContentReference[] references = getFeatureContentProvider().getFeatureEntryContentReferences();
@@ -463,7 +463,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getContentConsumer()
 	 */
 	public IFeatureContentConsumer getContentConsumer() throws CoreException {
-		if (contentConsumer == null) {
+		if (this.contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "FeatureContentConsumer not set for feature:" + getURL().toExternalForm(), null);
 			throw new CoreException(status);

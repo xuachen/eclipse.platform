@@ -21,7 +21,7 @@ public abstract class SiteContentConsumer implements ISiteContentConsumer {
 	/*
 	 * @see ISiteContentConsumer#setSite(ISite)
 	 */
-	public void setSite(ISite feature) {
+	public void setSite(ISite site) {
 		this.site = site;
 	}	
 

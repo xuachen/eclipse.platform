@@ -57,7 +57,7 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	 * @see IFeatureContentConsumer#store(ContentReference, IProgressMonitor)
 	 */
 	public void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
-		contentConsumer.store(contentReference,monitor);
+		getContentConsumer().store(contentReference,monitor);
 	}
 
 	/*
@@ -65,7 +65,7 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	 */
 	public void close() {
 		closed = true;
-		contentConsumer.close();
+		if (contentConsumer!=null)	contentConsumer.close();
 	}
 
 	/*

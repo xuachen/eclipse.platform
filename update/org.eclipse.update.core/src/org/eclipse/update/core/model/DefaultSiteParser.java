@@ -160,6 +160,7 @@ public class DefaultSiteParser extends DefaultHandler {
 		feature.setType(type);
 
 		site.addFeatureReferenceModel(feature);
+		feature.setSiteModel(site);
 		currentFeature = feature;
 		
 		if (DEBUG)

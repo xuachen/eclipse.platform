@@ -24,8 +24,7 @@ public class SiteURLFactory extends BaseSiteFactory {
 		InputStream siteStream = null;
 		
 		try {		
-			ISiteContentProvider contentProvider = null;
-			//new SiteURLContentProvider(url);
+			ISiteContentProvider contentProvider = new SiteURLContentProvider(url);
 		
 			siteXML = new URL(url,Site.SITE_XML);
 			siteStream = siteXML.openStream();
@@ -42,7 +41,7 @@ public class SiteURLFactory extends BaseSiteFactory {
 			// We should not stop the execution 
 			// but we must Log it all the time, not only when debugging...
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "Error opening site.xml in the site:" + url.toExternalForm(), e);
+			IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "WARNING: cannot find site.xml in the site:" + url.toExternalForm(), e);
 			UpdateManagerPlugin.getPlugin().getLog().log(status);
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();

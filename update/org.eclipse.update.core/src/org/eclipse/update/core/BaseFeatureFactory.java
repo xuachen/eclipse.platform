@@ -9,7 +9,6 @@ import java.net.URLClassLoader;
 import java.util.*;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.model.FeatureModelFactory;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
@@ -51,5 +50,54 @@ public abstract class BaseFeatureFactory extends FeatureModelFactory implements 
 		return bundle;
 	}
 
+
+	/*
+	 * @see FeatureModelFactory#createFeatureModel()
+	 */
+	public FeatureModel createFeatureModel() {
+		return new Feature();
+	}
+
+	/*
+	 * @see FeatureModelFactory#createInstallHandlerModel()
+	 */
+	public InstallHandlerModel createInstallHandlerModel() {
+		return null;
+	}
+
+	/*
+	 * @see FeatureModelFactory#createImportModel()
+	 */
+	public ImportModel createImportModel() {
+		return new Import();
+	}
+
+	/*
+	 * @see FeatureModelFactory#createPluginEntryModel()
+	 */
+	public PluginEntryModel createPluginEntryModel() {
+		return new PluginEntry();
+	}
+
+	/*
+	 * @see FeatureModelFactory#createNonPluginEntryModel()
+	 */
+	public NonPluginEntryModel createNonPluginEntryModel() {
+		return new NonPluginEntry();
+	}
+
+	/*
+	 * @see FeatureModelFactory#createContentGroupModel()
+	 */
+	public ContentGroupModel createContentGroupModel() {
+		return null;
+	}
+
+	/*
+	 * @see FeatureModelFactory#createURLEntryModel()
+	 */
+	public URLEntryModel createURLEntryModel() {
+		return new URLEntry();
+	}
 
 }

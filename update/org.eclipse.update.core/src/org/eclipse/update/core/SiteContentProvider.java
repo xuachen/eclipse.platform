@@ -6,14 +6,16 @@ package org.eclipse.update.core;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.core.runtime.CoreException;
+
 /**
  * Base site content provider
  */
 public abstract class SiteContentProvider implements ISiteContentProvider {
 
 
-	protected URL base;
-	protected ISite site;
+	private URL base;
+	private ISite site;
 
 	/**
 	 * Content selector used in archive operations
@@ -61,17 +63,26 @@ public abstract class SiteContentProvider implements ISiteContentProvider {
 	/*
 	 * @see ISiteContentProvider#getArchivesReferences(String)
 	 */
-	public abstract ContentReference getArchiveReference(String archiveID);
+	public abstract ContentReference getArchiveReference(String archiveID) throws CoreException;
 
 	/*
 	 * @see ISiteContentProvider#getFeatureArchivesReferences(IFeature)
 	 */
 
-	/*
-	 * @see ISiteContentProvider#setSite(ISite)
+	/**
+	 * Sets the site.
+	 * @param site The site to set
 	 */
 	public void setSite(ISite site) {
 		this.site = site;
+	}
+
+	/**
+	 * Gets the site.
+	 * @return Returns a ISite
+	 */
+	public ISite getSite() {
+		return site;
 	}
 
 }

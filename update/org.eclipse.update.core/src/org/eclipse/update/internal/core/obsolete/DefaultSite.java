@@ -187,11 +187,11 @@ public abstract class DefaultSite extends Site {
 		}
 		w.println("");
 
-		IURLEntry[] archives = getArchives();
+		IArchiveEntry[] archives = getArchives();
 		for (int index = 0; index < archives.length; index++) {
-			IURLEntry element = (IURLEntry) archives[index];
+			IArchiveEntry element = archives[index];
 			URLInfoString = UpdateManagerUtils.getURLAsString(this.getURL(), element.getURL());
-			w.println(gap + "<" + SiteParser.ARCHIVE + " id=\"" + Writer.xmlSafe(element.getAnnotation()) + "\" url=\"" + Writer.xmlSafe(URLInfoString) + "\"/>");
+			w.println(gap + "<" + SiteParser.ARCHIVE + " id=\"" + Writer.xmlSafe(element.getPath()) + "\" url=\"" + Writer.xmlSafe(URLInfoString) + "\"/>");
 		}
 		w.println("");
 

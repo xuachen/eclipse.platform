@@ -106,7 +106,7 @@ public interface ISite extends IPluginContainer {
 	 * @since 2.0 
 	 */
 
-	IURLEntry[] getArchives();
+	IArchiveEntry[] getArchives();
 	
 		
 		
