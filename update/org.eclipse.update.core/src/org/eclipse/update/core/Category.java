@@ -1,4 +1,4 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.core;
 /*
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
@@ -9,6 +9,7 @@ import org.eclipse.update.core.ICategory;
 import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.model.SiteCategoryModel;
 import org.eclipse.update.core.model.URLEntryModel;
+import org.eclipse.update.internal.core.*;
 
 /**
  * Default Implementation of ICategory

@@ -312,7 +312,13 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		if (executableFeatureType != null) {
 			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
 			ContentReference localFeatureContentReference = site.getSiteContentProvider().getFeatureArchivesReferences(sourceFeature);
-			result = factory.createFeature(localFeatureContentReference.asURL(), site);
+			try{
+				result = factory.createFeature(localFeatureContentReference.asURL(), site);
+			} catch (IOException ex){
+				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+				IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Unable to Retrieve URL for feature:" + localFeatureContentReference.getIdentifier(), null);
+				throw new CoreException(status);
+			}				
 		}
 		return result;
 	}

@@ -74,12 +74,11 @@ public abstract class DefaultSite extends Site {
 	 * @return Returns a IFeatureReference[]
 	 */
 	public IFeatureReference[] getFeatureReferences() {
-		int length = getFeatureReferenceModels().length;
-		IFeatureReference[] result = new IFeatureReference[length];
-		if (length > 0) {
-			result = (IFeatureReference[]) getFeatureReferenceModels();
-		}
-		return result;
+		FeatureReferenceModel[] result = getFeatureReferenceModels();
+		if (result.length == 0) 
+			return new IFeatureReference[0];
+		else
+			return (IFeatureReference[]) result;
 	}
 
 	/**

@@ -130,7 +130,14 @@ public class FeaturePackaged extends DefaultFeature {
 
 		// try to obtain the URL of the JAR file that contains the plugin entry from teh site.xml
 		// if it doesn't exist, use the default one
-		URL jarURL = getSite().getSiteContentProvider().getArchivesReferences(getArchiveID(pluginEntry)).asURL();
+		URL jarURL = null;
+		try {
+			jarURL = getSite().getSiteContentProvider().getArchivesReferences(getArchiveID(pluginEntry)).asURL();
+		} catch (IOException ex){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Unable to Retrieve URL for site:" + getSite().getURL(), null);
+			throw new CoreException(status);
+		}				
 		String path = UpdateManagerUtils.getPath(jarURL);					
 		String[] result = getJAREntries(path);
 

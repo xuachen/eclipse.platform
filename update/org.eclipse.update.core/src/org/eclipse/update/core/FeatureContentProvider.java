@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 public abstract class FeatureContentProvider implements IFeatureContentProvider {
 	
 	private URL base;
-	private IFeature feature;
+	protected IFeature feature;
 		
 	// local file map in temporary area
 	private static Map entryMap;

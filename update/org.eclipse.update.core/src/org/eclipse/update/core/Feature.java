@@ -174,15 +174,11 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getDiscoverySiteEntries()
 	 */
 	public IURLEntry[] getDiscoverySiteEntries() {
-		int length = getDiscoverySiteEntryModels().length;
-		IURLEntry[] result = new IURLEntry[length];
-		if (length > 0) {
-			URLEntryModel[] list = getDiscoverySiteEntryModels();
-			for (int i = 0; i < list.length; i++) {
-				result[i] = (IURLEntry) getDiscoverySiteEntryModels()[i];
-			}
-		}
-		return result;
+		URLEntryModel[] result = getDiscoverySiteEntryModels();
+		if (result.length == 0) 
+			return new IURLEntry[0];
+		else
+			return(IURLEntry[])result;
 	}
 
 	/*
@@ -444,12 +440,11 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getImports()
 	 */
 	public IImport[] getImports() {
-		int length = getImportModels().length;
-		IImport[] result = new IImport[length];
-		if (length > 0) {
-			result = (IImport[]) getImportModels();
-		}
-		return result;
+		ImportModel[] result = getImportModels();
+		if (result.length == 0) 
+			return new IImport[0];
+		else
+			return (IImport[]) result;
 	}
 
 	/*

@@ -27,7 +27,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 	public static final String JAR_EXTENSION = ".jar";
 	
-	private FeatureContentProvider.IContentSelector contentSelector = new FeatureContentProvider.IContentSelector(){
+	private FeatureContentProvider.ContentSelector contentSelector = new FeatureContentProvider.ContentSelector(){
 		/*
 		 * 
 		 */
@@ -95,10 +95,16 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 		// try to obtain the URL of the JAR file that contains the plugin entry from teh site.xml
 		// if it doesn't exist, use the default one
-		URL jarURL =feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)).asURL();
-		String path = UpdateManagerUtils.getPath(jarURL);					
-		String[] result = getJAREntries(path);
-
+		String[] result = new String[0];
+		try{
+			URL jarURL =feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)).asURL();
+			String path = UpdateManagerUtils.getPath(jarURL);					
+			result = getJAREntries(path);
+		} catch (IOException ex){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Unable to Retrieve URL for feature:" + feature.getURL(), null);
+			throw new CoreException(status);
+		}
 		return result;
 	}
 
@@ -260,7 +266,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		ContentReference result = null;
 		try {
 		ContentReference[] featureContentReference = getFeatureEntryArchiveReferences();
-		ContentReference localContentReference = asLocalReference(featureContentReference[0],null);
+		JarContentReference localContentReference = (JarContentReference)asLocalReference(featureContentReference[0],null);
 		result = unpack(localContentReference,Feature.FEATURE_XML,contentSelector,null);
 		} catch (IOException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();

@@ -158,7 +158,13 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		if (executableFeatureType != null) {
 			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
 			ContentReference localFeatureContentReference = this.getSiteContentProvider().getFeatureArchivesReferences(sourceFeature);
-			result = factory.createFeature(localFeatureContentReference.asURL(), this);
+			try{
+				result = factory.createFeature(localFeatureContentReference.asURL(), this);
+			} catch (IOException ex){
+				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+				IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Unable to create Feature:" + getURL().toExternalForm(), null);
+				throw new CoreException(status);
+			}
 		}
 		return result;
 	}
@@ -183,24 +189,22 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see ISite#getFeatureReferences()
 	 */
 	public IFeatureReference[] getFeatureReferences() {
-		int length = getFeatureReferenceModels().length;
-		IFeatureReference[] result = new IFeatureReference[length];
-		if (length > 0) {
-			result = (IFeatureReference[]) getFeatureReferenceModels();
-		}
-		return result;
+		FeatureReferenceModel[] result = getFeatureReferenceModels();
+		if (result.length == 0) 
+			return new IFeatureReference[0];
+		else
+			return (IFeatureReference[]) result;
 	}
 
 	/*
 	 * @see ISite#getArchives()
 	 */
 	public IURLEntry[] getArchives() {
-		int length = getArchiveReferenceModels().length;
-		IURLEntry[] result = new IURLEntry[length];
-		if (length > 0) {
-			result = (IURLEntry[]) getArchiveReferenceModels();
-		}
-		return result;
+		ArchiveReferenceModel[] result = getArchiveReferenceModels();
+		if (result.length == 0) 
+			return new IURLEntry[0];
+		else
+			return (IURLEntry[]) result;
 	}
 
 	/*
@@ -214,12 +218,11 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see ISite#getCategories()
 	 */
 	public ICategory[] getCategories() {
-		int length = getCategoryModels().length;
-		ICategory[] result = new ICategory[length];
-		if (length > 0) {
-			result = (ICategory[]) getCategoryModels();
-		}
-		return result;
+		SiteCategoryModel[] result = getCategoryModels();
+		if (result.length == 0) 
+			return new ICategory[0];
+		else
+			return (ICategory[]) result;
 	}
 
 	/*
