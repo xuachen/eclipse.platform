@@ -5,6 +5,7 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */ 
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,16 @@ public class FeatureReferenceModel extends ModelObject {
 	 */	
 	public String getURLString() {
 		return url;
+	}
+	
+	/**
+	 * Returns the resolved URL for the feature reference.
+	 * 
+	 * @return url, or <code>null</code>
+	 * @since 2.0
+	 */
+	public URL getURL() {
+		return null;
 	}
 
 	/**

@@ -80,31 +80,31 @@ public class DefaultFeatureParser extends DefaultHandler {
 	
 		if (tag.equalsIgnoreCase(DESCRIPTION)){
 			if (feature != null)
-				feature.setDescription(processInfo(attributes));
+				feature.setDescriptionModel(processInfo(attributes));
 			return;
 		}
 		
 		if (tag.equalsIgnoreCase(COPYRIGHT)){
 			if (feature != null)
-				feature.setCopyright(processInfo(attributes));
+				feature.setCopyrightModel(processInfo(attributes));
 			return;
 		}
 		
 		if (tag.equalsIgnoreCase(LICENSE)){
 			if (feature != null)
-				feature.setLicense(processInfo(attributes));
+				feature.setLicenseModel(processInfo(attributes));
 			return;
 		}
 	
 		if (tag.equalsIgnoreCase(UPDATE)){
 			if (feature != null)
-				feature.setUpdateSiteInfo(processURLInfo(attributes));
+				feature.setUpdateSiteEntryModel(processURLInfo(attributes));
 			return;
 		}		
 		
 		if (tag.equalsIgnoreCase(DISCOVERY)){
 			if (feature != null)
-				feature.addDiscoverySiteInfo(processURLInfo(attributes));
+				feature.addDiscoverySiteEntryModel(processURLInfo(attributes));
 			return;
 		}		
 		
@@ -215,7 +215,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 		imp.setMatchingRuleName(match);
 		
 		if (feature != null) {
-			feature.addImport(imp);	
+			feature.addImportModel(imp);	
 			if (DEBUG){
 				debug("Processed require: id:"+id+" ver:"+ver);
 				debug("Processed require: match:"+match);			
@@ -273,7 +273,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 		pluginEntry.setInstallSize(install_size);				
 
 		if (feature != null) {
-			feature.addPluginEntry(pluginEntry);
+			feature.addPluginEntryModel(pluginEntry);
 			if (DEBUG){
 				debug("Processed Plugin: id:"+id+" ver:"+ver+" fragment:"+fragment);
 				debug("Processed Plugin: os:"+os+" ws:"+ws+" nl:"+nl);			
@@ -315,7 +315,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 		dataEntry.setInstallSize(install_size);		
 
 		if (feature != null) {
-			feature.addNonPluginEntry(dataEntry);	
+			feature.addNonPluginEntryModel(dataEntry);	
 			if (DEBUG){
 				debug("Processed Data: id:"+id);
 				debug("Processed Data: download size:"+download_size+" install size:"+install_size);
@@ -342,14 +342,14 @@ public class DefaultFeatureParser extends DefaultHandler {
 			String tag = localName.trim();
 
 			if (tag.equalsIgnoreCase(DESCRIPTION) && feature != null) {
-				feature.getDescription().setAnnotation(text);
+				feature.getDescriptionModel().setAnnotation(text);
 						
 				if (DEBUG)
 					debug("Found Description Text");
 			}
 
 			if (tag.equalsIgnoreCase(COPYRIGHT) && feature != null) {
-				feature.getCopyright().setAnnotation(text);
+				feature.getCopyrightModel().setAnnotation(text);
 
 				if (DEBUG)
 					debug("Found Copyright Text");
@@ -357,7 +357,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 			}
 
 			if (tag.equalsIgnoreCase(LICENSE) && feature != null) {
-				feature.getLicense().setAnnotation(text);
+				feature.getLicenseModel().setAnnotation(text);
 	
 				if (DEBUG)
 					debug("Found License Text");				

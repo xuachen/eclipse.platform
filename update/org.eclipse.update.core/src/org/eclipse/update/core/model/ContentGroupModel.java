@@ -65,7 +65,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public URLEntryModel getDescription() {
+	public URLEntryModel getDescriptionModel() {
 		return description;
 	}
 
@@ -96,7 +96,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public ImportModel[] getImports() {
+	public ImportModel[] getImportModels() {
 		if (imports == null)
 			return new ImportModel[0];
 
@@ -106,7 +106,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public PluginEntryModel[] getPluginEntries() {
+	public PluginEntryModel[] getPluginEntryModels() {
 		if (pluginEntries == null)
 			return new PluginEntryModel[0];
 
@@ -116,7 +116,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public NonPluginEntryModel[] getNonPluginEntries() {
+	public NonPluginEntryModel[] getNonPluginEntryModels() {
 		if (nonPluginEntries == null)
 			return new NonPluginEntryModel[0];
 
@@ -127,7 +127,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public ContentGroupModel[] getNestedGroupEntries() {
+	public ContentGroupModel[] getNestedGroupEntryModels() {
 		if (nestedGroupEntries == null)
 			return new ContentGroupModel[0];
 
@@ -146,7 +146,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void getLabel(String label) {
+	public void setLabel(String label) {
 		assertIsWriteable();
 		this.label = label;
 	}
@@ -162,7 +162,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setDescription(URLEntryModel description) {
+	public void setDescriptionModel(URLEntryModel description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -183,7 +183,7 @@ public class ContentGroupModel extends ModelObject {
 		this.excludes = excludes;
 	}
 
-	public void setImports(ImportModel[] imports) {
+	public void setImportModels(ImportModel[] imports) {
 		assertIsWriteable();
 		if (imports == null)
 			this.imports = null;
@@ -194,7 +194,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setPluginEntries(PluginEntryModel[] pluginEntries) {
+	public void setPluginEntryModels(PluginEntryModel[] pluginEntries) {
 		assertIsWriteable();
 		if (pluginEntries == null)
 			this.pluginEntries = null;
@@ -205,7 +205,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setNonPluginEntries(NonPluginEntryModel[] nonPluginEntries) {
+	public void setNonPluginEntryModels(NonPluginEntryModel[] nonPluginEntries) {
 		assertIsWriteable();
 		if (nonPluginEntries == null)
 			this.nonPluginEntries = null;
@@ -216,7 +216,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setNestedGroupEntries(ContentGroupModel[] nestedGroupEntries) {
+	public void setNestedGroupEntryModels(ContentGroupModel[] nestedGroupEntries) {
 		assertIsWriteable();
 		if (nestedGroupEntries == null)
 			this.nestedGroupEntries = null;
@@ -227,7 +227,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void addImport(ImportModel importEntry) {
+	public void addImportModel(ImportModel importEntry) {
 		assertIsWriteable();
 		if (imports == null)
 			this.imports = new ArrayList();
@@ -238,7 +238,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void addPluginEntry(PluginEntryModel pluginEntry) {
+	public void addPluginEntryModel(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries == null)
 			this.pluginEntries = new ArrayList();
@@ -249,7 +249,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void addNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
+	public void addNonPluginEntryModel(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries == null)
 			this.nonPluginEntries = new ArrayList();
@@ -260,7 +260,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void addNestedGroupEntry(ContentGroupModel nestedGroupEntry) {
+	public void addNestedGroupEntryModel(ContentGroupModel nestedGroupEntry) {
 		assertIsWriteable();
 		if (this.nestedGroupEntries == null)
 			this.nestedGroupEntries = new ArrayList();
@@ -271,7 +271,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void removeImport(ImportModel importEntry) {
+	public void removeImportModel(ImportModel importEntry) {
 		assertIsWriteable();
 		if (this.imports != null)
 			this.imports.remove(importEntry);
@@ -280,7 +280,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void removePluginEntry(PluginEntryModel pluginEntry) {
+	public void removePluginEntryModel(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries != null)
 			this.pluginEntries.remove(pluginEntry);
@@ -289,7 +289,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void removeNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
+	public void removeNonPluginEntryModel(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries != null)
 			this.nonPluginEntries.remove(nonPluginEntry);
@@ -298,7 +298,7 @@ public class ContentGroupModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void removeNestedGroupEntry(ContentGroupModel nestedGroupEntry) {
+	public void removeNestedGroupEntryModel(ContentGroupModel nestedGroupEntry) {
 		assertIsWriteable();
 		if (this.nestedGroupEntries != null)
 			this.nestedGroupEntries.remove(nestedGroupEntry);
@@ -308,10 +308,10 @@ public class ContentGroupModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public void markReadOnly() {		
-		markReferenceReadOnly(getDescription());
-		markListReferenceReadOnly(getImports());
-		markListReferenceReadOnly(getPluginEntries());
-		markListReferenceReadOnly(getNonPluginEntries());
-		markListReferenceReadOnly(getNestedGroupEntries());
+		markReferenceReadOnly(getDescriptionModel());
+		markListReferenceReadOnly(getImportModels());
+		markListReferenceReadOnly(getPluginEntryModels());
+		markListReferenceReadOnly(getNonPluginEntryModels());
+		markListReferenceReadOnly(getNestedGroupEntryModels());
 	}
 }

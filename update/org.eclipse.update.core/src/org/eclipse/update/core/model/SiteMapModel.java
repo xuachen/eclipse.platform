@@ -44,14 +44,14 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public URLEntryModel getDescription() {
+	public URLEntryModel getDescriptionModel() {
 		return description;
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public FeatureReferenceModel[] getFeatureReferences() {
+	public FeatureReferenceModel[] getFeatureReferenceModels() {
 		if (featureReferences == null)
 			return new FeatureReferenceModel[0];
 			
@@ -61,7 +61,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public ArchiveReferenceModel[] getArchiveReferences() {
+	public ArchiveReferenceModel[] getArchiveReferenceModels() {
 		if (archiveReferences == null)
 			return new ArchiveReferenceModel[0];
 			
@@ -71,7 +71,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public SiteCategoryModel[] getCategories() {
+	public SiteCategoryModel[] getCategoryModels() {
 		if (categories == null)
 			return new SiteCategoryModel[0];
 			
@@ -89,7 +89,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setDescription(URLEntryModel description) {
+	public void setDescriptionModel(URLEntryModel description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -97,7 +97,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setFeatureReferences(FeatureReferenceModel[] featureReferences) {
+	public void setFeatureReferenceModels(FeatureReferenceModel[] featureReferences) {
 		assertIsWriteable();
 		if (featureReferences == null)
 			this.featureReferences = null;
@@ -108,7 +108,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setArchiveReferences(ArchiveReferenceModel[] archiveReferences) {
+	public void setArchiveReferenceModels(ArchiveReferenceModel[] archiveReferences) {
 		assertIsWriteable();
 		if (archiveReferences == null)
 			this.archiveReferences = null;
@@ -119,7 +119,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setCategories(SiteCategoryModel[] categories) {
+	public void setCategoryModels(SiteCategoryModel[] categories) {
 		assertIsWriteable();
 		if (categories == null)
 			this.categories = null;
@@ -130,7 +130,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addFeatureReference(FeatureReferenceModel featureReference) {
+	public void addFeatureReferenceModel(FeatureReferenceModel featureReference) {
 		assertIsWriteable();
 		if (this.featureReferences == null)
 			this.featureReferences = new ArrayList();
@@ -141,7 +141,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addArchiveReference(ArchiveReferenceModel archiveReference) {
+	public void addArchiveReferenceModel(ArchiveReferenceModel archiveReference) {
 		assertIsWriteable();
 		if (this.archiveReferences == null)
 			this.archiveReferences = new ArrayList();
@@ -152,7 +152,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addCategory(SiteCategoryModel category) {
+	public void addCategoryModel(SiteCategoryModel category) {
 		assertIsWriteable();
 		if (this.categories == null)
 			this.categories = new ArrayList();
@@ -163,7 +163,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeFeatureReference(FeatureReferenceModel featureReference) {
+	public void removeFeatureReferenceModel(FeatureReferenceModel featureReference) {
 		assertIsWriteable();
 		if (this.featureReferences != null)
 			this.featureReferences.remove(featureReference);
@@ -172,7 +172,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeArchiveReference(ArchiveReferenceModel archiveReference) {
+	public void removeArchiveReferenceModel(ArchiveReferenceModel archiveReference) {
 		assertIsWriteable();
 		if (this.archiveReferences != null)
 			this.archiveReferences.remove(archiveReference);
@@ -181,7 +181,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeCategory(SiteCategoryModel category) {
+	public void removeCategoryModel(SiteCategoryModel category) {
 		assertIsWriteable();
 		if (this.categories != null)
 			this.categories.remove(category);
@@ -191,9 +191,9 @@ public class SiteMapModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public void markReadOnly() {		
-		markReferenceReadOnly(getDescription());
-		markListReferenceReadOnly(getFeatureReferences());
-		markListReferenceReadOnly(getArchiveReferences());
-		markListReferenceReadOnly(getCategories());
+		markReferenceReadOnly(getDescriptionModel());
+		markListReferenceReadOnly(getFeatureReferenceModels());
+		markListReferenceReadOnly(getArchiveReferenceModels());
+		markListReferenceReadOnly(getCategoryModels());
 	}
 }

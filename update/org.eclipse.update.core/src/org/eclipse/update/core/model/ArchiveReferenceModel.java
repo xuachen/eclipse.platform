@@ -42,11 +42,21 @@ public class ArchiveReferenceModel extends ModelObject {
 	/**
 	 * Returns URL string for the archive.
 	 *
-	 * @return url, <code>null</code>
+	 * @return url string, or <code>null</code>
 	 * @since 2.0
 	 */
 	public String getURLString() {
 		return url;
+	}
+	
+	/**
+	 * Returns the resolved URL for the archive.
+	 * 
+	 * @return url, or <code>null</code>
+	 * @since 2.0
+	 */
+	public URL getURL() {
+		return null;
 	}
 	
 	/**

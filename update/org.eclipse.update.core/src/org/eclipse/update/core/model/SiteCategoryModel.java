@@ -46,7 +46,7 @@ public class SiteCategoryModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public URLEntryModel getDescription() {
+	public URLEntryModel getDescriptionModel() {
 		return description;
 	}
 
@@ -69,7 +69,7 @@ public class SiteCategoryModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setDescription(URLEntryModel description) {
+	public void setDescriptionModel(URLEntryModel description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -78,6 +78,6 @@ public class SiteCategoryModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public void markReadOnly() {		
-		markReferenceReadOnly(getDescription());
+		markReferenceReadOnly(getDescriptionModel());
 	}
 }

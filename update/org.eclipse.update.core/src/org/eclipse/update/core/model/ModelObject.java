@@ -5,6 +5,9 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */
  
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import org.eclipse.update.internal.core.Assert;
 
 /**
@@ -54,6 +57,19 @@ public abstract class ModelObject {
 	 */
 	public boolean isReadOnly() {
 		return readOnly;
+	}
+	
+	/**
+	 * Resolve the model element. This method allows any relative URL strings
+	 * to be resolved to actual URL. It also allows any translatable strings
+	 * to be localized.
+	 * 
+	 * Subclasses need to override this method to perform the actual resolution.
+	 * 
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		return;
 	}
 		
 	/**

@@ -50,6 +50,16 @@ public class URLEntryModel extends ModelObject {
 	}
 	
 	/**
+	 * Returns the resolved URL for the entry.
+	 * 
+	 * @return url, or <code>null</code>
+	 * @since 2.0
+	 */
+	public URL getURL() {
+		return null;
+	}
+	
+	/**
 	 * Sets the annotation.
 	 * This object must not be read-only.
 	 *

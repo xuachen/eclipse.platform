@@ -104,9 +104,9 @@ public class DefaultSiteParser extends DefaultHandler {
 
 		if (tag.equalsIgnoreCase(DESCRIPTION)) {
 			if (state == STATE_SITE) {
-				site.setDescription(processInfo(attributes));
+				site.setDescriptionModel(processInfo(attributes));
 			} else if (state == STATE_CATEGORY_DEF) {
-				currentCategory.setDescription(processInfo(attributes));
+				currentCategory.setDescriptionModel(processInfo(attributes));
 			}
 			return;
 		}
@@ -131,7 +131,7 @@ public class DefaultSiteParser extends DefaultHandler {
 			infoURL = DEFAULT_INFO_URL;
 		URLEntryModel description = factory.createURLEntryModel();
 		description.setURLString(infoURL);
-		site.setDescription(description);
+		site.setDescriptionModel(description);
 
 		// verify we can parse the site ...if the site has
 		// a different type throw an exception to force reparsing
@@ -159,7 +159,7 @@ public class DefaultSiteParser extends DefaultHandler {
 		String type = attributes.getValue("type");
 		feature.setType(type);
 
-		site.addFeatureReference(feature);
+		site.addFeatureReferenceModel(feature);
 		currentFeature = feature;
 		
 		if (DEBUG)
@@ -175,7 +175,7 @@ public class DefaultSiteParser extends DefaultHandler {
 		archive.setPath(id);
 		String urlString = attributes.getValue("url");
 		archive.setURLString(urlString);
-		site.addArchiveReference(archive);
+		site.addArchiveReferenceModel(archive);
 
 		if (DEBUG) 
 			debug("End processing Archive: path:" + id + " url:" + urlString);
@@ -202,7 +202,7 @@ public class DefaultSiteParser extends DefaultHandler {
 		String label = attributes.getValue("label");
 		category.setName(name);
 		category.setLabel(label);
-		site.addCategory(category);
+		site.addCategoryModel(category);
 		currentCategory = category;
 		state = STATE_CATEGORY_DEF;
 	
@@ -242,9 +242,9 @@ public class DefaultSiteParser extends DefaultHandler {
 
 			if (tag.equalsIgnoreCase(DESCRIPTION)) {
 				if (state == STATE_SITE) {
-					site.getDescription().setAnnotation(text);
+					site.getDescriptionModel().setAnnotation(text);
 				} else if (state == STATE_CATEGORY_DEF) {
-					currentCategory.getDescription().setAnnotation(text);
+					currentCategory.getDescriptionModel().setAnnotation(text);
 				}
 					
 				if (DEBUG) 

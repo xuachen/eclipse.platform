@@ -42,6 +42,16 @@ public class InstallHandlerModel extends ModelObject {
 	}
 	
 	/**
+	 * Returns the resolved URL for the install trigger page.
+	 * 
+	 * @return url, or <code>null</code>
+	 * @since 2.0
+	 */
+	public URL getURL() {
+		return null;
+	}
+	
+	/**
 	 * Returns the name of the custom installer jar, relative to the
 	 * containing feature.
 	 *

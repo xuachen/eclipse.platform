@@ -84,6 +84,16 @@ public class FeatureModel extends ModelObject {
 	public String getImageURLString() {
 		return imageURL;
 	}
+	
+	/**
+	 * Returns the resolved URL for the image.
+	 * 
+	 * @return url, or <code>null</code>
+	 * @since 2.0
+	 */
+	public URL getImageURL() {
+		return null;
+	}
 
 	/**
 	 * @since 2.0
@@ -116,42 +126,42 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public InstallHandlerModel getInstallHandler() {
+	public InstallHandlerModel getInstallHandlerModel() {
 		return installHandler;
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public URLEntryModel getDescription() {
+	public URLEntryModel getDescriptionModel() {
 		return description;
 	}
 
 	/**
 	 * @since 2.0
 	 */	
-	public URLEntryModel getCopyright() {
+	public URLEntryModel getCopyrightModel() {
 		return copyright;
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public URLEntryModel getLicense() {
+	public URLEntryModel getLicenseModel() {
 		return license;
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public URLEntryModel getUpdateSiteInfo() {
+	public URLEntryModel getUpdateSiteEntryModel() {
 		return updateSiteInfo;
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public URLEntryModel[] getDiscoverySiteInfo() {
+	public URLEntryModel[] getDiscoverySiteEntryModels() {
 		if (discoverySiteInfo == null)
 			return new URLEntryModel[0];
 			
@@ -161,7 +171,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public ImportModel[] getImports() {
+	public ImportModel[] getImportModels() {
 		if (imports == null)
 			return new ImportModel[0];
 			
@@ -171,7 +181,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public PluginEntryModel[] getPluginEntries() {
+	public PluginEntryModel[] getPluginEntryModels() {
 		if (pluginEntries == null)
 			return new PluginEntryModel[0];
 			
@@ -181,7 +191,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public NonPluginEntryModel[] getNonPluginEntries() {
+	public NonPluginEntryModel[] getNonPluginEntryModels() {
 		if (nonPluginEntries == null)
 			return new NonPluginEntryModel[0];
 			
@@ -191,7 +201,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public ContentGroupModel[] getGroupEntries() {
+	public ContentGroupModel[] getGroupEntryModels() {
 		if (groupEntries == null)
 			return new ContentGroupModel[0];
 			
@@ -273,7 +283,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setInstallHandler(InstallHandlerModel installHandler) {
+	public void setInstallHandlerModel(InstallHandlerModel installHandler) {
 		assertIsWriteable();
 		this.installHandler = installHandler;
 	}
@@ -281,7 +291,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setDescription(URLEntryModel description) {
+	public void setDescriptionModel(URLEntryModel description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -289,7 +299,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setCopyright(URLEntryModel copyright) {
+	public void setCopyrightModel(URLEntryModel copyright) {
 		assertIsWriteable();
 		this.copyright = copyright;
 	}
@@ -297,7 +307,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setLicense(URLEntryModel license) {
+	public void setLicenseModel(URLEntryModel license) {
 		assertIsWriteable();
 		this.license = license;
 	}
@@ -305,7 +315,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setUpdateSiteInfo(URLEntryModel updateSiteInfo) {
+	public void setUpdateSiteEntryModel(URLEntryModel updateSiteInfo) {
 		assertIsWriteable();
 		this.updateSiteInfo = updateSiteInfo;
 	}
@@ -313,7 +323,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setDiscoverySiteInfo(URLEntryModel[] discoverySiteInfo) {
+	public void setDiscoverySiteEntryModels(URLEntryModel[] discoverySiteInfo) {
 		assertIsWriteable();
 		if (discoverySiteInfo == null)
 			this.discoverySiteInfo = null;
@@ -324,7 +334,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setImports(ImportModel[] imports) {
+	public void setImportModelss(ImportModel[] imports) {
 		assertIsWriteable();
 		if (imports == null)
 			this.imports = null;
@@ -335,7 +345,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setPluginEntries(PluginEntryModel[] pluginEntries) {
+	public void setPluginEntryModels(PluginEntryModel[] pluginEntries) {
 		assertIsWriteable();
 		if (pluginEntries == null)
 			this.pluginEntries = null;
@@ -346,7 +356,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setNonPluginEntries(NonPluginEntryModel[] nonPluginEntries) {
+	public void setNonPluginEntryModels(NonPluginEntryModel[] nonPluginEntries) {
 		assertIsWriteable();
 		if (nonPluginEntries == null)
 			this.nonPluginEntries = null;
@@ -357,7 +367,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void setGroupEntries(ContentGroupModel[] groupEntries) {
+	public void setGroupEntryModels(ContentGroupModel[] groupEntries) {
 		assertIsWriteable();
 		if (groupEntries == null)
 			this.groupEntries = null;
@@ -368,7 +378,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addDiscoverySiteInfo(URLEntryModel discoverySiteInfo) {
+	public void addDiscoverySiteEntryModel(URLEntryModel discoverySiteInfo) {
 		assertIsWriteable();
 		if (this.discoverySiteInfo == null)
 			this.discoverySiteInfo = new ArrayList();
@@ -379,7 +389,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addImport(ImportModel importEntry) {
+	public void addImportModel(ImportModel importEntry) {
 		assertIsWriteable();
 		if (this.imports == null)
 			this.imports = new ArrayList();
@@ -390,7 +400,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addPluginEntry(PluginEntryModel pluginEntry) {
+	public void addPluginEntryModel(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries == null)
 			this.pluginEntries = new ArrayList();
@@ -401,7 +411,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
+	public void addNonPluginEntryModel(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries == null)
 			this.nonPluginEntries = new ArrayList();
@@ -412,7 +422,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */	
-	public void addGroupEntry(ContentGroupModel groupEntry) {
+	public void addGroupEntryModel(ContentGroupModel groupEntry) {
 		assertIsWriteable();
 		if (this.groupEntries == null)
 			this.groupEntries = new ArrayList();
@@ -423,7 +433,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeDiscoverySiteInfo(URLEntryModel discoverySiteInfo) {
+	public void removeDiscoverySiteEntryModel(URLEntryModel discoverySiteInfo) {
 		assertIsWriteable();
 		if (this.discoverySiteInfo != null)
 			this.discoverySiteInfo.remove(discoverySiteInfo);
@@ -432,7 +442,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeImport(ImportModel importEntry) {
+	public void removeImportModel(ImportModel importEntry) {
 		assertIsWriteable();
 		if (this.imports != null)
 			this.imports.remove(importEntry);
@@ -441,7 +451,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removePluginEntry(PluginEntryModel pluginEntry) {
+	public void removePluginEntryModel(PluginEntryModel pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries != null)
 			this.pluginEntries.remove(pluginEntry);
@@ -450,7 +460,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeNonPluginEntry(NonPluginEntryModel nonPluginEntry) {
+	public void removeNonPluginEntryModel(NonPluginEntryModel nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries != null)
 			this.nonPluginEntries.remove(nonPluginEntry);
@@ -459,7 +469,7 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeGroupEntry(ContentGroupModel groupEntry) {
+	public void removeGroupEntryModel(ContentGroupModel groupEntry) {
 		assertIsWriteable();
 		if (this.groupEntries != null)
 			this.groupEntries.remove(groupEntry);
@@ -469,14 +479,14 @@ public class FeatureModel extends ModelObject {
 	 * 
 	 */
 	public void markReadOnly() {		
-		markReferenceReadOnly(getDescription());
-		markReferenceReadOnly(getCopyright());
-		markReferenceReadOnly(getLicense());
-		markReferenceReadOnly(getUpdateSiteInfo());
-		markListReferenceReadOnly(getDiscoverySiteInfo());
-		markListReferenceReadOnly(getImports());
-		markListReferenceReadOnly(getPluginEntries());
-		markListReferenceReadOnly(getNonPluginEntries());
-		markListReferenceReadOnly(getGroupEntries());
+		markReferenceReadOnly(getDescriptionModel());
+		markReferenceReadOnly(getCopyrightModel());
+		markReferenceReadOnly(getLicenseModel());
+		markReferenceReadOnly(getUpdateSiteEntryModel());
+		markListReferenceReadOnly(getDiscoverySiteEntryModels());
+		markListReferenceReadOnly(getImportModels());
+		markListReferenceReadOnly(getPluginEntryModels());
+		markListReferenceReadOnly(getNonPluginEntryModels());
+		markListReferenceReadOnly(getGroupEntryModels());
 	}
 }
