@@ -1,5 +1,6 @@
 package org.eclipse.ant.internal.core;
 
+import java.io.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -8,6 +9,7 @@ import java.util.*;
 
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.core.runtime.*;
+
 
 public class AntCorePreferences {
 
@@ -27,6 +29,52 @@ public AntCorePreferences(Map defaultTasks, Map defaultObjects, Map defaultTypes
 }
 
 protected void restoreCustomObjects() {
+	customURLs = computeCustomURLs();
+}
+
+protected List computeCustomURLs() {
+	List result = new ArrayList(10);
+	IPluginDescriptor descriptor = Platform.getPlugin("org.apache.ant").getDescriptor();
+	addLibraries(descriptor, result);
+	descriptor = Platform.getPlugin("org.apache.xerces").getDescriptor();
+	addLibraries(descriptor, result);
+	addToolsJar(result);
+	return result;
+}
+
+/**
+ * Ant running through the command line tries to find tools.jar to help the user. Try
+ * emulating the same behaviour here.
+ */
+protected void addToolsJar(List destination) {
+	IPath path = new Path(System.getProperty("java.home"));
+	if (path.lastSegment().equalsIgnoreCase("jre"))
+		path = path.removeLastSegments(1);
+	path = path.append("lib").append("tools.jar");
+	File tools = path.toFile();
+	if (!tools.exists())
+		return;
+	try {
+		destination.add(tools.toURL());
+	} catch (MalformedURLException e) {
+		e.printStackTrace(); // FIXME
+	}
+}
+
+protected void addLibraries(IPluginDescriptor source, List destination) {
+	URL root = source.getInstallURL();
+	ILibrary[] libraries = source.getRuntimeLibraries();
+	for (int i = 0; i < libraries.length; i++) {
+		try {
+			URL url = new URL(root, libraries[i].getPath().toString());
+			destination.add(Platform.asLocalURL(url));
+		} catch (Exception e) {
+			e.printStackTrace(); // FIXME
+		}
+	}
+}
+
+protected void readCustomURLs() {
 	customURLs = new ArrayList(10);
 	Properties urls = new Properties();
 	try {
@@ -89,21 +137,6 @@ public URL[] getURLs() {
 			addURLs(places[i].values(), result);
 	}
 	return (URL[]) result.toArray(new URL[result.size()]);
-
-//	URL[] urls = null;
-//	try {
-//		urls = new URL[] {
-//			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.ant.core.ant/bin/"),
-//			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.ant.ui.ant/bin/"),
-//			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.core.resources.ant/bin/"),
-//			new URL("file:c:/ibm-jdk/lib/tools.jar"),
-//			new URL("file:c:/eclipse/workspaces/newant/org.apache.xerces/xerces.jar"),
-//			new URL("file:c:/eclipse/workspaces/newant/org.apache.ant/ant.jar"),
-//		};
-//	} catch (MalformedURLException e) {
-//		e.printStackTrace();
-//	}
-//	return urls;
 }
 
 public ClassLoader[] getPluginClassLoaders() {
