@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.eclipse.core.runtime.CoreException;
+
 /**
  * An example feature content provider. It handles features packaged as
  * build zip's using the format used for integration and stable builds
@@ -45,7 +47,49 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		this.base = base;
 		this.feature = null;
 	}
-	
+
+	/*
+	 * @see IFeatureContentProvider#getFeatureManifest()
+	 */
+	public abstract ContentReference getFeatureManifest()
+		throws CoreException;
+
+	/*
+	 * @see IFeatureContentProvider#getArchiveReferences()
+	 */
+	public abstract ContentReference[] getArchiveReferences()
+		throws CoreException;
+
+	/*
+	 * @see IFeatureContentProvider#getFeatureEntryArchiveReferences()
+	 */
+	public abstract ContentReference[] getFeatureEntryArchiveReferences()
+		throws CoreException;
+
+	/*
+	 * @see IFeatureContentProvider#getPluginEntryArchiveReferences(IPluginEntry)
+	 */
+	public abstract ContentReference[] getPluginEntryArchiveReferences(IPluginEntry pluginEntry)
+		throws CoreException;
+
+	/*
+	 * @see IFeatureContentProvider#getNonPluginEntryArchiveReferences(INonPluginEntry)
+	 */
+	public abstract ContentReference[] getNonPluginEntryArchiveReferences(INonPluginEntry nonPluginEntry)
+		throws CoreException;
+
+	/*
+	 * @see IFeatureContentProvider#getFeatureEntryContentReferences()
+	 */
+	public abstract ContentReference[] getFeatureEntryContentReferences()
+		throws CoreException;
+
+	/*
+	 * @see IFeatureContentProvider#getPluginEntryContentReferences(IPluginEntry)
+	 */
+	public abstract ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry)
+		throws CoreException;
+		
 	/*
 	 * @see IFeatureContentProvider#setFeature(IFeature)
 	 */
@@ -209,5 +253,4 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 			bufferPool = new Stack();
 		bufferPool.push(buf);
 	}
-
 }

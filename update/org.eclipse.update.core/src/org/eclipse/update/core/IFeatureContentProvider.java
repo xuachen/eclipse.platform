@@ -31,7 +31,7 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	ContentReference[] getArchivesReferences() throws CoreException;
+	ContentReference[] getArchiveReferences() throws CoreException;
 
 	/**
 	 * Returns an array of content references for the IPluginEntry
@@ -41,7 +41,7 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	ContentReference[] getFeatureEntryArchivesReferences() throws CoreException;
+	ContentReference[] getFeatureEntryArchiveReferences() throws CoreException;
 
 	/**
 	 * Returns an array of content references for the IPluginEntry
@@ -51,7 +51,7 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	ContentReference[] getPluginEntryArchivesReferences(IPluginEntry pluginEntry) throws CoreException;
+	ContentReference[] getPluginEntryArchiveReferences(IPluginEntry pluginEntry) throws CoreException;
 
 	/**
 	 * Returns an array of content references for the INONPluginEntry
@@ -61,7 +61,7 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	ContentReference[] getNonPluginEntryArchivesReferences(INonPluginEntry nonPluginEntry) throws CoreException;
+	ContentReference[] getNonPluginEntryArchiveReferences(INonPluginEntry nonPluginEntry) throws CoreException;
 	/**
 	 * Returns an array of content references composing the IPluginEntry
 	 * 
