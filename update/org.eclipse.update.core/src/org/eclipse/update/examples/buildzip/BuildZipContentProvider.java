@@ -86,7 +86,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 	public ContentReference[] getNonPluginEntryArchiveReferences(INonPluginEntry nonPluginEntry) 
 		throws CoreException {
 		try {
-			return unpackNonPluginEntryContent(nonPluginEntry);
+			return peekNonPluginEntryContent(nonPluginEntry);
 		} catch(IOException e) {
 			throw newCoreException("Unable to return content for non plugin entry "+nonPluginEntry.getIdentifier(),e);
 		}
@@ -108,7 +108,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 	public ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry)
 		throws CoreException {
 		try {
-			return unpackPluginEntryContent(pluginEntry);
+			return peekPluginEntryContent(pluginEntry);
 		} catch(IOException e) {
 			throw newCoreException("Unable to return content for plugin entry "+pluginEntry.getIdentifier(),e);
 		}
@@ -168,7 +168,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 		featureEntryContentReferences = allRefs;
 	}
 		
-	ContentReference[] unpackPluginEntryContent(IPluginEntry plugin) throws IOException {
+	ContentReference[] peekPluginEntryContent(IPluginEntry plugin) throws IOException {
 		
 		// define selector for plugin entry files
 		ContentSelector selector = new ContentSelector() {
@@ -194,10 +194,10 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 		
 		// unpack plugin entry files
 		currentPluginEntry = plugin;
-		return unpack(baseReference, selector, null/*ProgressMonitor*/);
+		return peek(baseReference, selector, null/*ProgressMonitor*/);
 	}
 		
-	ContentReference[] unpackNonPluginEntryContent(INonPluginEntry data) throws IOException {
+	ContentReference[] peekNonPluginEntryContent(INonPluginEntry data) throws IOException {
 		
 		// define selector for non plugin entry files
 		ContentSelector selector = new ContentSelector() {
@@ -220,7 +220,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 		
 		// unpack non plugin entry files
 		currentNonPluginEntry = data;
-		return unpack(baseReference, selector, null/*ProgressMonitor*/);
+		return peek(baseReference, selector, null/*ProgressMonitor*/);
 	}
 	
 	private CoreException newCoreException(String s, Throwable e) throws CoreException {
