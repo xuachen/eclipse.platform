@@ -241,6 +241,10 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	}
 	
 	/**
+	 * Unpacks the referenced jar archive.
+	 * Returns content references to the unpacked file entries
+	 * (in temporary area)
+	 * 
 	 * @since 2.0
 	 */
 	protected ContentReference[] unpack(ContentReference archive, BaseFeature.ProgressMonitor monitor) throws IOException {
@@ -276,6 +280,31 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 				}
 				content.add(new ContentReference(entry.getName(), localFile));
 			}
+		}		
+		return (ContentReference[]) content.toArray(new ContentReference[0]);
+	}
+	
+	/**
+	 * Peeks into the referenced jar archive.
+	 * Returns content references to the packed jar entries within the archive.
+	 * 
+	 * @since 2.0
+	 */
+	protected ContentReference[] peek(ContentReference archive, BaseFeature.ProgressMonitor monitor) throws IOException {
+		
+		// assume we have a reference that represents a jar archive.
+		File archiveFile = asLocalFile(archive, monitor);
+		JarFile jarArchive = new JarFile(archiveFile);
+		
+		// get archive content
+		List content = new ArrayList();
+		Enumeration entries = jarArchive.entries();
+		
+		// run through the entries and create content references
+		String entryName;
+		while(entries.hasMoreElements()) {
+			entryName = (String) entries.nextElement();
+			content.add(new JarContentReference(entryName, archiveFile, entryName));
 		}		
 		return (ContentReference[]) content.toArray(new ContentReference[0]);
 	}

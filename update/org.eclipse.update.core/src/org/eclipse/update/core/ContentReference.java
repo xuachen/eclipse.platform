@@ -12,8 +12,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.omg.CORBA.UNKNOWN;
-
 /**
  * Default content reference. 
  * Implements a simple URL or local File wrapper.
@@ -22,11 +20,16 @@ import org.omg.CORBA.UNKNOWN;
  */
 public class ContentReference {
 	
-	private String id;
-	private URL url;	// reference is either URL reference *OR*
-	private File file;	//    local file reference
+	protected String id;
+	protected URL url;	// reference is either URL reference *OR*
+	protected File file;	//    local file reference
 	
-	public static final long UNKNOWN = -1;
+	public static final long UNKNOWN_SIZE = -1;
+
+	/**
+	 * Constructor for ContentRef.
+	 */
+	private ContentReference() {}
 
 	/**
 	 * Constructor for ContentRef.
@@ -67,7 +70,7 @@ public class ContentReference {
 	 * @since 2.0
 	 */
 	public long getInputSize() {
-		return UNKNOWN;
+		return UNKNOWN_SIZE;
 	}
 	
 	/**
