@@ -25,9 +25,7 @@ import java.util.zip.ZipEntry;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * An example feature content provider. It handles features packaged as
- * build zip's using the format used for integration and stable builds
- * posted on the downloads pages at www.eclipse.org
+ * Base class for feature content providers.
  * </p>
  * @since 2.0
  */
@@ -297,7 +295,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	protected ContentReference[] peek(ContentReference archive, BaseFeature.ProgressMonitor monitor) throws IOException {
+	protected ContentReference[] peek(ContentReference archive, Feature.ProgressMonitor monitor) throws IOException {
 		
 		// assume we have a reference that represents a jar archive.
 		File archiveFile = asLocalFile(archive, monitor);
