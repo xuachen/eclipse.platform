@@ -152,7 +152,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 			return ref;
 		
 		// check to see if we already have a local file for this reference
-		String key = toString();
+		String key = ref.toString();
 		File localFile = lookupLocalFile(key);
 		if (localFile != null)
 			return ref.newContentReference(ref.getIdentifier(), localFile);
