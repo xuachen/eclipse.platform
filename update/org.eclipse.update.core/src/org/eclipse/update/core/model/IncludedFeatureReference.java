@@ -258,7 +258,10 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 	 * @return boolean
 	 */
 	private boolean isDisabled() {
-		IConfiguredSite cSite = getSite().getCurrentConfiguredSite();
+		if (!(getSite() instanceof IInstalledSite) )
+			return false; // we could throw exception...
+				
+		IConfiguredSite cSite = ((IInstalledSite)getSite()).getCurrentConfiguredSite();
 		if (cSite == null)
 			return false;
 		IFeatureReference[] configured = cSite.getConfiguredFeatures();
@@ -328,16 +331,16 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 						Policy.bind("IncludedFeatureReference.featureUninstalled", getFeatureIdentifier()),
 						null));
 			else
-				return super.getFeature(monitor);
+				return getSite().getFeature(this,monitor);
 		} else {
 			if (bestMatchFeature == null) {
 				// find best match
-				if (configuredSite == null)
-					configuredSite = getSite().getCurrentConfiguredSite();
+				if (configuredSite == null && getSite() instanceof IInstalledSite)
+					configuredSite = ((IInstalledSite)getSite()).getCurrentConfiguredSite();
 				IFeatureReference bestMatchReference =
 					getBestMatch(configuredSite);
 				IFeature localBestMatchFeature =
-					getFeature(bestMatchReference, monitor);
+					getSite().getFeature(bestMatchReference, monitor);
 				// during reconciliation, we may not have the currentConfiguredSite yet
 				// do not preserve the best match
 				if (configuredSite == null)
