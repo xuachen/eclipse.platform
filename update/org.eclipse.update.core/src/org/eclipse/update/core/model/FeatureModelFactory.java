@@ -7,10 +7,6 @@ package org.eclipse.update.core.model;
 
 import java.io.InputStream;
 
-import org.eclipse.core.internal.runtime.InternalPlatform;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-
 /**
  * An object which can create install related model objects (typically when
  * parsing feature manifest files and site maps).
@@ -20,18 +16,12 @@ import org.eclipse.core.runtime.MultiStatus;
  */
 
 public class FeatureModelFactory {
-	private MultiStatus status;
 	
 	/**
 	 * Creates a factory which can be used to create install model objects.
-	 * Errors and warnings during parsing etc. can be logged to the given 
-	 * status via the <code>error</code> method.
-	 *
-	 * @param status the status to which errors should be logged
 	 */
-	public FeatureModelFactory(MultiStatus status) {
+	public FeatureModelFactory() {
 		super();
-		this.status = status;
 	}
 	
 	/**
@@ -107,24 +97,4 @@ public class FeatureModelFactory {
 		return new URLEntryModel();
 	}
 
-	/**
-	 * Handles an error state specified by the status.  The collection of all logged status
-	 * objects can be accessed using <code>getStatus()</code>.
-	 *
-	 * @param error a status detailing the error condition
-	 */
-	public void error(IStatus error) {
-		status.add(error);
-		if (InternalPlatform.DEBUG && InternalPlatform.DEBUG_PLUGINS)
-			System.out.println(error.toString());
 	}
-	
-	/**
-	 * Returns all of the status objects logged thus far by this factory.
-	 *
-	 * @return a multi-status containing all of the logged status objects
-	 */
-	public MultiStatus getStatus() {
-		return status;
-	}
-}
