@@ -51,39 +51,5 @@ public abstract class BaseFeatureFactory extends FeatureModelFactory implements 
 		return bundle;
 	}
 
-	/*
-	 * @see FeatureModelFactory#createFeatureModel()
-	 */
-	public FeatureModel createFeatureModel() {
-		return new Feature();
-	}
-
-	/*
-	 * @see FeatureModelFactory#createImportModel()
-	 */
-	public ImportModel createImportModel() {
-		return new Import();
-	}
-
-	/*
-	 * @see FeatureModelFactory#createPluginEntryModel()
-	 */
-	public PluginEntryModel createPluginEntryModel() {
-		return new PluginEntry();
-	}
-
-	/*
-	 * @see FeatureModelFactory#createNonPluginEntryModel()
-	 */
-	public NonPluginEntryModel createNonPluginEntryModel() {
-		return new NonPluginEntry();
-	}
-
-	/*
-	 * @see FeatureModelFactory#createURLEntryModel()
-	 */
-	public URLEntryModel createURLEntryModel() {
-		return new URLEntry();
-	}
 
 }

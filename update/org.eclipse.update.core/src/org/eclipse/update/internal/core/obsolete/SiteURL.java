@@ -1,4 +1,4 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.internal.core.obsolete;
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
-import org.eclipse.update.internal.core.obsolete.*;
-
+import org.eclipse.update.internal.core.*;
+/**
+ * @deprecated
+ */
 public class SiteURL extends DefaultSite {
 	
 	public static final String SITE_TYPE = "org.eclipse.update.core.http";
 
 	/**
-	 * plugin entries
+	 * plugin entries 
 	 */
 	private List pluginEntries = new ArrayList(0);
 	/**
@@ -164,11 +164,7 @@ public class SiteURL extends DefaultSite {
 		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
 	}
 
-	/*
-	 * @see ISite#store(IFeature, String, InputStream, IProgressMonitor)
-	 */
-	public void store(IFeature feature, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
-	}
+
 
 	/*
 	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)

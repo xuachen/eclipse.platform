@@ -13,6 +13,7 @@ import org.eclipse.update.core.model.*;
 /**
  * Abstract Class that implements most of the behavior of a feature
  * A feature ALWAYS belongs to an ISite
+ * @deprecated
  */
 public abstract class DefaultFeature extends Feature {
 

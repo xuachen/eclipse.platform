@@ -16,8 +16,15 @@ import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Writer;
 
-public abstract class Site extends SiteMapModel implements ISite, IWritable {
+public class Site extends SiteMapModel implements ISite, IWritable {
 
+	public static final String SITE_TYPE = "org.eclipse.update.core.http";
+
+	/**
+	 * default path under the site where features will be installed
+	 */
+	public static final String INSTALL_FEATURE_PATH = "install/features/";
+	
 	/**
 	 * default path under the site where plugins will be installed
 	 */
@@ -164,14 +171,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		IFeature result = null;
 		if (executableFeatureType != null) {
 			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
-			ContentReference localFeatureContentReference = this.getSiteContentProvider().getFeatureArchivesReferences(sourceFeature);
-			try{
-				result = factory.createFeature(localFeatureContentReference.asURL(), this);
-			} catch (IOException ex){
-				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-				IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Unable to create Feature:" + getURL().toExternalForm(), null);
-				throw new CoreException(status);
-			}
+			result = factory.createFeature(this);
 		}
 		return result;
 	}
@@ -342,6 +342,21 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 */
 	public Object getAdapter(Class adapter) {
 		return null;
+	}
+
+	/*
+	 * @see ISite#getDefaultExecutableFeatureType()
+	 */
+	public String getDefaultExecutableFeatureType() {
+		return null;
+	}
+
+	/*
+	 * @see ISite#getDefaultInstallableFeatureType()
+	 */
+	public String getDefaultInstallableFeatureType() {
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
+		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
 	}
 
 }

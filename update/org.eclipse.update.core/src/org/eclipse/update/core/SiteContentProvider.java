@@ -57,7 +57,6 @@ public abstract class SiteContentProvider implements ISiteContentProvider {
 	/*
 	 * @see ISiteContentProvider#getSiteManifestReference()
 	 */
-	public abstract ContentReference getSiteManifestReference() throws MalformedURLException;
 
 	/*
 	 * @see ISiteContentProvider#getArchivesReferences(String)
@@ -67,7 +66,6 @@ public abstract class SiteContentProvider implements ISiteContentProvider {
 	/*
 	 * @see ISiteContentProvider#getFeatureArchivesReferences(IFeature)
 	 */
-	public abstract ContentReference getFeatureArchivesReferences(IFeature feature);
 
 	/*
 	 * @see ISiteContentProvider#setSite(ISite)

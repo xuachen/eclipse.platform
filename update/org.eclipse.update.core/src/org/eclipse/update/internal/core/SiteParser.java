@@ -216,7 +216,7 @@ public class SiteParser extends DefaultHandler {
 		String label = attributes.getValue("label");
 		label = UpdateManagerUtils.getResourceString(label, bundle);
 		Category category = new Category(name, label);
-		site.addCategory(category);
+		//site.addCategory(category);
 		currentCategory = category;
 
 		// DEBUG:		

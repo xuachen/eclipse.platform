@@ -1,4 +1,4 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.internal.core.obsolete;
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -6,23 +6,18 @@ package org.eclipse.update.internal.core;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.model.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
-import org.eclipse.update.internal.core.obsolete.*;
-import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
+import org.eclipse.update.internal.core.*;
 
 /**
  * Site on the File System
+ * @deprecated
  */
 public class SiteFile extends SiteURL {
 	

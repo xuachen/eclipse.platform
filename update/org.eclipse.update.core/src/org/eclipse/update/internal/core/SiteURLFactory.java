@@ -23,13 +23,15 @@ public class SiteURLFactory extends BaseSiteFactory {
 	public ISite createSite(URL url) throws CoreException {
 
 		Site site = null;
+		URL siteXML = null;
 		InputStream siteStream = null;
 		
 		try {		
 			ISiteContentProvider contentProvider = null;
 			//new SiteURLContentProvider(url);
 		
-			siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
+			siteXML = new URL(contentProvider.getURL(),Site.SITE_XML);
+			siteStream = siteXML.openStream();
 			SiteModelFactory factory = (SiteModelFactory) this;
 			site = (Site)factory.parseSite(siteStream);
 			

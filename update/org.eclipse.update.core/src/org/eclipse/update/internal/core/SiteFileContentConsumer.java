@@ -164,14 +164,14 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	/*
 	 * @see ISiteContentConsumer#open(INonPluginEntry)
 	 */
-	public IFeatureContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
+	public IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
 		return null;
 	}
 
 	/*
 	 * @see ISiteContentConsumer#open(IPluginEntry)
 	 */
-	public IFeatureContentConsumer open(IPluginEntry pluginEntry) throws CoreException {
+	public IContentConsumer open(IPluginEntry pluginEntry) throws CoreException {
 		return null;
 	}
 

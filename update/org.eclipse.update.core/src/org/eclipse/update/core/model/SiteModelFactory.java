@@ -31,7 +31,7 @@ public class SiteModelFactory {
 		// return true if type was not specified (ie. is null or empty string)
 		return (type == null || type.trim().equals(""));
 	}
-	
+	 
 	/**
 	 * Constructs a feature model from stream
 	 * 
@@ -47,10 +47,10 @@ public class SiteModelFactory {
 	 *
 	 * @return a new site map model
 	 */
-	public SiteMapModel createSiteMapModel() {
+	public SiteMapModel createSiteMapModel(){
 		return new SiteMapModel();
 	}
-
+	
 	/**
 	 * Returns a new feture reference model which is not initialized.
 	 *

@@ -52,11 +52,4 @@ public class FeaturePackagedFactory extends BaseFeatureFactory {
 		return feature;
 	}
 
-		/*
-	 * @see IFeatureFactory#createFeature(ISite)
-	 */
-	public IFeature createFeature(ISite site) throws CoreException {
-		return createFeature(null,site);
-	}
-
 }

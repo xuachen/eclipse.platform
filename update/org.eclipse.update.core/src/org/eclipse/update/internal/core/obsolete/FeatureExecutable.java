@@ -14,6 +14,7 @@ import org.eclipse.update.internal.core.*;
 
 /**
  * Default implementation of an Executable DefaultFeature
+ * @deprecated
  */
 
 public class FeatureExecutable extends DefaultFeature {

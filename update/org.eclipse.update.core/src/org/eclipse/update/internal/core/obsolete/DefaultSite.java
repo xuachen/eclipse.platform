@@ -14,6 +14,10 @@ import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Writer;
 
+/**
+ * @deprecated
+ */
+
 public abstract class DefaultSite extends Site {
 
 	/**
@@ -150,14 +154,6 @@ public abstract class DefaultSite extends Site {
 				this.addArchive(_archives[i]);
 			}
 		}
-	}
-
-	/**
-	 * adds a category
-	 * @param category The category to add
-	 */
-	public void addCategory(ICategory category) {
-		addCategoryModel((SiteCategoryModel) category);
 	}
 
 	/*

@@ -16,6 +16,7 @@ import org.eclipse.update.internal.core.*;
 
 /**
  * Parse the default feature.xml
+ * @deprecated
  */
 public class FeaturePackaged extends DefaultFeature {
 

@@ -44,8 +44,8 @@ public class InternalSiteManager {
 		sitesTypes = new HashMap();
 
 		// assign default type to protocol		
-		sitesTypes.put("http", SiteURL.SITE_TYPE);
-		sitesTypes.put("file", SiteFile.SITE_TYPE);
+		sitesTypes.put("http", Site.SITE_TYPE);
+		sitesTypes.put("file", Site.SITE_TYPE);
 	}
 
 	/**
@@ -111,37 +111,7 @@ public class InternalSiteManager {
 		return site;
 	}
 	
-		/**
-	 * Initializes the site by reading the site.xml file
-	 * 
-	 */
-	private void initializeSite(URL url) throws CoreException, InvalidSiteTypeException {
-		try {
-			URL siteXml = new URL(url, Site.SITE_XML);
-			//			parser = new SiteParser(siteXml.openStream(), this);
-		} catch (FileNotFoundException e) {
-			//attempt to parse the site if possible
-			//parseSite();
-			// log not manageable site
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug(url.toExternalForm() + " is not manageable by Update Manager: Couldn't find the site.xml file.");
-			}
-		} catch (Exception e) {
-
-			// is is an InvalidSiteTypeException meaning the type of the site is wrong ?
-			if (e instanceof SAXException) {
-				SAXException exception = (SAXException) e;
-				if (exception.getException() instanceof InvalidSiteTypeException) {
-					throw ((InvalidSiteTypeException) exception.getException());
-				}
-			}
-
-			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error during parsing of the site XML", e);
-			throw new CoreException(status);
-		}
-	}
-
+		
 	/**
 	 * return the local site where the feature will be temporary transfered
 	 */

@@ -22,6 +22,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface IFeatureContentConsumer extends IContentConsumer {
 
 	/**
+	 * Stores a content reference into the FeatureContentConsumer
+	 * @param ContentReference the content reference to store
+	 * @param IProgressMonitor the progress monitor
+	 * @throws CoreException if an error occurs storing the content reference
+	 * @since 2.0 
+	 */
+	void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * opens a Non plugin Entry for storage
 	 * @return the new FeatureContentConsumer for this <code>INonPluginEntry</code>
 	 * @throws CoreException if the opens is done on a FeatureContentConsumer parent other than an IFeature.

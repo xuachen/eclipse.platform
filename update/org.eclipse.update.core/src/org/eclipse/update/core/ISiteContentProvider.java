@@ -26,14 +26,7 @@ public interface ISiteContentProvider {
 	
 	URL getURL();
 			
-	/**
-	 * Returns the site manifest reference or null if it doesn't exist
-	 * 
-	 * @return the site manifest
-	 * @since 2.0
-	 */
-	ContentReference getSiteManifestReference() throws MalformedURLException;
-
+	
 	/**
 	 * Returns a ContentReference associated to the archiveID
 	 * 
@@ -43,23 +36,8 @@ public interface ISiteContentProvider {
 
 	ContentReference getArchiveReference(String id);
 	
-	/**
-	 * Returns a ContentReference for this feature
-	 * If the feature doesn't exist yet, create a new content reference
-	 * 
-	 * @return a content reference
-	 * @since 2.0 
-	 */
-
-	ContentReference getFeatureArchivesReferences(IFeature feature);	
-
-	/**
-	 * sets the site for this content provider
-	 * @param the ISite 
-	 * @since 2.0
-	 */
-	void setSite(ISite site);
 	
+		
 	
 }
 

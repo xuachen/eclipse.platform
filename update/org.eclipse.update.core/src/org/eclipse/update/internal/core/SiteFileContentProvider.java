@@ -311,14 +311,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		IFeature result = null;
 		if (executableFeatureType != null) {
 			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
-			ContentReference localFeatureContentReference = site.getSiteContentProvider().getFeatureArchivesReferences(sourceFeature);
-			try{
-				result = factory.createFeature(localFeatureContentReference.asURL(), site);
-			} catch (IOException ex){
-				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-				IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Unable to Retrieve URL for feature:" + localFeatureContentReference.getIdentifier(), null);
-				throw new CoreException(status);
-			}				
+			result = factory.createFeature(site);
 		}
 		return result;
 	}
@@ -340,24 +333,11 @@ public class SiteFileContentProvider extends SiteContentProvider {
 	}
 
 	/*
-	 * @see ISiteContentProvider#getSiteManifestReference()
+	 * @see ISiteContentProvider#getArchiveReference(String)
 	 */
-	public ContentReference getSiteManifestReference() throws MalformedURLException {
+	public ContentReference getArchiveReference(String id) {
 		return null;
 	}
-
-	/*
-	 * @see ISiteContentProvider#getArchivesReferences(String)
-	 */
-	public ContentReference getArchiveReference(String archiveID) {
-		return null;
-	}
-
-	/*
-	 * @see ISiteContentProvider#getFeatureArchivesReferences(IFeature)
-	 */
-	public ContentReference getFeatureArchivesReferences(IFeature feature) {
-		return null;
-	}
-
 }
+
+

@@ -39,7 +39,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		 *
 		 */
 		public String defineIdentifier(String entry){
-			return 	SiteFile.INSTALL_FEATURE_PATH+entry+"/";
+			return 	Site.INSTALL_FEATURE_PATH+entry+"/";
 		}
 		
 	};

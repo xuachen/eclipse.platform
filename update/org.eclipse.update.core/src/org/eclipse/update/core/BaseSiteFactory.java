@@ -45,41 +45,4 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 		return bundle;
 	}
 
-
-
-	/*
-	 * @see SiteModelFactory#createSiteMapModel()
-	 */
-	public SiteMapModel createSiteMapModel() {
-		return new SiteMapModel();
-	}
-
-	/*
-	 * @see SiteModelFactory#createFeatureReferenceModel()
-	 */
-	public FeatureReferenceModel createFeatureReferenceModel() {
-		return new FeatureReference();
-	}
-
-	/*
-	 * @see SiteModelFactory#createArchiveReferenceModel()
-	 */
-	public ArchiveReferenceModel createArchiveReferenceModel() {
-		return new ArchiveReference();
-	}
-
-	/*
-	 * @see SiteModelFactory#createURLEntryModel()
-	 */
-	public URLEntryModel createURLEntryModel() {
-		return new URLEntry();
-	}
-
-	/*
-	 * @see SiteModelFactory#createSiteCategoryModel()
-	 */
-	public SiteCategoryModel createSiteCategoryModel() {
-		return new Category();
-	}
-
 }

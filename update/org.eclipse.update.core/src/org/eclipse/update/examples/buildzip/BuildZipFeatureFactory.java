@@ -58,11 +58,5 @@ public class BuildZipFeatureFactory
 	public FeatureModel parseFeature(BuildZipContentProvider cp) throws Exception {
 		return (new BuildZipFeatureParser(this)).parse(cp);
 	}
-		/*
-	 * @see IFeatureFactory#createFeature(ISite)
-	 */
-	public IFeature createFeature(ISite site) throws CoreException {
-		return createFeature(null,site);
-	}
 
 }

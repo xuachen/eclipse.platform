@@ -21,21 +21,22 @@ public class SiteFileFactory extends BaseSiteFactory {
 	public ISite createSite(URL url) throws CoreException {
 
 		Site site = null;
+		URL siteXML = null;		
 		InputStream siteStream = null;
 		
 		try {		
 			SiteFileContentProvider contentProvider = new SiteFileContentProvider(url);
 					
 			try {
-				siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
+				siteXML = new URL(contentProvider.getURL(),Site.SITE_XML);
+				siteStream = siteXML.openStream();
 				SiteModelFactory factory = (SiteModelFactory) this;
-				site = (Site)factory.parseSite(siteStream);		
+				site = (Site)factory.parseSite(siteStream);	
 			} catch (IOException e) {
 				site = contentProvider.parseSite();
 			}
 			
 			site.setSiteContentProvider(contentProvider);
-			
 			site.resolve(url, getResourceBundle(url));
 			site.markReadOnly();			
 			

@@ -108,27 +108,21 @@ public interface ISite extends IPluginContainer {
 
 	IURLEntry[] getArchives();
 	
-	/**
-	 * Creates a new categoy within the Site
-	 * The validity of the Category is not checked
-	 * @since 2.0 
-	 */
-
-	void addCategory(ICategory category);
-	
-	/**
-	 * returns the default type for an executable feature on this site
-	 * @return String the type
-	 * @since 2.0
-	 */
-	String getDefaultExecutableFeatureType();
-	
+		
+		
 	/**
 	 * returns the default type for an installable feature on this site
 	 * @return String the type
 	 * @since 2.0
 	 */
 	String getDefaultInstallableFeatureType();
+
+	/**
+	 * returns the default type for an executable feature on this site
+	 * @return String the type
+	 * @since 2.0
+	 */
+	String getDefaultExecutableFeatureType();
 	
 	
 	/**
@@ -159,17 +153,6 @@ public interface ISite extends IPluginContainer {
 	 */
 	ISiteContentProvider getSiteContentProvider() throws CoreException;
 	
-	/**
-	 * Create a file in teh feature meta data
-	 * 
-	 * @param entry the feature entry
-	 * @param name the file to be created in the feature
-	 * @param inStream the content of the remote file to be transfered in the new file
-	 * @param the progress monitor
-	 * @since 2.0 
-	 */
-
-	void store(IFeature feature, String name, InputStream inStream,IProgressMonitor monitor) throws CoreException;
-	
+		
 
 	}
