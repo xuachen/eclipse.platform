@@ -18,6 +18,7 @@ public class AntScriptRunner implements IAntCoreConstants {
 	protected String buildFileLocation = DEFAULT_BUILD_FILENAME;
 	protected List buildListeners;
 	protected Vector targets;
+	protected Map userProperties;
 
 public AntScriptRunner() {
 	buildListeners = new ArrayList(5);
@@ -64,6 +65,13 @@ public void addBuildListener(String className) {
 }
 
 /**
+ * Adds user properties.
+ */
+public void addUserProperties(Map properties) {
+	this.userProperties = properties;
+}
+
+/**
  * Runs the build script.
  */
 public void run() throws CoreException {
@@ -77,6 +85,9 @@ public void run() throws CoreException {
 		// add listeners
 		Method addBuildListeners = classInternalAntRunner.getMethod("addBuildListeners", new Class[] {List.class});
 		addBuildListeners.invoke(runner, new Object[] {buildListeners});
+		// add properties
+		Method addUserProperties = classInternalAntRunner.getMethod("addUserProperties", new Class[] {Map.class});
+		addUserProperties.invoke(runner, new Object[] {userProperties});
 		// set execution targets
 		if (targets != null) {
 			Method setExecutionTargets = classInternalAntRunner.getMethod("setExecutionTargets", new Class[] {Vector.class});

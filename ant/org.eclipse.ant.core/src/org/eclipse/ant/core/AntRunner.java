@@ -239,18 +239,6 @@ public static void main(String argString) throws Exception {
 	main(tokenizeArgs(argString));
 }
 
-/**
- * Returns the output message level that has been requested by the
- * client.  This value will be one of <code>Project.MSG_ERR</code>,
- * <code>Project.MSG_WARN</code>, <code>Project.MSG_INFO</code>,
- * <code>Project.MSG_VERBOSE</code> or <code>Project.MSG_DEBUG</code>.
- * 
- * @see org.apache.tools.ant.Project
- * @return the output message level that has been requested by the client
- */
-public int getOutputMessageLevel() {
-	return msgOutputLevel;
-}
 
 /**
  * Prints the message of the Throwable if it is not null.
@@ -577,88 +565,6 @@ public Object run(Object argArray) throws Exception {
 }
 
 
-/**
- * Executes the build.
- * 
- * @exception BuildException thrown if there is a problem during building.
- */
-private void runBuild(ClassLoader coreLoader) throws BuildException {
-
-    if (!readyToRun) {
-        return;
-    }
-
-	logMessage(Policy.bind("label.buildFile",buildFile.toString()),Project.MSG_INFO);
-
-    final EclipseProject project = new EclipseProject();
-    project.setCoreLoader(coreLoader);
-    
-    Throwable error = null;
-
-    try {
-        PrintStream err = System.err;
-        PrintStream out = System.out;
-
-        try {
-            System.setOut(new PrintStream(new DemuxOutputStream(project, false)));
-            System.setErr(new PrintStream(new DemuxOutputStream(project, true)));
-            project.fireBuildStarted();
-            project.init();
-            project.setUserProperty("ant.version", getAntVersion());
-
-            // set user-define properties
-            Enumeration e = definedProps.keys();
-            while (e.hasMoreElements()) {
-                String arg = (String)e.nextElement();
-                String value = (String)definedProps.get(arg);
-                project.setUserProperty(arg, value);
-            }
-            
-            project.setUserProperty("ant.file" , buildFile.getAbsolutePath() );
-            
-            // first use the ProjectHelper to create the project object
-            // from the given build file.
-            try {
-                Class.forName("javax.xml.parsers.SAXParserFactory");
-                ProjectHelper.configureProject(project, buildFile);
-            } catch (NoClassDefFoundError ncdfe) {
-                throw new BuildException(Policy.bind("exception.noParser"), ncdfe);
-            } catch (ClassNotFoundException cnfe) {
-                throw new BuildException(Policy.bind("exception.noParser"), cnfe);
-            } catch (NullPointerException npe) {
-                throw new BuildException(Policy.bind("exception.noParser"), npe);
-            }
-            
-            // make sure that we have a target to execute
-            if (targets.size() == 0) {
-                targets.addElement(project.getDefaultTarget());
-            }
-            
-            if (!projectHelp) {
-                project.executeTargets(targets);
-            }
-        }
-        finally {
-            System.setOut(out);
-            System.setErr(err);
-        }
-        if (projectHelp) {
-            printDescription(project);
-            printTargets(project);
-        }
-    }
-    catch(RuntimeException exc) {
-        error = exc;
-        throw exc;
-    }
-    catch(Error err) {
-        error = err;
-        throw err;
-    }
-    finally {
-        project.fireBuildFinished(error);
-    }
-}
 /**
  * Print the project description, if any
  */
