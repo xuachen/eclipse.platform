@@ -2,17 +2,18 @@ Ant Support
 
 	The Eclipse Ant Support has changed in integration build 20020402. The main motivation for this change
 was to provide an Ant user experience as similar as possible to what users get when using Ant through the
-command line.
-	Many existing Ant users get the "could not find classic compiler" sindrome when using the Eclipse Ant
-Support 1.0 for the first time. It happens because tools.jar is not in the user classpath and is related
-to how Eclipse computes classpaths (based on its plug-in architecture).
+command line. Existing Ant scripts should run inside Eclipse as easy as they run outside and vice versa.
 
 
 What has changed?
 
+	+ The way Eclipse Ant Support computes the classpath has changed. This fixes the "could not find classic
+	compiler" syndrome many existing Ant users get when using the Eclipse Ant Support 1.0 for the first time.
+	The problem happens because tools.jar is not in the user classpath and is related to how Eclipse computes
+	classpaths (based on its plug-in architecture).
+
 	+ All the extension points for extending Ant functionality (tasks, types and objects) have been renamed.
-	  The reason to rename the extension points is to emphasize things have changed and old implementations
-	  needs to be rewritten.
+	  This was done to emphasize things have changed and old implementations need to be rewritten.
 
 	+ The plug-in org.eclipse.ant.core does not export org.apache.ant anymore. In fact, it does
 	  not even require it anymore. Because of it some plug-ins might need to explicitly require
@@ -26,7 +27,7 @@ What has changed?
 	  running the scripts.
 
 	+ (Near future) Users will be able to choose what Ant version they want to run (the one provided by Eclipse will
-	  continue as the default) just by providing the location of the ant.jar or similar library.
+	  continue as the default) by providing the location of the ant.jar or similar library.
 
 
 What is necessary to do in order to port existing tasks?
@@ -93,7 +94,7 @@ specify where to find the declared object.
 	
 	
 Understading the changes
-	These section provides a brief description of why we chose the current solution. It does not add
+	This section provides a brief description of why we chose the current solution. It does not add
 anything if you just want to use Ant or write your own tasks. Might interest only people that want to
 know what is going on under the covers.
 	(...)
