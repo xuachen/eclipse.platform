@@ -113,10 +113,10 @@ public class SearchResultSection extends UpdateSection
 			Label label = factory.createLabel(container, null);
 			label.setText("by "+feature.getProvider());
 			factory.createLabel(container, null);
-			IInfo desc = feature.getDescription();
+			IURLEntry desc = feature.getDescription();
 			if (desc != null) {
-				String text = desc.getText();
-				if (text!=null)
+				String text = desc.getAnnotation();
+				if (text!=null) 
 					factory.createLabel(container, text, SWT.WRAP);
 			}
 		}
