@@ -8,8 +8,6 @@
 
    <requires>
      <import plugin="org.apache.xerces"/>
-     <import plugin="org.eclipse.core.resources"/>
-     <!--import plugin="org.apache.ant" export="true"/-->
    </requires>
 
    <runtime>

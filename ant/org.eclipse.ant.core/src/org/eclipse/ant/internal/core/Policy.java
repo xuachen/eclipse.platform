@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 public class Policy {
 	private static ResourceBundle bundle;
-	private static final String bundleName = "org.eclipse.ant.core.messages";
+	private static final String bundleName = "org.eclipse.ant.internal.core.messages";
 
 	static {
 		relocalize();
