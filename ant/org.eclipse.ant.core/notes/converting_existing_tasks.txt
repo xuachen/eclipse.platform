@@ -1,16 +1,15 @@
 Ant Support
 
-	The Eclipse Ant Support has changed in integration build 20020402. The main motivation for this change
-was to provide an Ant user experience as similar as possible to what users get when using Ant through the
-command line. Existing Ant scripts should run inside Eclipse as easy as they run outside and vice versa.
+	The Eclipse Ant Support is changing. The main motivation for this change is making existing Ant scripts
+run inside Eclipse as easy as they run outside and vice versa.
 
 
 What has changed?
 
 	+ The way Eclipse Ant Support computes the classpath has changed. This fixes the "could not find classic
-	compiler" syndrome many existing Ant users get when using the Eclipse Ant Support 1.0 for the first time.
-	The problem happens because tools.jar is not in the user classpath and is related to how Eclipse computes
-	classpaths (based on its plug-in architecture).
+	  compiler" syndrome many existing Ant users get when using the Eclipse Ant Support 1.0 for the first time.
+	  The problem happens because tools.jar is not in the user classpath and is related to how Eclipse computes
+	  classpaths (based on its plug-in architecture).
 
 	+ All the extension points for extending Ant functionality (tasks, types and objects) have been renamed.
 	  This was done to emphasize things have changed and old implementations need to be rewritten.
@@ -23,11 +22,11 @@ What has changed?
 	
 	+ (Near future) Users will be able to specify (through some UI) extra jars to put in the Ant classpath.
 	
-	+ (Near future) Users will be able to specify (through some UI) new tasks and types that will be available when
-	  running the scripts.
+	+ (Near future) Users will be able to specify (through some UI) new tasks and types that will be available
+	  when running the scripts.
 
-	+ (Near future) Users will be able to choose what Ant version they want to run (the one provided by Eclipse will
-	  continue as the default) by providing the location of the ant.jar or similar library.
+	+ (Near future) Users will be able to choose what Ant version they want to run (the one provided by Eclipse
+	  will continue as the default) by providing the location of the ant.jar or similar library.
 
 
 What is necessary to do in order to port existing tasks?
@@ -35,7 +34,7 @@ What is necessary to do in order to port existing tasks?
 	Basically, follow some rules:
 	
 	+ If contributing a new task, type or object, its class cannot be placed inside the runtime libraries
-	  of the plug-in contributing them. It has to be placed in a separate jar and the jar has to be declared
+	  of the contributing plug-in. It has to be placed in a separate jar and the jar has to be declared
 	  in the new extension points (examples bellow).
 
 	Old extension point:
@@ -85,16 +84,54 @@ What is necessary to do in order to port existing tasks?
          library="lib/myjar.jar">
       </type>
     </extension>
-  
 
-	As shown above, the "old way" does not specify a library because the class that defines the
-object is supposed to be in one of the plug-in's runtime libraries. In the "new way" the class
-cannot be in any runtime library and an extra "library" attribute is necessary in order to
-specify where to find the declared object.
+
+	As shown above, the "old way" does not specify a library because the classes are supposed to be
+in one of the plug-in's runtime libraries. In the "new way" these classes cannot be in any runtime
+library and an extra "library" attribute is necessary in order to specify where to find them.
+
 	
-	
-Understading the changes
-	This section provides a brief description of why we chose the current solution. It does not add
-anything if you just want to use Ant or write your own tasks. Might interest only people that want to
-know what is going on under the covers.
-	(...)
+Understanding the changes
+
+	The following sections provide a brief description of the chosen solution. They do not add much
+on how to provide a custom task or type. Might interest only people wanting to know what is going on
+under the covers.
+
+
+Why tools.jar was not found before?
+
+	First, just explaining that "tools.jar" is being taken as an example because it is the "classical"
+example of something trivial for Ant users that was not working inside Eclipse.
+
+	The Ant plug-in provided by Eclipse (org.apache.ant) has by default on its classpath only plug-ins
+it requires (org.apache.xerces, org.eclipse.core.boot and org.eclipse.core.runtime) plus the runtime
+libraries it defines (ant.jar and jakarta-ant-1.4.1-optional.jar). So, tools.jar was not part of the
+classpath unless a fragment of org.apache.ant containing the jar was contributed.
+
+
+Extending the classpath
+
+	The previous section lead us to conclude that the solution is basically to extend the org.apache.ant
+classpath.
+	One way of doing it is to add as many fragments as necessary to supply all the required libraries.
+It could work but means that the user needs to restart Eclipse everytime the classpath needs to change.
+Besides, the jars need to be inside the fragment because library declaration in fragments and plugins
+only accept locations relative to the plug-in/fragment location. Not a great solution.
+	An alternative way would be to explicitly extend the org.apache.ant plug-in classpath by changing its
+classloader but there is not support from the platform runtime in order to extend or provide a plug-in's
+classloader.
+
+	The idea behind the second alternative is much more attractive and is the base for the new
+Ant support implementation. Basically a new classloader is created containing in its classpath all the
+extra urls provided by the user, the libraries provided by the extension points (see above) and the
+plug-in classloaders of the plug-ins providing those tasks. The classloaders are added in case the
+contributed tasks need to access classes from the plug-in.
+
+
+Why can't my classes be defined in a plug-in runtime library?
+
+	Because a new classloader is created to instatiate Ant and extend its classpath, if for example
+a task class is defined in a runtime library and your plug-in requires Ant, the task will be a subclass
+of the Task class loaded by the org.apache.ant plug-in classloader and will not be compatible with the
+Task class loaded by the new classloader resulting in a ClassCastException and failing the script
+execution.
