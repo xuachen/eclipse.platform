@@ -12,10 +12,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.CoreException;
 
@@ -126,6 +131,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 			copy(is, os, monitor);
 		} catch(IOException e) {
 			removeLocalFile(key);
+			throw e;
 		} finally {
 			if (is != null) try { is.close(); } catch(IOException e) {}
 			if (os != null) try { os.close(); } catch(IOException e) {}
@@ -163,12 +169,26 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	}
 	
 	/**
-	 * Create a local file (in temporary area) matching the
+	 * Create a local file (in temporary area) and associate it with the 
 	 * specified key.
 	 * 
 	 * @since 2.0
 	 */	
 	protected synchronized File createLocalFile(String key) throws IOException {
+
+		File temp = createLocalFile();
+		if (entryMap == null)
+			entryMap = new HashMap();
+		entryMap.put(key,temp);
+		return temp;
+	}
+	
+	/**
+	 * Create a local file (in temporary area)
+	 * 
+	 * @since 2.0
+	 */	
+	protected File createLocalFile() throws IOException {
 		
 		// ensure we have a temp directory
 		if (tmpDir == null) {		
@@ -183,9 +203,6 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		// get a temp file and create a map for it
 		File temp = File.createTempFile("eclipse",null,tmpDir);
 		temp.deleteOnExit();
-		if (entryMap == null)
-			entryMap = new HashMap();
-		entryMap.put(key,temp);
 		return temp;
 	}
 	
@@ -226,8 +243,41 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	/**
 	 * @since 2.0
 	 */
-	protected void unpack() {
-		// TBA ... support for handling .zip and .jar
+	protected ContentReference[] unpack(ContentReference archive, BaseFeature.ProgressMonitor monitor) throws IOException {
+		
+		// assume we have a reference that represents a jar archive.
+		File archiveFile = asLocalFile(archive, monitor);
+		JarFile jarArchive = new JarFile(archiveFile);
+		
+		// get archive content
+		List content = new ArrayList();
+		Enumeration entries = jarArchive.entries();
+		
+		// run through the entries and unjar
+		String entryName;
+		ZipEntry entry;
+		InputStream is;
+		OutputStream os;
+		File localFile;
+		while(entries.hasMoreElements()) {
+			entryName = (String) entries.nextElement();
+			entry = jarArchive.getEntry(entryName);
+			if (entry != null) {
+				is = null;
+				os = null;
+				localFile = createLocalFile(); // create temp file w/o a key map
+				try {
+					is = jarArchive.getInputStream(entry);
+					os = new FileOutputStream(localFile);
+					copy(is, os, monitor);
+				} finally {
+					if (is != null) try { is.close(); } catch(IOException e) {}
+					if (os != null) try { os.close(); } catch(IOException e) {}
+				}
+				content.add(new ContentReference(entry.getName(), localFile));
+			}
+		}		
+		return (ContentReference[]) content.toArray(new ContentReference[0]);
 	}
 	
 	/**
