@@ -1,4 +1,4 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.internal.core.obsolete;
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.

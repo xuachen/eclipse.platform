@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureModelFactory;
 
-public class FeatureExecutableFactory extends FeatureModelFactory implements IFeatureFactory {
+public class FeatureExecutableFactory extends BaseFeatureFactory {
 
 	/*
 	 * @see IFeatureFactory#createFeature(URL,ISite)
@@ -55,24 +55,6 @@ public class FeatureExecutableFactory extends FeatureModelFactory implements IFe
 			}
 		}
 		return feature;
-	}
-
-	/**
-	 * return the appropriate resource bundle for this feature
-	 */
-	private ResourceBundle getResourceBundle(URL url) throws IOException, CoreException {
-		ResourceBundle bundle = null;
-		try {
-			ClassLoader l = new URLClassLoader(new URL[] { url }, null);
-			bundle = ResourceBundle.getBundle(DefaultFeature.FEATURE_FILE, Locale.getDefault(), l);
-		} catch (MissingResourceException e) {
-			//ok, there is no bundle, keep it as null
-			//DEBUG:
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug(e.getLocalizedMessage() + ":" + url.toExternalForm());
-			}
-		}
-		return bundle;
 	}
 
 }

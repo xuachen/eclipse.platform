@@ -1,4 +1,4 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.internal.core.obsolete;
 /*
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
@@ -12,6 +12,7 @@ import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.*;
 
 /**
  * Parse the default feature.xml

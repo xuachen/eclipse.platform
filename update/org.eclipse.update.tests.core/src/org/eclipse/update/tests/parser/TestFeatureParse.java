@@ -7,8 +7,8 @@ import java.net.URL;
 
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.internal.core.FeatureExecutable;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
+import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestFeatureParse extends UpdateManagerTestCase {

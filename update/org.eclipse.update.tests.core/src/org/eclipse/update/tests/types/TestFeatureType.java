@@ -3,14 +3,14 @@ package org.eclipse.update.tests.types;
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
  */
-import java.io.File;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.FeatureExecutable;
+import org.eclipse.update.internal.core.FeatureReference;
 import org.eclipse.update.internal.core.FeatureTypeFactory;
-import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
+import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestFeatureType extends UpdateManagerTestCase {
@@ -26,12 +26,27 @@ public class TestFeatureType extends UpdateManagerTestCase {
 	/**
 	 * @throws Exception
 	 */
-	public void testSimpleFeatureType() throws Exception{ 
+	public void testSimplePackagedFeatureType() throws Exception{ 
 		FeatureTypeFactory factories = FeatureTypeFactory.getInstance();
 		IFeatureFactory factory = factories.getFactory("org.eclipse.update.core.jar");
 		
 		ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
 		URL featureURL = new URL(SOURCE_FILE_SITE,"features/features2.jar ");
+		
+		IFeature anotherFeature = factory.createFeature(featureURL,site);
+		
+		//assertTrue("Factory doesn't create same feature",anotherFeature.getIdentifier().equals(anotherFeature.getIdentifier()));
+	}	
+	
+		/**
+	 * @throws Exception
+	 */
+	public void testSimpleExecutableFeatureType() throws Exception{ 
+		FeatureTypeFactory factories = FeatureTypeFactory.getInstance();
+		IFeatureFactory factory = factories.getFactory("org.eclipse.update.core.exe");
+		
+		ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
+		URL featureURL = new URL(SOURCE_FILE_SITE,"install/features/features3/");
 		
 		IFeature anotherFeature = factory.createFeature(featureURL,site);
 		

@@ -4,11 +4,12 @@ package org.eclipse.update.tests.regularInstall;
  * All Rights Reserved.
  */
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
+import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestExecutablePackagedInstall extends UpdateManagerTestCase {

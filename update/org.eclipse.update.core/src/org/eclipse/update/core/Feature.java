@@ -213,9 +213,10 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @param site The site to set
 	 */
 	public void setSite(ISite site) throws CoreException {
-		if (site != null) {
+		if (this.site != null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Site already set for the feature " + getURL().toExternalForm(), null);
+			String featureURLString = (getURL()!=null)?getURL().toExternalForm():"";
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Site already set for the feature " + featureURLString, null);
 			throw new CoreException(status);
 		}
 		this.site = site;
@@ -478,7 +479,7 @@ public class Feature extends FeatureModel implements IFeature {
 	public IFeatureContentProvider getFeatureContentProvider() throws CoreException {
 		if (featureContentProvider == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for feature:" + getURL().toExternalForm(), null);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for feature." , null);
 			throw new CoreException(status);
 		}
 		return this.featureContentProvider;

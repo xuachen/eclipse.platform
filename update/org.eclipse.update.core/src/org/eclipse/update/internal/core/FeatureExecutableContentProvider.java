@@ -19,11 +19,6 @@ import org.eclipse.update.core.*;
 public class FeatureExecutableContentProvider extends FeatureContentProvider {
 
 	/**
-	 * URL of the feature, used to create other URLs
-	 */
-	private URL rootURL;
-
-	/**
 	 * the feature 
 	 */
 	private IFeature feature;
@@ -112,11 +107,11 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 	public ContentReference getFeatureManifestReference() throws CoreException {
 		ContentReference result = null;
 		try {
-			result = new ContentReference(null, new URL(rootURL, DefaultFeature.FEATURE_XML));
+			result = new ContentReference(null, new URL(getURL(), Feature.FEATURE_XML));
 			
 		} catch (MalformedURLException e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "cannot create URL for :"+rootURL.toExternalForm()+" "+DefaultFeature.FEATURE_XML, e);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "cannot create URL for :"+getURL().toExternalForm()+" "+Feature.FEATURE_XML, e);
 			throw new CoreException(status);
 		}
 		return result;
@@ -188,7 +183,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 	 */
 	public ContentReference[] getFeatureEntryArchiveReferences() throws CoreException {
 		ContentReference[] contentReferences = new ContentReference[1];
-		contentReferences[1] = new ContentReference(null,rootURL);
+		contentReferences[1] = new ContentReference(null,getURL());
 		return contentReferences;
 	}
 

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.model.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
+import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
  * Site on the File System

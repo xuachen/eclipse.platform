@@ -13,6 +13,7 @@ import java.util.*;
 import org.eclipse.core.internal.runtime.Assert;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
  *

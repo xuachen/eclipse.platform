@@ -5,12 +5,13 @@ package org.eclipse.update.tests.api;
  */
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.ISite;
-import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.Site;
+import org.eclipse.update.internal.core.UpdateManagerUtils;
+import org.eclipse.update.internal.core.obsolete.DefaultFeature;
+import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestPluginContainerAPI extends UpdateManagerTestCase {

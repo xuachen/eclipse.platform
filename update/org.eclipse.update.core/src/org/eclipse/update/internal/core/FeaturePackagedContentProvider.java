@@ -242,7 +242,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		ContentReference result = null;
 		try {
 		ContentReference[] featureContentReference = getFeatureEntryArchiveReferences();
-		ContentReference localContentReference = asLocalReference(featureContentReference[1],null);
+		ContentReference localContentReference = asLocalReference(featureContentReference[0],null);
 		result = unpack(localContentReference,Feature.FEATURE_XML,null);
 		} catch (IOException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -286,15 +286,15 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	 * @see IFeatureContentProvider#getFeatureEntryArchiveReferences()
 	 */
 	public ContentReference[] getFeatureEntryArchiveReferences() throws CoreException {
-		String[] archiveIDs = getFeatureEntryArchiveID();
-		ContentReference[] references = new ContentReference[archiveIDs.length];		
+		//1 jar file <-> 1 feature
+		ContentReference[] references = new ContentReference[1]; 		
 		try {
-			for (int i = 0; i < archiveIDs.length; i++) {
-				URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]);
-				ContentReference currentReference = new ContentReference(archiveIDs[i],url);
+				// feature may not be known, 
+				// we may be asked for the manifest before the feature is set
+				String archiveID = (feature!=null)?SiteFile.INSTALL_FEATURE_PATH+feature.getVersionIdentifier().toString()+"/":"";
+				ContentReference currentReference = new ContentReference(archiveID,getURL());
 				currentReference = asLocalReference(currentReference,null);
-				references[i] = currentReference;
-			}
+				references[0] = currentReference;
 		} catch (IOException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving feature Entry Archive Reference :" + feature.getURL().toExternalForm(), e);
@@ -321,7 +321,21 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	 * @see IFeatureContentProvider#getFeatureEntryContentReferences()
 	 */
 	public ContentReference[] getFeatureEntryContentReferences() throws CoreException {
-		return null;
+		String[] archiveIDs = getFeatureEntryArchiveID();
+		ContentReference[] references = new ContentReference[archiveIDs.length];		
+		try {
+			for (int i = 0; i < archiveIDs.length; i++) {
+				URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]);
+				ContentReference currentReference = new ContentReference(archiveIDs[i],url);
+				currentReference = asLocalReference(currentReference,null);
+				references[i] = currentReference;
+			}
+		} catch (IOException e){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving feature Entry Archive Reference :" + feature.getURL().toExternalForm(), e);
+			throw new CoreException(status);			
+		}
+		return references;
 	}
 
 	/*
@@ -335,6 +349,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	 * @see IFeatureContentProvider#setFeature(IFeature)
 	 */
 	public void setFeature(IFeature feature) {
+		this.feature = feature;
 	}
 
 }

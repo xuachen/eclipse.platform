@@ -8,7 +8,9 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.UpdateManagerUtils;
+import org.eclipse.update.internal.core.obsolete.DefaultFeature;
+import org.eclipse.update.internal.core.obsolete.FeatureExecutable;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 

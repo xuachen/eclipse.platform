@@ -30,7 +30,7 @@ public abstract class BaseFeatureFactory extends FeatureModelFactory implements 
 	/**
 	 * return the appropriate resource bundle for this feature
 	 */
-	private ResourceBundle getResourceBundle(URL url) throws IOException, CoreException {
+	protected ResourceBundle getResourceBundle(URL url) throws IOException, CoreException {
 		ResourceBundle bundle = null;
 		try {
 			ClassLoader l = new URLClassLoader(new URL[] { url }, null);

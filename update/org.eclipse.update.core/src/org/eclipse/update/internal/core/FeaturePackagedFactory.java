@@ -10,26 +10,28 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureModelFactory;
 
-public class FeaturePackagedFactory extends FeatureModelFactory implements IFeatureFactory {
+public class FeaturePackagedFactory extends BaseFeatureFactory {
 
 	/*
 	 * @see IFeatureFactory#createFeature(URL,ISite)
 	 */
 	public IFeature createFeature(URL url,ISite site) throws CoreException {
-		FeaturePackaged feature = null;
+		Feature feature = null;
 		InputStream featureStream = null;
 		
 		try {		
-			
-			// unpack JAR file in TEMP directory first
-			url = unjar(url);
-			
-			featureStream = url.openStream();
+			IFeatureContentProvider contentProvider = new FeaturePackagedContentProvider(url);
+		
+			featureStream = contentProvider.getFeatureManifestReference().asURL().openStream();
 			FeatureModelFactory factory = (FeatureModelFactory) this;
-			feature = (FeaturePackaged) factory.parseFeature(featureStream);
+			feature = (Feature)factory.parseFeature(featureStream);
 			feature.setSite(site);
+			
+			feature.setFeatureContentProvider(contentProvider);
+			
 			feature.resolve(url, getResourceBundle(url));
-			feature.markReadOnly();
+			feature.markReadOnly();			
+			
 		} catch (IOException e) {
 			// if we cannot find the feature or the feature.xml...
 			// We should not stop the execution 
@@ -50,27 +52,4 @@ public class FeaturePackagedFactory extends FeatureModelFactory implements IFeat
 		return feature;
 	}
 
-	/**
-	 * return the appropriate resource bundle for this feature
-	 */
-	private ResourceBundle getResourceBundle(URL url) throws IOException, CoreException {
-		ResourceBundle bundle = null;
-		try {
-			ClassLoader l = new URLClassLoader(new URL[] { url }, null);
-			bundle = ResourceBundle.getBundle(DefaultFeature.FEATURE_FILE, Locale.getDefault(), l);
-		} catch (MissingResourceException e) {
-			//ok, there is no bundle, keep it as null
-			//DEBUG:
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug(e.getLocalizedMessage() + ":" + url.toExternalForm());
-			}
-		}
-		return bundle;
 	}
-
-	private URL unjar(URL jarURL) throws CoreException {
-		URL result = null;
-		
-		return result;
-	}
-}
