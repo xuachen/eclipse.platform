@@ -861,6 +861,14 @@ public class Main {
 		URL result = getClass().getProtectionDomain().getCodeSource().getLocation();
 		String path = decode(result.getFile());
 		path = new File(path).getAbsolutePath().replace(File.separatorChar, '/');
+		// TODO need a better test for windows
+		// If on Windows then cannoicalize the drive letter to be lowercase.
+		if (File.separatorChar == '\\')
+			if (Character.isUpperCase(path.charAt(0))) {
+				char[] chars = path.toCharArray();
+				chars[0] = Character.toLowerCase(chars[0]);
+				path = new String(chars);
+			}
 		if (path.endsWith(".jar")) //$NON-NLS-1$
 			path = path.substring(0, path.lastIndexOf("/") + 1); //$NON-NLS-1$
 		try {
@@ -1411,20 +1419,10 @@ public class Main {
 			log = null;
 		}
 	}
+	
 	private void setInstallLocation(String location) {
-		// TODO If the URL is a file: url and we are on a filesystem which is case insensitive but
-		// case-retaining then convert the first char (drive letter) to lowercase 
-		// This is at best a hack but people use the location as a key and do equals
-		if (location.startsWith("file:")) {
-			if (new File("d:foo").equals(new File("D:foo")))
-				if (Character.isUpperCase(location.charAt(5))) {
-					char[] chars = location.toCharArray();
-					chars[5] = Character.toLowerCase(chars[5]);
-					location = new String(chars);
-				}
-		}	
 		installLocation = location;
-		System.getProperties().setProperty("eclipse.installURL", location); //$NON-NLS-1$
+		System.getProperties().setProperty("eclipse.installURL", installLocation); //$NON-NLS-1$
 	}
 	/**
 	 * Return a boolean value indicating whether or not the version of the JVM is
