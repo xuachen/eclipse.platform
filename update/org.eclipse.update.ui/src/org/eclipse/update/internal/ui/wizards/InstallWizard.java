@@ -34,9 +34,9 @@ public class InstallWizard extends Wizard {
 	
 	private boolean hasLicense() {
 		IFeature feature = job.getFeature();
-		IInfo info = feature.getLicense();
+		IURLEntry info = feature.getLicense();
 		return info!=null;
-	}
+	} 
 
 	
 	/**
