@@ -1,6 +1,6 @@
 package org.eclipse.ant.internal.core;
 
-import java.io.*;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -57,15 +57,23 @@ protected List computeDefaultTasks(Map tasks) {
 		IConfigurationElement element = (IConfigurationElement) entry.getValue();
 		task.setClassName(element.getAttribute(AntCorePlugin.CLASS));
 		String library = element.getAttribute(AntCorePlugin.LIBRARY);
-		if (library == null)
-			continue; // FIXME: can it be null?
+		if (library == null) {
+			String message = "Library not specified for task: " + task.getTaskName(); // FIXME add to message.properties
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, message, null);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
+		}
 		IPluginDescriptor descriptor = element.getDeclaringExtension().getDeclaringPluginDescriptor();
 		try {
 			URL url = Platform.asLocalURL(new URL(descriptor.getInstallURL(), library));
 			task.setLibrary(url);
 			defaultURLs.add(url);
 		} catch (Exception e) {
-			e.printStackTrace(); // FIXME
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, e.getMessage(), e);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
 		}
 		result.add(task);
 		addPluginClassLoader(descriptor.getPluginClassLoader());
@@ -82,15 +90,23 @@ protected List computeDefaultTypes(Map types) {
 		IConfigurationElement element = (IConfigurationElement) entry.getValue();
 		type.setClassName(element.getAttribute(AntCorePlugin.CLASS));
 		String library = element.getAttribute(AntCorePlugin.LIBRARY);
-		if (library == null)
-			continue; // FIXME: can it be null?
+		if (library == null) {
+			String message = "Library not specified for type: " + type.getTypeName(); // FIXME add to message.properties
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, message, null);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
+		}
 		IPluginDescriptor descriptor = element.getDeclaringExtension().getDeclaringPluginDescriptor();
 		try {
 			URL url = Platform.asLocalURL(new URL(descriptor.getInstallURL(), library));
 			type.setLibrary(url);
 			defaultURLs.add(url);
 		} catch (Exception e) {
-			e.printStackTrace(); // FIXME
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, e.getMessage(), e);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
 		}
 		result.add(type);
 		addPluginClassLoader(descriptor.getPluginClassLoader());
@@ -107,14 +123,22 @@ protected Map computeDefaultObjects(Map objects) {
 		Map.Entry entry = (Map.Entry) iterator.next();
 		IConfigurationElement element = (IConfigurationElement) entry.getValue();
 		String library = element.getAttribute(AntCorePlugin.LIBRARY);
-		if (library == null)
-			continue; // FIXME: can it be null?
+		if (library == null) {
+			String message = "Library not specified for object: " + entry.getKey(); // FIXME add to message.properties
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, message, null);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
+		}
 		IPluginDescriptor descriptor = element.getDeclaringExtension().getDeclaringPluginDescriptor();
 		try {
 			URL url = Platform.asLocalURL(new URL(descriptor.getInstallURL(), library));
 			defaultURLs.add(url);
 		} catch (Exception e) {
-			e.printStackTrace(); // FIXME
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, e.getMessage(), e);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
 		}
 		addPluginClassLoader(descriptor.getPluginClassLoader());
 	}
@@ -136,7 +160,9 @@ protected void addToolsJar(List destination) {
 	try {
 		destination.add(tools.toURL());
 	} catch (MalformedURLException e) {
-		e.printStackTrace(); // FIXME
+		// FIXME: add error code
+		IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, e.getMessage(), e);
+		AntCorePlugin.getPlugin().getLog().log(status);
 	}
 }
 
@@ -148,7 +174,10 @@ protected void addLibraries(IPluginDescriptor source, List destination) {
 			URL url = new URL(root, libraries[i].getPath().toString());
 			destination.add(Platform.asLocalURL(url));
 		} catch (Exception e) {
-			e.printStackTrace(); // FIXME
+			// FIXME: add error code
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, -1, e.getMessage(), e);
+			AntCorePlugin.getPlugin().getLog().log(status);
+			continue;
 		}
 	}
 }
