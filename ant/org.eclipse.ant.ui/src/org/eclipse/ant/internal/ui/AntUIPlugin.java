@@ -7,8 +7,7 @@ package org.eclipse.ant.internal.ui;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
@@ -28,6 +27,8 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	 * 
 	 */
 	protected IProgressMonitor currentProgressMonitor;
+	
+	protected final HashMap imageDescriptors = new HashMap(30);
 
 	/**
 	 * Unique identifier constant (value <code>"org.eclipse.ant.ui"</code>)
@@ -40,6 +41,8 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	public static final String IMG_ANT_SCRIPT= "icons/full/eview16/ant_view.gif";
 	public static final String IMG_BUILDER= "icons/full/eview16/build_exec.gif";
 	public static final String IMG_JAR_FILE = "icons/full/eview16/jar_l_obj.gif";
+	public static final String IMG_CLASSPATH = "icons/full/eview16/classpath.gif";
+	public static final String IMG_TYPE = "icons/full/eview16/type.gif";
 	
 	private static final String SETTINGS_COMMAND_HISTORY = "CommandHistory";
 	private static final int MAX_COMMAND_HISTORY = 15;
@@ -174,10 +177,15 @@ public IFile[] getHistory() {
  * @return the ImageDescriptor object
  */
 public ImageDescriptor getImageDescriptor(String path) {
+	ImageDescriptor desc = (ImageDescriptor)imageDescriptors.get(path);
+	if (desc != null)
+		return desc;
 	try {
 		URL installURL = getDescriptor().getInstallURL();
 		URL url = new URL(installURL,path);
-		return ImageDescriptor.createFromURL(url);
+		desc = ImageDescriptor.createFromURL(url);
+		imageDescriptors.put(path, desc);
+		return desc;
 	} catch (MalformedURLException e) {
 		return null;
 	}

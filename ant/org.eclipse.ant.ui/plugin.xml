@@ -65,7 +65,7 @@
   	<page 
   		id="org.eclipse.ant.ui.AntClasspathPreferences" 
   		name="%antClasspathPreferences"
-  		class="org.eclipse.ant.internal.ui.AntClasspathPreferencePage"
+  		class="org.eclipse.ant.internal.ui.CustomizeAntPreferencePage"
   		category="org.eclipse.ant.ui.AntPreferences">
   	</page>
   </extension>
