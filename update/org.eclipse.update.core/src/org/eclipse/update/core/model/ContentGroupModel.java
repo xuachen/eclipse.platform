@@ -113,7 +113,7 @@ public class ContentGroupModel extends ModelObject {
 		if (imports == null)
 			return new ImportModel[0];
 
-		return (ImportModel[]) imports.toArray(new ImportModel[0]);
+		return (ImportModel[]) imports.toArray(arrayTypeFor(imports));
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class ContentGroupModel extends ModelObject {
 		if (pluginEntries == null)
 			return new PluginEntryModel[0];
 
-		return (PluginEntryModel[]) pluginEntries.toArray(new PluginEntryModel[0]);
+		return (PluginEntryModel[]) pluginEntries.toArray(arrayTypeFor(pluginEntries));
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class ContentGroupModel extends ModelObject {
 			return new NonPluginEntryModel[0];
 
 		return (NonPluginEntryModel[]) nonPluginEntries.toArray(
-			new NonPluginEntryModel[0]);
+			arrayTypeFor(nonPluginEntries));
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class ContentGroupModel extends ModelObject {
 			return new ContentGroupModel[0];
 
 		return (ContentGroupModel[]) nestedGroupEntries.toArray(
-			new ContentGroupModel[0]);
+			arrayTypeFor(nestedGroupEntries));
 	}
 
 	/**

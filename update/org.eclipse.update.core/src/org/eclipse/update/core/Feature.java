@@ -397,14 +397,11 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IPluginContainer#getPluginEntries()
 	 */
 	public IPluginEntry[] getPluginEntries() {
-		int length = getPluginEntryModels().length;
-		IPluginEntry[] result = new IPluginEntry[length];
-		if (length > 0) {
-			for (int i = 0; i < result.length; i++) {
-				result[i] = (IPluginEntry) getPluginEntryModels()[i];
-			}
-		}
-		return result;
+		PluginEntryModel[] result = getPluginEntryModels();
+		if (result.length == 0)
+			return new IPluginEntry[0];
+		else
+			return (IPluginEntry[]) result;
 	}
 
 	/*
@@ -429,14 +426,11 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getDataEntries()
 	 */
 	public INonPluginEntry[] getNonPluginEntries() {
-		int length = getNonPluginEntryModels().length;
-		INonPluginEntry[] result = new INonPluginEntry[length];
-		if (length > 0) {
-			for (int i = 0; i < result.length; i++) {
-				result[i] = (INonPluginEntry) getNonPluginEntryModels()[i];
-			}
-		}
-		return result;
+		NonPluginEntryModel[] result = getNonPluginEntryModels();
+		if (result.length == 0)
+			return new INonPluginEntry[0];
+		else
+			return (INonPluginEntry[]) result;
 	}
 
 	/*

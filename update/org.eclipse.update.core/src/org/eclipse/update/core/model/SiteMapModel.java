@@ -55,7 +55,7 @@ public class SiteMapModel extends ModelObject {
 		if (featureReferences == null)
 			return new FeatureReferenceModel[0];
 			
-		return (FeatureReferenceModel[]) featureReferences.toArray(new FeatureReferenceModel[0]);
+		return (FeatureReferenceModel[]) featureReferences.toArray(arrayTypeFor(featureReferences));
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class SiteMapModel extends ModelObject {
 		if (archiveReferences == null)
 			return new ArchiveReferenceModel[0];
 			
-		return (ArchiveReferenceModel[]) archiveReferences.toArray(new ArchiveReferenceModel[0]);
+		return (ArchiveReferenceModel[]) archiveReferences.toArray(arrayTypeFor(archiveReferences));
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class SiteMapModel extends ModelObject {
 		if (categories == null)
 			return new SiteCategoryModel[0];
 			
-		return (SiteCategoryModel[]) categories.toArray(new SiteCategoryModel[0]);
+		return (SiteCategoryModel[]) categories.toArray(arrayTypeFor(categories));
 	}
 	
 	/**

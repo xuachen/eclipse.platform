@@ -34,3 +34,8 @@ v1.compare(v2);
 
 java.io.File f = new java.io.File("d:\\downloads\\eclipse 2.0\\x\\");
 f.isDirectory();
+
+
+String s = "hello";
+Object a = java.lang.reflect.Array.newInstance(s.getClass(),0);
+System.out.println(a.getClass().getName());

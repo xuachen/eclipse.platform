@@ -48,7 +48,7 @@ public class BuildZipFeatureFactory
 			feature.markReadOnly();
 			return feature;
 		} catch (Exception e) {
-			throw new CoreException(new Status(IStatus.ERROR,"org.eclipse.update",0,"Unable to create feature",e));
+			throw new CoreException(new Status(IStatus.ERROR,"org.eclipse.update.examples.buildzip",0,"Unable to create feature",e));
 		}
 	}
 

@@ -5,10 +5,14 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */
  
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.eclipse.update.internal.core.Assert;
 
@@ -227,5 +231,24 @@ public abstract class ModelObject {
 		} catch(MissingResourceException e) { 
 			return dflt; 
 		}
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	protected Object[] arrayTypeFor(List l) {
+		if (l == null || l.size()==0)
+			return null;
+		return (Object[])Array.newInstance(l.get(0).getClass(),0);
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	protected Object[] arrayTypeFor(Set s) {
+		if (s == null || s.size()==0)
+			return null;
+		Iterator i = s.iterator();
+		return (Object[])Array.newInstance(i.next().getClass(),0);
 	}
 }
