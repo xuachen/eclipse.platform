@@ -7,6 +7,7 @@ import java.net.URL;
 
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 import org.eclipse.update.tests.implementation.SiteFTPFactory;
@@ -35,7 +36,7 @@ public class TestSiteType extends UpdateManagerTestCase {
 		assertTrue(!(site instanceof SiteFile));
 		assertTrue(((Site)site).getType().equals("org.eclipse.update.core.http"));		
 		assertTrue(feature instanceof FeaturePackaged);
-		assertTrue(((FeatureReference)ref).getFeatureType().equals("org.eclipse.update.core.jar"));		
+		assertTrue(((FeatureReference)ref).getType().equals("org.eclipse.update.core.jar"));		
 
 	}
 	

@@ -23,7 +23,7 @@ import org.eclipse.update.core.*;
  * Default implementation of an Executable DefaultFeature
  */
 
-public class FeatureExecutableContentConsumer extends ContentConsumer {
+public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 
 
 	/**
@@ -38,9 +38,9 @@ public class FeatureExecutableContentConsumer extends ContentConsumer {
 	private INonPluginEntry nonPluginEntry = null;
 
 	/*
-	 * @see IContentConsumer#opens(INonPluginEntry)
+	 * @see IFeatureContentConsumer#opens(INonPluginEntry)
 	 */
-	public IContentConsumer opens(INonPluginEntry nonPluginEntry) throws CoreException {
+	public IFeatureContentConsumer opens(INonPluginEntry nonPluginEntry) throws CoreException {
 		if (pluginEntry != null || nonPluginEntry != null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			String text = "Content Consumer already opened: ";
@@ -54,9 +54,9 @@ public class FeatureExecutableContentConsumer extends ContentConsumer {
 	}
 
 	/*
-	 * @see IContentConsumer#opens(IPluginEntry)
+	 * @see IFeatureContentConsumer#opens(IPluginEntry)
 	 */
-	public IContentConsumer opens(IPluginEntry pluginEntry) throws CoreException {
+	public IFeatureContentConsumer opens(IPluginEntry pluginEntry) throws CoreException {
 		if (pluginEntry != null || nonPluginEntry != null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			String text = "Content Consumer already opened: ";
@@ -71,7 +71,7 @@ public class FeatureExecutableContentConsumer extends ContentConsumer {
 	}
 
 	/*
-	 * @see IContentConsumer#store(ContentReference, IProgressMonitor)
+	 * @see IFeatureContentConsumer#store(ContentReference, IProgressMonitor)
 	 */
 	public void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
 
@@ -92,7 +92,7 @@ public class FeatureExecutableContentConsumer extends ContentConsumer {
 	}
 
 	/*
-	 * @see IContentConsumer#remove(ContentReference, IProgressMonitor)
+	 * @see IFeatureContentConsumer#remove(ContentReference, IProgressMonitor)
 	 */
 	public void remove(ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
 		if (nonPluginEntry != null) {
@@ -106,7 +106,7 @@ public class FeatureExecutableContentConsumer extends ContentConsumer {
 	}
 
 	/*
-	 * @see IContentConsumer#close()
+	 * @see IFeatureContentConsumer#close()
 	 */
 	public void close() {
 		if (nonPluginEntry != null)
@@ -116,7 +116,7 @@ public class FeatureExecutableContentConsumer extends ContentConsumer {
 	}
 
 	/*
-	 * @see IContentConsumer#setFeature(IFeature)
+	 * @see IFeatureContentConsumer#setFeature(IFeature)
 	 */
 	public void setFeature(IFeature feature) {
 		this.feature = feature;

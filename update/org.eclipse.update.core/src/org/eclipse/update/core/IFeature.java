@@ -353,17 +353,17 @@ public interface IFeature extends IPluginContainer {
 	IFeatureContentProvider getFeatureContentProvider() throws CoreException;	
 	
 	/**
-	 * Sets the IContentConsumer for this feature
+	 * Sets the IFeatureContentConsumer for this feature
 	 * @since 2.0
 	 */
-	void setContentConsumer(IContentConsumer contentConsumer);
+	void setContentConsumer(IFeatureContentConsumer contentConsumer);
 
 	/**
-	 *Returns the IContentConsumer for this feature
+	 *Returns the IFeatureContentConsumer for this feature
 	 * @throws CoreException when the DefaultFeature does not allow storage.
 	 * @since 2.0
 	 */
-	IContentConsumer getContentConsumer() throws CoreException;
+	IFeatureContentConsumer getContentConsumer() throws CoreException;
 				
 }
 

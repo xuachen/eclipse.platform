@@ -10,6 +10,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 

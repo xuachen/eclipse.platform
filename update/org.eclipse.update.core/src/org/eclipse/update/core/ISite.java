@@ -65,6 +65,7 @@ public interface ISite extends IPluginContainer {
 
 	URL getURL() ;
 	
+	
 	/**
 	 * 
 	 * @return teh type of the site
@@ -88,6 +89,14 @@ public interface ISite extends IPluginContainer {
 	 */
 
 	ICategory[] getCategories()  ;
+	
+	/**
+	 * returns the associated ICategory
+	 * @return the ICategory associated to teh key or null if none exist
+	 * @since 2.0
+	 */
+	public ICategory getCategory(String key);
+	
 
 	/**
 	 * Returns an array of archives this site contains
@@ -130,17 +139,17 @@ public interface ISite extends IPluginContainer {
 	void save() throws CoreException;
 	
 	/**
-	 *Returns the IContentConsumer for this site
+	 *Returns the ISiteContentConsumer for this site
 	 * @throws CoreException when the Site does not allow storage.
 	 * @since 2.0
 	 */
-	IContentConsumer getContentConsumer() throws CoreException;	
+	ISiteContentConsumer getContentConsumer() throws CoreException;	
 
 	/**
-	 * Sets the IContentConsumer for this site
+	 * Sets the ISiteContentConsumer for this site
 	 * @since 2.0
 	 */
-	void setContentConsumer(IContentConsumer contentConsumer);	
+	void setContentConsumer(ISiteContentConsumer contentConsumer);	
 	
 	/**
 	 * Sets the ISiteContentProvider for this feature

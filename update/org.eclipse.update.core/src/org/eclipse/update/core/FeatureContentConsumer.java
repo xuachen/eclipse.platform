@@ -9,12 +9,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * A default implementation for IContentConsumer
+ * A default implementation for IFeatureContentConsumer
  * </p>
  * @since 2.0
  */
 
-public abstract class ContentConsumer implements IContentConsumer {
+public abstract class FeatureContentConsumer implements IFeatureContentConsumer {
 	
 
 

@@ -214,7 +214,7 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 					// obtain the path of the plugin directories on the site	
 					ContentReference[] featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry);
 					for (int j = 0; j < featureContentReference.length; j++) {
-						URL url = site.getSiteContentProvider().getArchivesReferences(featureContentReference[j].getIdentifier());
+						URL url = site.getSiteContentProvider().getArchivesReferences(featureContentReference[j].getIdentifier()).asURL();
 						if (url != null) {
 							// make it relative to teh site
 							String path = UpdateManagerUtils.getURLAsString(site.getURL(), url);

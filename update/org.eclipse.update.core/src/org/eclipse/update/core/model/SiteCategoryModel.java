@@ -1,5 +1,6 @@
 package org.eclipse.update.core.model;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
@@ -90,7 +91,7 @@ public class SiteCategoryModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		// resolve local elements
 		label = resolveNLString(bundle,label);
 

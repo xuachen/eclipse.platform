@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.model.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
@@ -33,8 +34,8 @@ public class SiteFile extends SiteURL {
 	/**
 	 * Constructor for FileSite
 	 */
-	public SiteFile(URL siteReference) throws CoreException, InvalidSiteTypeException {
-		super(siteReference);
+	public SiteFile() throws CoreException, InvalidSiteTypeException {
+		super();
 	}
 
 	/**
@@ -163,8 +164,10 @@ public class SiteFile extends SiteURL {
 					// teh URL must ends with '/' for teh bundle to be resolved
 					newFilePath = featurePath + dir[index] + "/";
 					featureURL = new URL("file", null, newFilePath);
-					featureRef = new FeatureReference(this, featureURL);
-					addFeatureReference(featureRef);
+					featureRef = new FeatureReference();
+					featureRef.setSite(this);
+					featureRef.setURL(featureURL);
+				//	addFeatureReference(featureRef);
 				}
 			} catch (MalformedURLException e) {
 				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -197,8 +200,10 @@ public class SiteFile extends SiteURL {
 				for (int index = 0; index < dir.length; index++) {
 					newFilePath = featurePath + dir[index];
 					featureURL = new URL("file", null, newFilePath);
-					featureRef = new FeatureReference(this, featureURL);
-					addFeatureReference(featureRef);
+					featureRef = new FeatureReference();
+					featureRef.setSite(this);
+					featureRef.setURL(featureURL);
+				//	addFeatureReference(featureRef);
 				}
 			} catch (MalformedURLException e) {
 				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -259,7 +264,7 @@ public class SiteFile extends SiteURL {
 					info = new URLEntry();
 					info.setAnnotation(pluginID);
 					info.resolve(url,null);
-					this.addArchive(info);
+			//		this.addArchive(info);
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -310,7 +315,7 @@ public class SiteFile extends SiteURL {
 							URLEntry info = new URLEntry();
 							info.setAnnotation(pluginID);
 							info.resolve(url,null);
-							this.addArchive(info);
+		//					this.addArchive(info);
 						}
 					}
 				}

@@ -13,6 +13,9 @@ import java.util.*;
 import org.eclipse.core.internal.runtime.Assert;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.ISite;
+import org.eclipse.update.core.model.FeatureReferenceModel;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
@@ -20,20 +23,11 @@ import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
  * 
  */
 
-public class FeatureReference implements IFeatureReference, IWritable {
-
-	private URL url;
+public class FeatureReference extends FeatureReferenceModel implements IFeatureReference, IWritable {
 
 	private ISite site;
 
-	private String featureType;
-	
 	private IFeature feature;
-
-	/**
-	 * category String; From teh XML file
-	 */
-	private List categoryString;
 
 	/**
 	 * category : delegate to teh site
@@ -43,23 +37,8 @@ public class FeatureReference implements IFeatureReference, IWritable {
 	/**
 	 * Constructor
 	 */
-	public FeatureReference(ISite site, URL url) {
+	public FeatureReference() {
 		super();
-		this.site = site;
-		this.url = url;
-	}
-
-	/**
-	 * Returns the URL that points at the DefaultFeature.
-	 * This URL is the unique identifier of the feature
-	 * within the site.
-	 * 
-	 * The URL is declared in the <code>feature.xml</code> file.	
-	 * 
-	 * @return the URL identifying feature in the Site.
-	 */
-	public URL getURL() {
-		return url;
 	}
 
 	/**
@@ -75,12 +54,9 @@ public class FeatureReference implements IFeatureReference, IWritable {
 
 		if (categories == null) {
 			categories = new ArrayList();
-			List categoriesAsString = getCategoryString();
-			if (categoriesAsString != null && !categoriesAsString.isEmpty()) {
-				Iterator iter = categoriesAsString.iterator();
-				while (iter.hasNext()) {
-					categories.add(((Site) site).getCategory((String) iter.next()));
-				}
+			String[] categoriesAsString = getCategoryNames();
+			for (int i = 0; i < categoriesAsString.length; i++){
+					categories.add(site.getCategory(categoriesAsString[i]));
 			}
 		}
 
@@ -100,66 +76,27 @@ public class FeatureReference implements IFeatureReference, IWritable {
 	public IFeature getFeature() throws CoreException {
 
 		if (feature == null) {
-			if (featureType == null || featureType.equals("")) {
-				if (url.toExternalForm().endsWith(FeaturePackaged.JAR_EXTENSION)) {
+			if (getType() == null || getType().equals("")) {
+				if (getURL().toExternalForm().endsWith(FeaturePackaged.JAR_EXTENSION)) {
 					// if it ends with JAR, guess it is a FeaturePackaged
 					String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
-					featureType = pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
+					setType(pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE);
 				} else {
 					// ask the Site for the default type 
-					featureType =site.getDefaultExecutableFeatureType();
+					setType(site.getDefaultExecutableFeatureType());
 				}
 			}
-		feature = createFeature(featureType,url,site);				
+		feature = createFeature(getType(),getURL(),site);				
 		}
 		
 		return feature;
-	}
-
-	/**
-	 * Gets the categoryString
-	 * @return Returns a String
-	 */
-	private List getCategoryString() {
-		if (categoryString == null)
-			categoryString = new ArrayList(0);
-		return categoryString;
-	}
-
-	/**
-	 * Adds a categoryString
-	 * @param categoryString The categoryString to add
-	 */
-	public void addCategoryString(String categoryString) {
-		if (this.categoryString == null)
-			this.categoryString = new ArrayList(0);
-		this.categoryString.add(categoryString);
-	}
-
-	/**
-	 * Sets the categoryString
-	 * @param categoryString The categoryString to set
-	 */
-	public void setCategoryString(String[] categoryString) {
-		if (categoryString != null) {
-			for (int i = 0; i < categoryString.length; i++) {
-				addCategoryString(categoryString[i]);
-			}
-		}
-	}
-	/**
-	 * Sets the featureType.
-	 * @param featureType The featureType to set
-	 */
-	public void setFeatureType(String featureType) {
-		this.featureType = featureType;
 	}
 
 	/*
 	 * @see IFeatureReference#addCategory(ICategory)
 	 */
 	public void addCategory(ICategory category) {
-		this. addCategoryString(category.getName());
+		this. addCategoryName(category.getName());
 	}
 
 	/*
@@ -182,9 +119,9 @@ public class FeatureReference implements IFeatureReference, IWritable {
 		}
 		w.println(">");
 		
-		Iterator categories = getCategoryString().iterator();
-		while (categories.hasNext()) {
-			String element = (String) categories.next();
+		String[] categoryNames = getCategoryNames();
+		for (int i = 0; i < categoryNames.length; i++){
+			String element = categoryNames[i];
 			w.println(gap+increment+"<"+SiteParser.CATEGORY+" name=\""+Writer.xmlSafe(element)+"\"/>");		
 		}
 		w.println("</"+SiteParser.FEATURE+">");
@@ -201,20 +138,27 @@ public class FeatureReference implements IFeatureReference, IWritable {
 	}
 	
 
-	/**
-	 * Gets the site.
-	 * @return Returns a ISite
+		/*
+	 * @see IFeatureReference#getSite()
 	 */
 	public ISite getSite() {
 		return site;
 	}
 
-	/**
-	 * Gets the eatureType.
-	 * @return Returns a String
+	/*
+	 * @see IFeatureReference#setSite(ISite)
 	 */
-	public String getFeatureType() {
-		return featureType;
+	public void setSite(ISite site) {
+		this.site = site;
+	}
+
+	/*
+	 * @see IFeatureReference#setURL(URL)
+	 */
+	public void setURL(URL url) {
+		if (url!=null){
+			setURLString(url.toExternalForm());
+		}
 	}
 
 }

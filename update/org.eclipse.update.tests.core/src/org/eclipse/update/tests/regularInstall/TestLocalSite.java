@@ -13,6 +13,7 @@ import org.eclipse.update.internal.core.InternalSiteManager;
 import org.eclipse.update.internal.core.SiteLocal;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestLocalSite extends UpdateManagerTestCase {

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -62,7 +63,7 @@ public class SiteParser extends DefaultHandler {
 			UpdateManagerPlugin.getPlugin().debug("Start parsing site:" + site.getURL().toExternalForm());
 		}
 
-		bundle = ((Site) site).getResourceBundle();
+		//bundle = ((Site) site).getResourceBundle();
 
 		parser.parse(new InputSource(this.siteStream));
 	}
@@ -128,7 +129,7 @@ public class SiteParser extends DefaultHandler {
 		String infoURL = attributes.getValue("url");
 		infoURL = UpdateManagerUtils.getResourceString(infoURL, bundle);
 		URL url = UpdateManagerUtils.getURL(site.getURL(), infoURL, DEFAULT_INFO_URL);
-		site.setInfoURL(url);
+		//site.setInfoURL(url);
 
 		// process the Site....if the site has a different type
 		// throw an exception so the new parser can be used...
@@ -154,14 +155,16 @@ public class SiteParser extends DefaultHandler {
 		URL url = UpdateManagerUtils.getURL(site.getURL(), attributes.getValue("url"), null);
 
 		if (url != null) {
-			feature = new FeatureReference(site, url);
+			feature = new FeatureReference();
+			feature.setSite(site);
+			feature.setURL(url);			
 
 			// the type of the feature
 			String type = attributes.getValue("type");
-			((FeatureReference) feature).setFeatureType(type);
+			((FeatureReference) feature).setType(type);
 
 			// add the feature
-			site.addFeatureReference(feature);
+			//site.addFeatureReference(feature);
 
 			// DEBUG:		
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
@@ -197,7 +200,7 @@ public class SiteParser extends DefaultHandler {
 	private void processCategory(Attributes attributes) {
 		// category
 		String category = attributes.getValue("name");
-		((FeatureReference) feature).addCategoryString(category);
+		((FeatureReference) feature).addCategoryName(category);
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {

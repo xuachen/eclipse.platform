@@ -10,6 +10,7 @@ import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.*;
 
 public class SiteFTP implements ISite {
 
@@ -153,14 +154,14 @@ public class SiteFTP implements ISite {
 	/*
 	 * @see ISite#getContentConsumer()
 	 */
-	public IContentConsumer getContentConsumer() throws CoreException {
+	public ISiteContentConsumer getContentConsumer() throws CoreException {
 		return null;
 	}
 
 	/*
-	 * @see ISite#setContentConsumer(IContentConsumer)
+	 * @see ISite#setContentConsumer(ISiteContentConsumer)
 	 */
-	public void setContentConsumer(IContentConsumer contentConsumer) {
+	public void setContentConsumer(ISiteContentConsumer contentConsumer) {
 	}
 
 	/*
@@ -206,6 +207,13 @@ public class SiteFTP implements ISite {
 	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
 	 */
 	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see ISite#getCategory(String)
+	 */
+	public ICategory getCategory(String key) {
+		return null;
 	}
 
 }

@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.obsolete.*;
 
 /**
  * Parse the default feature.xml
@@ -73,7 +74,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		try {
 			// check if the site.xml had a coded URL for this plugin or if we
 			// should look in teh default place to find it: <site>+/plugins/+archiveId
-			String filePath = UpdateManagerUtils.getPath(feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)));						
+			String filePath = UpdateManagerUtils.getPath(feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)).asURL());						
 			open(filePath);
 			if (!(new File(filePath)).exists())
 				throw new IOException("The File:" + filePath + "does not exist.");
@@ -94,7 +95,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 		// try to obtain the URL of the JAR file that contains the plugin entry from teh site.xml
 		// if it doesn't exist, use the default one
-		URL jarURL =feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry));
+		URL jarURL =feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)).asURL();
 		String path = UpdateManagerUtils.getPath(jarURL);					
 		String[] result = getJAREntries(path);
 
@@ -342,7 +343,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		ContentReference[] references = new ContentReference[archiveIDs.length];		
 		try {
 			for (int i = 0; i < archiveIDs.length; i++) {
-				URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]);
+				URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]).asURL();
 				ContentReference currentReference = new ContentReference(archiveIDs[i],url);
 				currentReference = asLocalReference(currentReference,null);
 				references[i] = currentReference;

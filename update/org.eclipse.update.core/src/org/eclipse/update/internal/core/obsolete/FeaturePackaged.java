@@ -109,7 +109,7 @@ public class FeaturePackaged extends DefaultFeature {
 		try {
 			// check if the site.xml had a coded URL for this plugin or if we
 			// should look in teh default place to find it: <site>+/plugins/+archiveId
-			String filePath = UpdateManagerUtils.getPath(((Site) getSite()).getURL(getArchiveID(pluginEntry)));						
+			String filePath = UpdateManagerUtils.getPath(getSite().getSiteContentProvider().getArchivesReferences(getArchiveID(pluginEntry)).asURL());						
 			open(filePath);
 			if (!(new File(filePath)).exists())
 				throw new IOException("The File:" + filePath + "does not exist.");
@@ -130,7 +130,7 @@ public class FeaturePackaged extends DefaultFeature {
 
 		// try to obtain the URL of the JAR file that contains the plugin entry from teh site.xml
 		// if it doesn't exist, use the default one
-		URL jarURL = ((Site) getSite()).getURL(getArchiveID(pluginEntry));
+		URL jarURL = getSite().getSiteContentProvider().getArchivesReferences(getArchiveID(pluginEntry)).asURL();
 		String path = UpdateManagerUtils.getPath(jarURL);					
 		String[] result = getJAREntries(path);
 

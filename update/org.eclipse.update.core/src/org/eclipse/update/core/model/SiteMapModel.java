@@ -5,6 +5,7 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */ 
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -201,7 +202,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void resolve(URL base, ResourceBundle bundle) throws Exception {		
+	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {		
 		resolveReference(getDescriptionModel(), base, bundle);
 		resolveListReference(getFeatureReferenceModels(), base, bundle);
 		resolveListReference(getArchiveReferenceModels(), base, bundle);

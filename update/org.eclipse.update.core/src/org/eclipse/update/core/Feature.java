@@ -117,7 +117,7 @@ public class Feature extends FeatureModel implements IFeature {
 	/**
 	 * The content consumer of the DefaultFeature
 	 */
-	private IContentConsumer contentConsumer;
+	private IFeatureContentConsumer contentConsumer;
 
 	/**
 	 * Static block to initialize the possible CANCEL ERROR
@@ -324,7 +324,7 @@ public class Feature extends FeatureModel implements IFeature {
 		List contentReferencesToInstall = new ArrayList();
 
 		//
-		IContentConsumer consumer = getContentConsumer();
+		IFeatureContentConsumer consumer = getContentConsumer();
 
 		//finds the contentReferences for this IFeature
 		ContentReference[] references = getFeatureContentProvider().getFeatureEntryContentReferences();
@@ -339,7 +339,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		//finds the contentReferences for this IPluginEntry
 		for (int i = 0; i < pluginsToInstall.length; i++) {
-			IContentConsumer pluginConsumer = consumer.opens(pluginsToInstall[i]);
+			IFeatureContentConsumer pluginConsumer = consumer.opens(pluginsToInstall[i]);
 			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.store(references[j], monitor);
@@ -350,7 +350,7 @@ public class Feature extends FeatureModel implements IFeature {
 		// download and install non plugins bundles
 		INonPluginEntry[] nonPluginsContentReferencesToInstall = getNonPluginEntries();
 		for (int i = 0; i < nonPluginsContentReferencesToInstall.length; i++) {
-			IContentConsumer nonPluginConsumer = consumer.opens(nonPluginsContentReferencesToInstall[i]);
+			IFeatureContentConsumer nonPluginConsumer = consumer.opens(nonPluginsContentReferencesToInstall[i]);
 			references = getFeatureContentProvider().getNonPluginEntryArchiveReferences(nonPluginsContentReferencesToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.store(references[j], monitor);
@@ -368,14 +368,14 @@ public class Feature extends FeatureModel implements IFeature {
 	public void remove(IProgressMonitor monitor) throws CoreException {
 		// remove the feature and the plugins if they are not used and not activated
 		//
-		IContentConsumer consumer = getContentConsumer();
+		IFeatureContentConsumer consumer = getContentConsumer();
 		ContentReference[] references = null;
 		// get the plugins from the feature
 		IPluginEntry[] pluginsToRemove = SiteManager.getLocalSite().getUnusedPluginEntries(this);
 
 		//finds the contentReferences for this IPluginEntry
 		for (int i = 0; i < pluginsToRemove.length; i++) {
-			IContentConsumer pluginConsumer = consumer.opens(pluginsToRemove[i]);
+			IFeatureContentConsumer pluginConsumer = consumer.opens(pluginsToRemove[i]);
 			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToRemove[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.remove(references[j], monitor);
@@ -472,15 +472,15 @@ public class Feature extends FeatureModel implements IFeature {
 	}
 
 	/*
-	 * @see IFeature#setContentConsumer(IContentConsumer)
+	 * @see IFeature#setContentConsumer(IFeatureContentConsumer)
 	 */
-	public void setContentConsumer(IContentConsumer contentConsumer) {
+	public void setContentConsumer(IFeatureContentConsumer contentConsumer) {
 		this.contentConsumer = contentConsumer;
 		contentConsumer.setFeature(this);
 	}
 
 	/*
-	 * @see IFeature#getFeatureContentProvider(IContentConsumer)
+	 * @see IFeature#getFeatureContentProvider(IFeatureContentConsumer)
 	 */
 	public IFeatureContentProvider getFeatureContentProvider() throws CoreException {
 		if (featureContentProvider == null) {
@@ -494,10 +494,10 @@ public class Feature extends FeatureModel implements IFeature {
 	/*
 	 * @see IFeature#getContentConsumer()
 	 */
-	public IContentConsumer getContentConsumer() throws CoreException {
+	public IFeatureContentConsumer getContentConsumer() throws CoreException {
 		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "ContentConsumer not set for feature:" + getURL().toExternalForm(), null);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "FeatureContentConsumer not set for feature:" + getURL().toExternalForm(), null);
 			throw new CoreException(status);
 		}
 		return contentConsumer;

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.obsolete.*;
 
 /**
  * Default implementation of an Executable DefaultFeature Content Provider
@@ -38,7 +39,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 
 		// get the URL of the Archive file that contains the plugin entry
 		ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-		URL fileURL = provider.getArchivesReferences(getArchiveID(pluginEntry));
+		URL fileURL = provider.getArchivesReferences(getArchiveID(pluginEntry)).asURL();
 		result = UpdateManagerUtils.getPath(fileURL);
 
 		// return the list of all subdirectories
@@ -132,7 +133,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-			URL fileURL = provider.getArchivesReferences(getArchiveID(pluginEntry));
+			URL fileURL = provider.getArchivesReferences(getArchiveID(pluginEntry)).asURL();
 			String fileString = UpdateManagerUtils.getPath(fileURL);
 
 			// return the list of all subdirectories
@@ -159,7 +160,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-			URL fileURL = provider.getArchivesReferences(nonPluginEntry.getIdentifier());
+			URL fileURL = provider.getArchivesReferences(nonPluginEntry.getIdentifier()).asURL();
 			String fileString = UpdateManagerUtils.getPath(fileURL);
 
 			// return the list of all subdirectories

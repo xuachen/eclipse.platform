@@ -18,24 +18,24 @@ import org.eclipse.core.runtime.CoreException;
 public interface ISiteContentProvider {
 	
 	/**
-	 * Returns the site manifest 
+	 * Returns the site manifest reference or null if it doesn't exist
 	 * 
 	 * @return the site manifest
 	 * @since 2.0
 	 */
-	URL getSiteManifest() throws MalformedURLException;
+	ContentReference getSiteManifestReference() throws MalformedURLException;
 
 	/**
-	 * Returns a URL associated to the archiveID
+	 * Returns a ContentReference associated to the archiveID
 	 * 
 	 * @return a URL
 	 * @since 2.0 
 	 */
 
-	URL getArchivesReferences(String archiveID);
+	ContentReference getArchivesReferences(String archiveID);
 	
 	/**
-	 * Returns a Content reference for this feature
+	 * Returns a ContentReference for this feature
 	 * If the feature doesn't exist yet, create a new content reference
 	 * 
 	 * @return a content reference

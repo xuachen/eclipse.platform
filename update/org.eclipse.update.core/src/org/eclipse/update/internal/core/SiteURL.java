@@ -14,8 +14,9 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
+import org.eclipse.update.internal.core.obsolete.*;
 
-public class SiteURL extends Site {
+public class SiteURL extends DefaultSite {
 	
 	public static final String SITE_TYPE = "org.eclipse.update.core.http";
 
@@ -26,8 +27,8 @@ public class SiteURL extends Site {
 	/**
 	 * Constructor for HTTPSite
 	 */
-	public SiteURL(URL siteReference) throws CoreException, InvalidSiteTypeException {
-		super(siteReference);
+	public SiteURL() throws CoreException, InvalidSiteTypeException {
+		super();
 	}
 
 	/**

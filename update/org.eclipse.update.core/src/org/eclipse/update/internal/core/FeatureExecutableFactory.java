@@ -25,7 +25,7 @@ public class FeatureExecutableFactory extends BaseFeatureFactory {
 		
 		try {	
 			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
-			IContentConsumer contentConsumer = new FeatureExecutableContentConsumer();
+			IFeatureContentConsumer contentConsumer = new FeatureExecutableContentConsumer();
 			
 			featureStream = contentProvider.getFeatureManifestReference().asURL().openStream();
 			FeatureModelFactory factory = (FeatureModelFactory) this;

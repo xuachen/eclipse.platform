@@ -27,9 +27,32 @@ public interface IFeatureReference {
 	 * @return the URL identifying feature in the Site.
 	 * @since 2.0 
 	 */
-
 	URL getURL();
 	
+	
+	/**
+	 * Sets the URL that points at the DefaultFeature.
+	 * @param the URL identifying feature in the Site.
+	 * @since 2.0 
+	 */
+	void setURL(URL url);	
+
+	/**
+	 * Returns the Site of the FeatureReference
+	 * @return the Site of the Feature reference
+	 * @since 2.0 
+	 */
+	ISite getSite();
+	
+	
+	/**
+	 * Returns the Site of the FeatureReference
+	 * @param the Site of the Feature reference
+	 * @since 2.0 
+	 */
+	void setSite(ISite site);	
+
+
 	/**
 	 * Returns the array of categories the feature belong to.
 	 * 

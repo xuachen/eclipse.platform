@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.xml.sax.SAXException;
 
 /**

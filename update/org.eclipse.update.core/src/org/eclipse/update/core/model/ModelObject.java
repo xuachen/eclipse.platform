@@ -107,7 +107,7 @@ public abstract class ModelObject {
 	 * 
 	 * @since 2.0
 	 */
-	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		return;
 	}
 		
@@ -119,7 +119,7 @@ public abstract class ModelObject {
 	 * @param base base URL.
 	 * @param bundle resource bundle.
 	 */
-	protected void resolveReference(ModelObject o, URL url, ResourceBundle bundle) throws Exception {
+	protected void resolveReference(ModelObject o, URL url, ResourceBundle bundle) throws MalformedURLException {
 		if (o==null)
 			return;
 		o.resolve(url,bundle);	
@@ -133,7 +133,7 @@ public abstract class ModelObject {
 	 * @param base base URL.
 	 * @param bundle resource bundle.
 	 */
-	protected void resolveListReference(ModelObject[] o, URL url, ResourceBundle bundle) throws Exception {
+	protected void resolveListReference(ModelObject[] o, URL url, ResourceBundle bundle) throws MalformedURLException {
 		if (o==null)
 			return;
 		for (int i=0; i<o.length; i++) {

@@ -11,6 +11,7 @@ import java.util.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.obsolete.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -158,7 +159,9 @@ public class InstallConfigurationParser extends DefaultHandler {
 
 		if (url != null) {
 			//IFeatureReference ref = ((Site) configSite.getSite()).getFeatureReferences(url);
-			IFeatureReference ref = new FeatureReference(((Site) configSite.getSite()),url);
+			IFeatureReference ref = new FeatureReference();
+			ref.setSite(((Site) configSite.getSite()));
+			ref.setURL(url);
 			if (ref != null)
 				if (configured){
 					((ConfigurationPolicy)configSite.getConfigurationPolicy()).addConfiguredFeatureReference(ref);					

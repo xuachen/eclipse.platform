@@ -1,8 +1,9 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.core;
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
+import java.io.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -10,7 +11,10 @@ import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.model.*;
+import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.Writer;
 
 public abstract class Site extends SiteMapModel implements ISite, IWritable {
 
@@ -40,7 +44,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/**
 	 * The content consumer of the Site
 	 */
-	private IContentConsumer contentConsumer;
+	private ISiteContentConsumer contentConsumer;
 
 	/**
 	 * The content provider of the Site
@@ -50,9 +54,8 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/**
 	 * Constructor for Site
 	 */
-	public Site(URL siteReference) throws CoreException, InvalidSiteTypeException {
+	public Site() throws CoreException, InvalidSiteTypeException {
 		super();
-		this.siteURL = siteReference;
 	}
 
 	/**
@@ -62,7 +65,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		File file = new File(getURL().getFile() + SITE_XML);
 		try {
 			PrintWriter fileWriter = new PrintWriter(new FileOutputStream(file));
-			Writer writer = new Writer();
+			Writer writer = new Writer(); 
 			writer.writeSite(this, fileWriter);
 			fileWriter.close();
 		} catch (FileNotFoundException e) {
@@ -72,7 +75,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		}
 	}
 
-	/**
+	/*
 	 * @see ISite#addSiteChangedListener(ISiteChangedListener)
 	 */
 	public void addSiteChangedListener(ISiteChangedListener listener) {
@@ -81,7 +84,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		}
 	}
 
-	/**
+	/*
 	 * @see ISite#removeSiteChangedListener(ISiteChangedListener)
 	 */
 	public void removeSiteChangedListener(ISiteChangedListener listener) {
@@ -90,25 +93,35 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		}
 	}
 
-	/**
+	/*
 	 * @see ISite#install(IFeature, IProgressMonitor)
 	 */
 	public IFeatureReference install(IFeature sourceFeature, IProgressMonitor monitor) throws CoreException {
 		// should start Unit Of Work and manage Progress Monitor
 		IFeature localFeature = createExecutableFeature(sourceFeature);
 		sourceFeature.install(localFeature, monitor);
-		IFeatureReference localReference = new FeatureReference(this, localFeature.getURL());
-		this.addFeatureReference(localReference);
+		IFeatureReference localFeatureReference = new FeatureReference();
+		localFeatureReference.setSite(this);
+		localFeatureReference.setURL(localFeature.getURL());
+		this.addFeatureReference(localFeatureReference);
 
 		// notify listeners
 		Object[] siteListeners = listeners.getListeners();
 		for (int i = 0; i < siteListeners.length; i++) {
 			((ISiteChangedListener) siteListeners[i]).featureInstalled(localFeature);
 		}
-		return localReference;
+		return localFeatureReference;
 	}
 
 	/**
+	 * adds a feature reference
+	 * @param feature The feature reference to add
+	 */
+	private void addFeatureReference(IFeatureReference feature) {
+		addFeatureReferenceModel((FeatureReferenceModel) feature);
+	}
+
+	/*
 	 * @see ISite#remove(IFeature, IProgressMonitor)
 	 */
 	public void remove(IFeature feature, IProgressMonitor monitor) throws CoreException {
@@ -139,7 +152,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/**
 	 * 
 	 */
-	public IFeature createExecutableFeature(IFeature sourceFeature) throws CoreException {
+	private IFeature createExecutableFeature(IFeature sourceFeature) throws CoreException {
 		String executableFeatureType = getDefaultExecutableFeatureType();
 		IFeature result = null;
 		if (executableFeatureType != null) {
@@ -151,26 +164,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	}
 
 	/**
-	 * store DefaultFeature files/ Features info into the Site
-	 */
-	protected abstract void storeFeatureInfo(VersionedIdentifier featureIdentifier, String contentKey, InputStream inStream) throws CoreException;
-
-	/**
-	 * removes DefaultFeature files/ DefaultFeature info from the Site
-	 */
-	protected abstract void removeFeatureInfo(VersionedIdentifier featureIdentifier) throws CoreException;
-
-	/**
-	 * return the URL of the archive ID
-	 */
-	public abstract URL getURL(String archiveID) throws CoreException;
-	/**
-	 * parse the physical site to initialize the site object
-	 * @throws CoreException
-	 */
-	protected abstract void parseSite() throws CoreException;
-
-	/**
 	 * returns true if we need to optimize the install by copying the 
 	 * archives in teh TEMP directory prior to install
 	 * Default is true
@@ -179,35 +172,15 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		return true;
 	}
 
-	/**
-	 * Gets the siteURL
-	 * @return Returns a URL
+	/*
+	 * @see ISite#getURL()
 	 */
 	public URL getURL() {
 		return siteURL;
 	}
 
-	/**
-	 * return the appropriate resource bundle for this site
-	 */
-	public ResourceBundle getResourceBundle() throws IOException, CoreException {
-		ResourceBundle bundle = null;
-		try {
-			ClassLoader l = new URLClassLoader(new URL[] { this.getURL()}, null);
-			bundle = ResourceBundle.getBundle(SITE_FILE, Locale.getDefault(), l);
-		} catch (MissingResourceException e) {
-			//ok, there is no bundle, keep it as null
-			//DEBUG:
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug(e.getLocalizedMessage() + ":" + this.getURL().toExternalForm());
-			}
-		}
-		return bundle;
-	}
-
-	/**
-	 * Gets the featuresConfigured
-	 * @return Returns a IFeatureReference[]
+	/*
+	 * @see ISite#getFeatureReferences()
 	 */
 	public IFeatureReference[] getFeatureReferences() {
 		int length = getFeatureReferenceModels().length;
@@ -218,16 +191,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		return result;
 	}
 
-	/**
-	 * adds a feature
-	 * The feature is considered already installed. It does not install it.
-	 * @param feature The feature to add
-	 */
-	public void addFeatureReference(IFeatureReference feature) {
-		addFeatureReferenceModel((FeatureReferenceModel) feature);
-	}
-
-	/**
+	/*
 	 * @see ISite#getArchives()
 	 */
 	public IURLEntry[] getArchives() {
@@ -239,84 +203,14 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		return result;
 	}
 
-	/**
-	 * return the URL associated with the id of teh archive for this site
-	 * return null if the archiveId is null, empty or 
-	 * if teh list of archives on the site is null or empty
-	 * of if there is no URL associated with the archiveID for this site
-	 */
-	public URL getArchiveURLfor(String archiveId) {
-		URL result = null;
-		boolean found = false;
-
-		int length = getArchiveReferenceModels().length;
-		if (length > 0) {
-			for (int i = 0; i < length; i++) {
-				if (archiveId.trim().equalsIgnoreCase(getArchiveReferenceModels()[i].getPath())) {
-					result = getArchiveReferenceModels()[i].getURL();
-					found = true;
-					break;
-				}
-			}
-		}
-
-		//DEBUG:
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_INSTALL) {
-			String debugString = "Searching archive ID:" + archiveId + " in Site:" + getURL().toExternalForm() + "...";
-			if (found) {
-				debugString += "found , pointing to:" + result.toExternalForm();
-			} else {
-				debugString += "NOT FOUND";
-			}
-			UpdateManagerPlugin.getPlugin().debug(debugString);
-		}
-
-		return result;
-	}
-
-	/**
-	 * adds an archive
-	 * @param archive The archive to add
-	 */
-	public void addArchive(IURLEntry archive) {
-		if (getArchiveURLfor(archive.getAnnotation()) != null) {
-			// DEBUG:		
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug("The Archive with ID:" + archive.getAnnotation() + " already exist on the site.");
-			}
-		} else {
-			addArchiveReferenceModel((ArchiveReferenceModel) archive);
-		}
-	}
-
-	/**
-	 * Sets the archives
-	 * @param archives The archives to set
-	 */
-	public void setArchives(IURLEntry[] _archives) {
-		if (_archives != null) {
-			for (int i = 0; i < _archives.length; i++) {
-				this.addArchive(_archives[i]);
-			}
-		}
-	}
-
-	/**
+	/*
 	 * @see ISite#getInfoURL()
 	 */
 	public URL getInfoURL() {
 		return infoURL;
 	}
 
-	/**
-	 * Sets the infoURL
-	 * @param infoURL The infoURL to set
-	 */
-	public void setInfoURL(URL infoURL) {
-		this.infoURL = infoURL;
-	}
-
-	/**
+	/*
 	 * @see ISite#getCategories()
 	 */
 	public ICategory[] getCategories() {
@@ -328,16 +222,8 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		return result;
 	}
 
-	/**
-	 * adds a category
-	 * @param category The category to add
-	 */
-	public void addCategory(ICategory category) {
-		addCategoryModel((SiteCategoryModel) category);
-	}
-
-	/**
-	 * returns the associated ICategory
+	/*
+	 * @see ISite#getCategory(String)
 	 */
 	public ICategory getCategory(String key) {
 		ICategory result = null;
@@ -363,72 +249,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	}
 
 	/*
-	 * @see IWritable#write(int, PrintWriter)
-	 */
-	public void write(int indent, PrintWriter w) {
-
-		String gap = "";
-		for (int i = 0; i < indent; i++)
-			gap += " ";
-		String increment = "";
-		for (int i = 0; i < IWritable.INDENT; i++)
-			increment += " ";
-
-		w.print(gap + "<" + SiteParser.SITE + " ");
-		// FIXME: site type to implement
-		// 
-		// Site URL
-		String URLInfoString = null;
-		if (getInfoURL() != null) {
-			URLInfoString = UpdateManagerUtils.getURLAsString(this.getURL(), getInfoURL());
-			w.print("url=\"" + Writer.xmlSafe(URLInfoString) + "\"");
-		}
-		w.println(">");
-		w.println("");
-
-		IFeatureReference[] refs = getFeatureReferences();
-		for (int index = 0; index < refs.length; index++) {
-			FeatureReference element = (FeatureReference) refs[index];
-			element.write(indent, w);
-		}
-		w.println("");
-
-		IURLEntry[] archives = getArchives();
-		for (int index = 0; index < archives.length; index++) {
-			IURLEntry element = (IURLEntry) archives[index];
-			URLInfoString = UpdateManagerUtils.getURLAsString(this.getURL(), element.getURL());
-			w.println(gap + "<" + SiteParser.ARCHIVE + " id=\"" + Writer.xmlSafe(element.getAnnotation()) + "\" url=\"" + Writer.xmlSafe(URLInfoString) + "\"/>");
-		}
-		w.println("");
-
-		ICategory[] categories = getCategories();
-		for (int index = 0; index < categories.length; index++) {
-			Category element = (Category) categories[index];
-			w.println(gap + "<" + SiteParser.CATEGORY_DEF + " label=\"" + Writer.xmlSafe(element.getLabel()) + "\" name=\"" + Writer.xmlSafe(element.getName()) + "\">");
-
-			IURLEntry info = element.getDescription();
-			if (info != null) {
-				w.print(gap + increment + "<" + SiteParser.DESCRIPTION + " ");
-				URLInfoString = null;
-				if (info.getURL() != null) {
-					URLInfoString = UpdateManagerUtils.getURLAsString(this.getURL(), info.getURL());
-					w.print("url=\"" + Writer.xmlSafe(URLInfoString) + "\"");
-				}
-				w.println(">");
-				if (info.getAnnotation() != null) {
-					w.println(gap + increment + increment + Writer.xmlSafe(info.getAnnotation()));
-				}
-				w.print(gap + increment + "</" + SiteParser.DESCRIPTION + ">");
-			}
-			w.println(gap + "</" + SiteParser.CATEGORY_DEF + ">");
-
-		}
-		w.println("");
-		// end
-		w.println("</" + SiteParser.SITE + ">");
-	}
-
-	/*
 	 * @see IPluginContainer#getPluginEntries()
 	 */
 	public IPluginEntry[] getPluginEntries() {
@@ -436,19 +256,19 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	}
 
 	/*
-	* @see ISite#setContentConsumer(IContentConsumer)
+	* @see ISite#setContentConsumer(ISiteContentConsumer)
 	*/
-	public void setContentConsumer(IContentConsumer contentConsumer) {
+	public void setContentConsumer(ISiteContentConsumer contentConsumer) {
 		this.contentConsumer = contentConsumer;
 	}
 
 	/*
 	 * @see ISite#getContentConsumer()
 	 */
-	public IContentConsumer getContentConsumer() throws CoreException {
+	public ISiteContentConsumer getContentConsumer() throws CoreException {
 		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "ContentConsumer not set for site:" + getURL().toExternalForm(), null);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "FeatureContentConsumer not set for site:" + getURL().toExternalForm(), null);
 			throw new CoreException(status);
 		}
 
@@ -472,6 +292,59 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 			throw new CoreException(status);
 		}
 		return siteContentProvider;
+	}
+
+
+	/*
+	 * @see IWritable#write(int, PrintWriter)
+	 */
+	public void write(int indent, PrintWriter w) {
+	}
+
+	/*
+	 * @see IPluginContainer#getPluginEntryCount()
+	 */
+	public int getPluginEntryCount() {
+		return 0;
+	}
+
+	/*
+	 * @see IPluginContainer#getDownloadSize(IPluginEntry)
+	 */
+	public long getDownloadSize(IPluginEntry entry) {
+		return 0;
+	}
+
+	/*
+	 * @see IPluginContainer#getInstallSize(IPluginEntry)
+	 */
+	public long getInstallSize(IPluginEntry entry) {
+		return 0;
+	}
+
+	/*
+	 * @see IPluginContainer#addPluginEntry(IPluginEntry)
+	 */
+	public void addPluginEntry(IPluginEntry pluginEntry) {
+	}
+
+	/*
+	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
+	 */
+	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IAdaptable#getAdapter(Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		return null;
 	}
 
 }
