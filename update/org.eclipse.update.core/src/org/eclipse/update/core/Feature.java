@@ -336,7 +336,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		//finds the contentReferences for this IPluginEntry
 		for (int i = 0; i < pluginsToInstall.length; i++) {
-			IFeatureContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
+			IContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
 			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.store(references[j], monitor);
@@ -347,7 +347,7 @@ public class Feature extends FeatureModel implements IFeature {
 		// download and install non plugins bundles
 		INonPluginEntry[] nonPluginsContentReferencesToInstall = getNonPluginEntries();
 		for (int i = 0; i < nonPluginsContentReferencesToInstall.length; i++) {
-			IFeatureContentConsumer nonPluginConsumer = consumer.open(nonPluginsContentReferencesToInstall[i]);
+			IContentConsumer nonPluginConsumer = consumer.open(nonPluginsContentReferencesToInstall[i]);
 			references = getFeatureContentProvider().getNonPluginEntryArchiveReferences(nonPluginsContentReferencesToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.store(references[j], monitor);
@@ -363,30 +363,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#remove(IProgressMonitor) throws CoreException
 	 */
 	public void remove(IProgressMonitor monitor) throws CoreException {
-		// remove the feature and the plugins if they are not used and not activated
-		//
-		IFeatureContentConsumer consumer = getContentConsumer();
-		ContentReference[] references = null;
-		// get the plugins from the feature
-		IPluginEntry[] pluginsToRemove = SiteManager.getLocalSite().getUnusedPluginEntries(this);
-
-		//finds the contentReferences for this IPluginEntry
-		for (int i = 0; i < pluginsToRemove.length; i++) {
-			IFeatureContentConsumer pluginConsumer = consumer.open(pluginsToRemove[i]);
-			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToRemove[i]);
-			for (int j = 0; j < references.length; j++) {
-				consumer.remove(references[j], monitor);
-			}
-			pluginConsumer.close();
-		}
-
-		//finds the contentReferences for this IFeature
-		references = getFeatureContentProvider().getFeatureEntryContentReferences();
-		for (int i = 0; i < references.length; i++) {
-			consumer.remove(references[i], monitor);
-		}
-
-		consumer.close();
+		getSite().remove(this,monitor);
 	}
 
 	/*
@@ -520,11 +497,5 @@ public class Feature extends FeatureModel implements IFeature {
 		getSite().store(entry,name,inStream,monitor);
 	}
 
-	/*
-	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
-	 */
-	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
-		getSite().remove(entry,monitor);		
-	}
 
 }

@@ -85,7 +85,7 @@ public class FeatureExecutable extends DefaultFeature {
 		String result = null;
 				
  		// get the URL of the Archive file that contains the plugin entry
-		URL fileURL = getSite().getSiteContentProvider().getArchivesReferences(getArchiveID(pluginEntry)).asURL();
+		URL fileURL = getSite().getSiteContentProvider().getArchiveReference(getArchiveID(pluginEntry)).asURL();
 		result = UpdateManagerUtils.getPath(fileURL);		
 
 		// return the list of all subdirectories

@@ -74,7 +74,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		try {
 			// check if the site.xml had a coded URL for this plugin or if we
 			// should look in teh default place to find it: <site>+/plugins/+archiveId
-			String filePath = UpdateManagerUtils.getPath(feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)).asURL());						
+			String filePath = UpdateManagerUtils.getPath(feature.getSite().getSiteContentProvider().getArchiveReference(getPluginEntryArchiveID(pluginEntry)).asURL());						
 			open(filePath);
 			if (!(new File(filePath)).exists())
 				throw new IOException("The File:" + filePath + "does not exist.");
@@ -97,7 +97,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		// if it doesn't exist, use the default one
 		String[] result = new String[0];
 		try{
-			URL jarURL =feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)).asURL();
+			URL jarURL =feature.getSite().getSiteContentProvider().getArchiveReference(getPluginEntryArchiveID(pluginEntry)).asURL();
 			String path = UpdateManagerUtils.getPath(jarURL);					
 			result = getJAREntries(path);
 		} catch (IOException ex){
@@ -349,7 +349,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		ContentReference[] references = new ContentReference[archiveIDs.length];		
 		try {
 			for (int i = 0; i < archiveIDs.length; i++) {
-				URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]).asURL();
+				URL url = feature.getSite().getSiteContentProvider().getArchiveReference(archiveIDs[i]).asURL();
 				ContentReference currentReference = new ContentReference(archiveIDs[i],url);
 				currentReference = asLocalReference(currentReference,null);
 				references[i] = currentReference;

@@ -23,6 +23,13 @@ public interface IContentConsumer {
 	 */
 
 	void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * closes the opened ContentConsumer
+	 * @since 2.0 
+	 */
+
+	void close();
 	
 	}
 

@@ -38,9 +38,9 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	private INonPluginEntry nonPluginEntry = null;
 
 	/*
-	 * @see IFeatureContentConsumer#opens(INonPluginEntry)
+	 * @see IContentConsumer#open(INonPluginEntry)
 	 */
-	public IFeatureContentConsumer opens(INonPluginEntry nonPluginEntry) throws CoreException {
+	public IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
 		if (pluginEntry != null || nonPluginEntry != null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			String text = "Content Consumer already opened: ";
@@ -54,9 +54,9 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	}
 
 	/*
-	 * @see IFeatureContentConsumer#opens(IPluginEntry)
+	 * @see IContentConsumer#open(IPluginEntry)
 	 */
-	public IFeatureContentConsumer opens(IPluginEntry pluginEntry) throws CoreException {
+	public IContentConsumer open(IPluginEntry pluginEntry) throws CoreException {
 		if (pluginEntry != null || nonPluginEntry != null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			String text = "Content Consumer already opened: ";
@@ -94,16 +94,6 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	/*
 	 * @see IFeatureContentConsumer#remove(ContentReference, IProgressMonitor)
 	 */
-	public void remove(ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
-		if (nonPluginEntry != null) {
-			feature.getSite().remove(feature,monitor);			
-		} else if (pluginEntry != null) {
-			feature.remove(pluginEntry, monitor);
-		} else { // feature
-			feature.getSite().remove(feature,monitor);
-		}
-		
-	}
 
 	/*
 	 * @see IFeatureContentConsumer#close()

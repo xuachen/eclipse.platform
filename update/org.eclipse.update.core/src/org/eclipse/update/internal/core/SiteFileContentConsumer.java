@@ -162,16 +162,16 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 
 
 	/*
-	 * @see ISiteContentConsumer#opens(INonPluginEntry)
+	 * @see ISiteContentConsumer#open(INonPluginEntry)
 	 */
-	public IFeatureContentConsumer opens(INonPluginEntry nonPluginEntry) throws CoreException {
+	public IFeatureContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
 		return null;
 	}
 
 	/*
-	 * @see ISiteContentConsumer#opens(IPluginEntry)
+	 * @see ISiteContentConsumer#open(IPluginEntry)
 	 */
-	public IFeatureContentConsumer opens(IPluginEntry pluginEntry) throws CoreException {
+	public IFeatureContentConsumer open(IPluginEntry pluginEntry) throws CoreException {
 		return null;
 	}
 
@@ -184,8 +184,6 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	/*
 	 * @see ISiteContentConsumer#remove(ContentReference, IProgressMonitor)
 	 */
-	public void remove(ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
-	}
 
 	/*
 	 * @see ISiteContentConsumer#close()

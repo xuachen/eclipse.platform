@@ -76,16 +76,7 @@ public interface IPluginContainer extends IAdaptable {
 	void store(IPluginEntry entry, String name, InputStream inStream,IProgressMonitor monitor) throws CoreException;
 	
 
-	/**
-	 * removes the plugin from teh container
-	 * 
-	 * @param entry the plugin entry
-	 * @param the progress monitor 
-	 * @since 2.0 
-	 */
-
-	void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException;
-	
+		
 	
 	
 }

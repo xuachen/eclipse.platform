@@ -25,7 +25,6 @@ public class SiteFileFactory extends BaseSiteFactory {
 		
 		try {		
 			SiteFileContentProvider contentProvider = new SiteFileContentProvider(url);
-			SiteFileContentConsumer contentConsumer = new SiteFileContentConsumer();
 					
 			try {
 				siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
@@ -36,7 +35,6 @@ public class SiteFileFactory extends BaseSiteFactory {
 			}
 			
 			site.setSiteContentProvider(contentProvider);
-			site.setSiteContentConsumer(contentConsumer);			
 			
 			site.resolve(url, getResourceBundle(url));
 			site.markReadOnly();			

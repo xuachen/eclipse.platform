@@ -349,7 +349,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 	/*
 	 * @see ISiteContentProvider#getArchivesReferences(String)
 	 */
-	public ContentReference getArchivesReferences(String archiveID) {
+	public ContentReference getArchiveReference(String archiveID) {
 		return null;
 	}
 

@@ -126,7 +126,14 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 */
 	public void remove(IFeature feature, IProgressMonitor monitor) throws CoreException {
 
-		((Feature) feature).remove(monitor);
+		// remove the feature and the plugins if they are not used and not activated
+		// get the plugins from the feature
+		IPluginEntry[] pluginsToRemove = SiteManager.getLocalSite().getUnusedPluginEntries(feature);
+
+		//finds the contentReferences for this IPluginEntry
+		for (int i = 0; i < pluginsToRemove.length; i++) {
+			remove(pluginsToRemove[i], monitor);
+		}
 
 		// remove feature reference
 		IFeatureReference[] featureReferences = getFeatureReferences();
@@ -259,16 +266,9 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	}
 
 	/*
-	* @see ISite#setContentConsumer(ISiteContentConsumer)
-	*/
-	public void setSiteContentConsumer(ISiteContentConsumer contentConsumer) {
-		this.contentConsumer = contentConsumer;
-	}
-
-	/*
-	 * @see ISite#getContentConsumer()
+	 * @see ISite#getContentConsumer(IFeature)
 	 */
-	public ISiteContentConsumer createSiteContentConsumer() throws CoreException {
+	public ISiteContentConsumer createSiteContentConsumer(IFeature feature) throws CoreException {
 		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "FeatureContentConsumer not set for site:" + getURL().toExternalForm(), null);
@@ -335,12 +335,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
 	 */
 	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
-	}
-
-	/*
-	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
-	 */
-	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
 	}
 
 	/*
