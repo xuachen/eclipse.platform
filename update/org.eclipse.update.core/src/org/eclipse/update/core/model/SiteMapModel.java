@@ -104,7 +104,7 @@ public class SiteMapModel extends ModelObject {
 		if (featureReferences == null)
 			this.featureReferences = null;
 		else
-			this.featureReferences = Arrays.asList(featureReferences);
+			this.featureReferences = new ArrayList(Arrays.asList(featureReferences));
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class SiteMapModel extends ModelObject {
 		if (archiveReferences == null)
 			this.archiveReferences = null;
 		else
-			this.archiveReferences = Arrays.asList(archiveReferences);
+			this.archiveReferences = new ArrayList(Arrays.asList(archiveReferences));
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class SiteMapModel extends ModelObject {
 		if (categories == null)
 			this.categories = null;
 		else
-			this.categories = Arrays.asList(categories);
+			this.categories = new ArrayList(Arrays.asList(categories));
 	}
 
 	/**

@@ -331,18 +331,18 @@ public class FeatureModel extends ModelObject {
 		if (discoverySiteInfo == null)
 			this.discoverySiteInfo = null;
 		else
-			this.discoverySiteInfo = Arrays.asList(discoverySiteInfo);
+			this.discoverySiteInfo = new ArrayList(Arrays.asList(discoverySiteInfo));
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public void setImportModelss(ImportModel[] imports) {
+	public void setImportModels(ImportModel[] imports) {
 		assertIsWriteable();
 		if (imports == null)
 			this.imports = null;
 		else
-			this.imports = Arrays.asList(imports);
+			this.imports = new ArrayList(Arrays.asList(imports));
 	}
 
 	/**
@@ -353,7 +353,7 @@ public class FeatureModel extends ModelObject {
 		if (pluginEntries == null)
 			this.pluginEntries = null;
 		else
-			this.pluginEntries = Arrays.asList(pluginEntries);
+			this.pluginEntries = new ArrayList(Arrays.asList(pluginEntries));
 	}
 
 	/**
@@ -364,7 +364,7 @@ public class FeatureModel extends ModelObject {
 		if (nonPluginEntries == null)
 			this.nonPluginEntries = null;
 		else
-			this.nonPluginEntries = Arrays.asList(nonPluginEntries);
+			this.nonPluginEntries = new ArrayList(Arrays.asList(nonPluginEntries));
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class FeatureModel extends ModelObject {
 		if (groupEntries == null)
 			this.groupEntries = null;
 		else
-			this.groupEntries = Arrays.asList(groupEntries);
+			this.groupEntries = new ArrayList(Arrays.asList(groupEntries));
 	}
 
 	/**

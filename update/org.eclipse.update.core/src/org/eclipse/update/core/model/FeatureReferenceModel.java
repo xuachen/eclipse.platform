@@ -94,7 +94,7 @@ public class FeatureReferenceModel extends ModelObject {
 		if (categoryNames == null)
 			this.categoryNames = null;
 		else
-			this.categoryNames = Arrays.asList(categoryNames);
+			this.categoryNames = new ArrayList(Arrays.asList(categoryNames));
 	}
 
 	/**

@@ -190,7 +190,7 @@ public class ContentGroupModel extends ModelObject {
 		if (imports == null)
 			this.imports = null;
 		else
-			this.imports = Arrays.asList(imports);
+			this.imports = new ArrayList(Arrays.asList(imports));
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class ContentGroupModel extends ModelObject {
 		if (pluginEntries == null)
 			this.pluginEntries = null;
 		else
-			this.pluginEntries = Arrays.asList(pluginEntries);
+			this.pluginEntries = new ArrayList(Arrays.asList(pluginEntries));
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class ContentGroupModel extends ModelObject {
 		if (nonPluginEntries == null)
 			this.nonPluginEntries = null;
 		else
-			this.nonPluginEntries = Arrays.asList(nonPluginEntries);
+			this.nonPluginEntries = new ArrayList(Arrays.asList(nonPluginEntries));
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class ContentGroupModel extends ModelObject {
 		if (nestedGroupEntries == null)
 			this.nestedGroupEntries = null;
 		else
-			this.nestedGroupEntries = Arrays.asList(nestedGroupEntries);
+			this.nestedGroupEntries = new ArrayList(Arrays.asList(nestedGroupEntries));
 	}
 
 	/**
