@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.INonPluginEntry;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IImport;
@@ -11,6 +12,7 @@ import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 
@@ -253,6 +255,43 @@ public class MissingFeature implements IFeature {
 	 */
 	public IContentConsumer getContentConsumer() throws CoreException {
 		return null;
+	}
+
+	/*
+	 * @see IFeature#setSite(ISite)
+	 */
+	public void setSite(ISite site) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#getFeatureContentProvider()
+	 */
+	public IFeatureContentProvider getFeatureContentProvider() throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IFeature#install(IFeature, IProgressMonitor)
+	 */
+	public void install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#remove(IProgressMonitor)
+	 */
+	public void remove(IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
+	 */
+	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
 	}
 
 }
