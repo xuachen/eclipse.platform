@@ -158,7 +158,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 	 	String updatable = configSite.isUpdatable()?"true":"false";
 
 		// add to install configuration
-		config.addConfigurationSiteModel(configSite);
+		config.addConfigurationSite(configSite);
 
 		// DEBUG:		
 		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_PARSING) {
@@ -233,7 +233,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 		int status = Integer.parseInt(statusString);
 		activity.setStatus(status);
 
-		config.addActivityModel(activity);
+		config.addActivity(activity);
 
 		// DEBUG:		
 		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_PARSING) {

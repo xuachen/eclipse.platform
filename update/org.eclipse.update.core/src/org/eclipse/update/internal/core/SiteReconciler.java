@@ -175,7 +175,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		activity.setAction(IActivity.ACTION_RECONCILIATION);
 		activity.setDate(new Date());
 		activity.setLabel(siteLocal.getLocationURLString());
-		((InstallConfiguration) newInstallConfiguration).addActivityModel(activity);
+		((InstallConfiguration) newInstallConfiguration).addActivity(activity);
 
 		// [22993] set the timeline to the previous InstallConfiguration
 		// if the reconciliation is not optimistic (if the world hasn't changed)

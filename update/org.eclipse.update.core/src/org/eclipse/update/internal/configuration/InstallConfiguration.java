@@ -28,7 +28,8 @@ import org.eclipse.update.internal.core.UpdateManagerUtils.*;
  *
  */
 
-public class InstallConfiguration extends InstallConfigurationModel implements IInstallConfiguration, IWritable {
+public class InstallConfiguration extends ModelObject
+implements IInstallConfiguration, IWritable {
 
 	private ListenersList listeners = new ListenersList();
 
@@ -52,7 +53,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			if (csites != null) {
 				for (int i = 0; i < csites.length; i++) {
 					ConfiguredSite configSite = new ConfiguredSite(csites[i]);
-					addConfigurationSiteModel(configSite);
+					addConfigurationSite(configSite);
 				}
 			}
 		}
@@ -92,7 +93,14 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 */
 	public IConfiguredSite createConfiguredSite(File file) throws CoreException {
 
-		ISite site = InternalSiteManager.createSite(file);
+		IInstalledSite site = null;
+		try {
+			site = SiteManager.getInstalledSite(file.toURL(),null);
+		} catch (MalformedURLException e) {
+			Utilities.newCoreException("Cannot create configured site", IStatus.ERROR, e);
+		} catch (CoreException e) {
+			throw e;
+		}
 
 		//create a config site around the site
 		// even if the site == null
@@ -129,8 +137,15 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 */
 	public IConfiguredSite createLinkedConfiguredSite(File file) throws CoreException {
 
-		ISite site = InternalSiteManager.createSite(file);
-
+		IInstalledSite site = null;
+		try {
+			site = SiteManager.getInstalledSite(file.toURL(),null);
+		} catch (MalformedURLException e) {
+			Utilities.newCoreException("Cannot create linked site", IStatus.ERROR, e);
+		} catch (CoreException e) {
+			throw e;
+		}
+		
 		//create a config site around the site
 		// even if the site == null
 		BaseSiteLocalFactory factory = new BaseSiteLocalFactory();
@@ -175,7 +190,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 */
 	private void configure(ConfiguredSite linkedSite) throws CoreException {
 		ISite site = linkedSite.getSite();
-		ISiteFeatureReference[] newFeaturesRef = site.getFeatureReferences();
+		IFeatureReference[] newFeaturesRef = site.getFeatureReferences();
 
 		for (int i = 0; i < newFeaturesRef.length; i++) {
 			// TRACE
@@ -200,7 +215,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		activity.setLabel(site.getSite().getURL().toExternalForm());
 		activity.setDate(new Date());
 		ConfiguredSite configSiteModel = (ConfiguredSite) site;
-		addConfigurationSiteModel(configSiteModel);
+		addConfigurationSite(configSiteModel);
 		configSiteModel.setInstallConfigurationModel(this);
 
 		// notify listeners
@@ -220,7 +235,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 * @param activity
 	 */
 	public void addActivity(IActivity activity) {
-		addActivityModel((ConfigurationActivity)activity);
+		addActivity((ConfigurationActivity)activity);
 	}
 
 	/*
@@ -230,7 +245,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		if (!isCurrent() && isReadOnly())
 			return;
 
-		if (removeConfigurationSiteModel((ConfiguredSite) site)) {
+		if (removeConfigurationSite((ConfiguredSite) site)) {
 			// notify listeners
 			Object[] configurationListeners = listeners.getListeners();
 			for (int i = 0; i < configurationListeners.length; i++) {
@@ -427,7 +442,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 		// get the URL of the plugin that corresponds to the feature (pluginid = featureid)
 		String id = feature.getVersionedIdentifier().getIdentifier();
-		IPluginEntry[] entries = feature.getPluginEntries();
+		IPluginEntry[] entries = feature.getPluginEntries(false);
 		URL url = null;
 		IPluginEntry featurePlugin = null;
 		for (int k = 0; k < entries.length; k++) {
@@ -609,7 +624,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 				} else {
 					// the site didn't exist in the InstallConfiguration we are reverting to
 					// unconfigure everything from this site so it is still present
-					ISiteFeatureReference[] featuresToUnconfigure = nowConfigSites[i].getSite().getFeatureReferences();
+					IFeatureReference[] featuresToUnconfigure = nowConfigSites[i].getSite().getFeatureReferences();
 					for (int j = 0; j < featuresToUnconfigure.length; j++) {
 						IFeature featureToUnconfigure = null;
 						try {
@@ -631,7 +646,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			if (sites != null && !sites.isEmpty()) {
 				ConfiguredSite[] sitesModel = new ConfiguredSite[sites.size()];
 				sites.toArray(sitesModel);
-				setConfigurationSiteModel(sitesModel);
+				setConfigurationSite(sitesModel);
 			}
 		}
 	}
@@ -652,7 +667,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	private IPluginEntry[] getPlatformPlugins(IFeature feature, IPlatformConfiguration runtimeConfiguration) {
 		Map featurePlatformPlugins = new HashMap();
 		String[] platformPluginID = runtimeConfiguration.getBootstrapPluginIdentifiers();
-		IPluginEntry[] featurePlugins = feature.getPluginEntries();
+		IPluginEntry[] featurePlugins = feature.getPluginEntries(false);
 
 		for (int i = 0; i < platformPluginID.length; i++) {
 			String featurePluginId = null;

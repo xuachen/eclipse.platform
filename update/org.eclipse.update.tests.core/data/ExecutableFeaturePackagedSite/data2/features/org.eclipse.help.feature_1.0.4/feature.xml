@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="org.eclipse.help.feature" image="feature.jpg" label="Help System Feature" nl="en,fr,de" os="OS_WIN32,OS_LINUX" provider-name="Object Technology International" version="1.0.4" ws="WIN32,MOTIF,GTK">
+  <description url="%desc">This feature will help you. It will show you the way</description>
+  <copyright url="copyright.html">(c) a certain *Blue* company</copyright>
+  <license>International License Agreement for Non-Warranted Programs Part 1 - General Terms PLEASE READ THIS AGREEMENT CAREFULLY BEFORE USING THE PROGRAM. IBM WILL LICENSE THE PROGRAM TO YOU ONLY IF YOU FIRST ACCEPT THE TERMS OF THIS AGREEMENT. BY USING THE PROGRAM YOU AGREE TO THESE TERMS. IF YOU DO NOT AGREE TO THE TERMS OF THIS AGREEMENT, PROMPTLY RETURN THE UNUSED PROGRAM TO THE PARTY (EITHER IBM OR ITS RESELLER) FROM WHOM YOU ACQUIRED IT TO RECEIVE A REFUND OF THE AMOUNT YOU PAID. ... The limitation of liability will not apply to any breach of IBM's obligations implied by Section 12 of the Sales of Goods Act 1979 or Section 2 of the Supply of Goods and Services Act 1982.</license>
+  <url>
+    <update label="URL to update the feature" url="http://www.eclipse.org"/>
+    <discovery label="Discovery 1" url="http://www.eclipse.org"/>
+    <discovery label="Discovery 2" url="http://www.eclipse.org"/>
+  </url>
+  <plugin download-size="1500" id="org.eclipse.help" install-size="1000" fragment="false" nl="fr,en" os="WIN32,LINUX" version="1.0" ws="WIN32,GTK,MOTIF"/>
+</feature>

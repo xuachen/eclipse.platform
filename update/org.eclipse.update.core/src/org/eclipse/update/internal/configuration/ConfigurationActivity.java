@@ -23,7 +23,7 @@ public class ConfigurationActivity extends ModelObject implements IActivity, IWr
 	private int action;
 	private Date date;
 	private int status;
-	private InstallConfigurationModel installConfiguration;
+	private InstallConfiguration installConfiguration;
 	
 
 	/**
@@ -118,7 +118,7 @@ public class ConfigurationActivity extends ModelObject implements IActivity, IWr
 	 * Sets the installConfiguration.
 	 * @param installConfiguration The installConfiguration to set
 	 */
-	public void setInstallConfigurationModel(InstallConfigurationModel installConfiguration) {
+	public void setInstallConfiguration(InstallConfiguration installConfiguration) {
 		assertIsWriteable();		
 		this.installConfiguration = installConfiguration;
 	}
@@ -156,7 +156,7 @@ public class ConfigurationActivity extends ModelObject implements IActivity, IWr
 	 * @see IActivity#getInstallConfiguration()
 	 */
 	public IInstallConfiguration getInstallConfiguration() {
-		return (IInstallConfiguration) getInstallConfigurationModel();
+		return installConfiguration;
 	}
 }
 

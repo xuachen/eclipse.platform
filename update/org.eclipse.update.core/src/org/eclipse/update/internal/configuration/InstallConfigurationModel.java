@@ -68,7 +68,7 @@ public class InstallConfigurationModel extends ModelObject {
 	 * in this case we do not want to create a new activity, so we do not want t call
 	 * addConfigurationSite()
 	 */
-	public void addConfigurationSiteModel(ConfiguredSite site) {
+	public void addConfigurationSite(ConfiguredSite site) {
 		if (configurationSites == null) {
 			configurationSites = new ArrayList();
 		}
@@ -77,17 +77,17 @@ public class InstallConfigurationModel extends ModelObject {
 		}
 	}
 
-	public void setConfigurationSiteModel(ConfiguredSite[] sites) {
+	public void setConfigurationSite(ConfiguredSite[] sites) {
 		configurationSites = null;
 		for (int i = 0; i < sites.length; i++) {
-			addConfigurationSiteModel(sites[i]);
+			addConfigurationSite(sites[i]);
 		}
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public boolean removeConfigurationSiteModel(ConfiguredSite site) {
+	public boolean removeConfigurationSite(ConfiguredSite site) {
 		if (!initialized) initialize();
 
 		if (configurationSites != null) {
@@ -132,7 +132,7 @@ public class InstallConfigurationModel extends ModelObject {
 			activities = new ArrayList();
 		if (!activities.contains(activity)) {
 			activities.add(activity);
-			activity.setInstallConfigurationModel(this);
+			activity.setInstallConfiguration(this);
 		}
 	}
 	/**
