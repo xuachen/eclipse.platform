@@ -290,6 +290,38 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	}
 	
 	/**
+	 * Unpacks the referenced jar archive.
+	 * Returns content references for the specified jar entry
+	 * (in temparary area).
+	 * 
+	 * @since 2.0
+	 */
+	protected ContentReference unpack(ContentReference archive, String entryName, Feature.ProgressMonitor monitor) throws IOException {
+		
+		// assume we have a reference that represents a jar archive.
+		File archiveFile = asLocalFile(archive, monitor);
+		JarFile jarArchive = new JarFile(archiveFile);
+		
+		// unjar the entry
+		ZipEntry entry = jarArchive.getEntry(entryName);
+		if (entry != null) {
+			InputStream is = null;
+			OutputStream os = null;
+			File localFile = createLocalFile(); // create temp file w/o a key map
+			try {
+				is = jarArchive.getInputStream(entry);
+				os = new FileOutputStream(localFile);
+				copy(is, os, monitor);
+			} finally {
+				if (is != null) try { is.close(); } catch(IOException e) {}
+				if (os != null) try { os.close(); } catch(IOException e) {}
+			}
+			return new ContentReference(entry.getName(), localFile);
+		} else
+			throw new FileNotFoundException(archiveFile.getAbsolutePath()+" "+entryName);
+	}
+	
+	/**
 	 * Peeks into the referenced jar archive.
 	 * Returns content references to the packed jar entries within the archive.
 	 * 
@@ -312,6 +344,19 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 			content.add(new JarContentReference(entryName, archiveFile, entryName));
 		}		
 		return (ContentReference[]) content.toArray(new ContentReference[0]);
+	}
+	
+	/**
+	 * Peeks into the referenced jar archive.
+	 * Returns content references for the specified jar entry.
+	 * 
+	 * @since 2.0
+	 */
+	protected ContentReference peek(ContentReference archive, String entryName, Feature.ProgressMonitor monitor) throws IOException {
+		
+		// assume we have a reference that represents a jar archive.
+		File archiveFile = asLocalFile(archive, monitor);
+		return new JarContentReference(entryName, archiveFile, entryName);
 	}
 	
 	/**
