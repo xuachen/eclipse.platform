@@ -165,6 +165,30 @@ public Map getTasks() {
 	return result;
 }
 
+public void addTask(Task task) {
+	// FIXME:
+}
+
+public void addType(Type type) {
+	// FIXME:
+}
+
+public void addURL(URL url) {
+	// FIXME:
+}
+
+public void removeTask(Task task) {
+	// FIXME:
+}
+
+public void removeType(Type type) {
+	// FIXME:
+}
+
+public void removeURL(URL url) {
+	// FIXME:
+}
+
 public Map getTypes() {
 	if (defaultTypes != null)
 		return defaultTypes;
