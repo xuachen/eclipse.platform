@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents a feature reference.
@@ -21,7 +22,8 @@ import java.util.List;
 public class FeatureReferenceModel extends ModelObject {
 	
 	private String type;
-	private String url;
+	private String urlString;
+	private URL url;
 	private List /* of String*/ categoryNames;
 	
 	/**
@@ -44,7 +46,7 @@ public class FeatureReferenceModel extends ModelObject {
 	 * @since 2.0
 	 */	
 	public String getURLString() {
-		return url;
+		return urlString;
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public class FeatureReferenceModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public URL getURL() {
-		return null;
+		return url;
 	}
 
 	/**
@@ -78,9 +80,10 @@ public class FeatureReferenceModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setURLString(String url) {
+	public void setURLString(String urlString) {
 		assertIsWriteable();
-		this.url = url;
+		this.urlString = urlString;
+		this.url = null;
 	}
 
 	/**
@@ -111,5 +114,13 @@ public class FeatureReferenceModel extends ModelObject {
 		assertIsWriteable();
 		if (this.categoryNames != null)
 			this.categoryNames.remove(categoryName);
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		url = resolveURL(base, bundle,urlString);
 	}
 }

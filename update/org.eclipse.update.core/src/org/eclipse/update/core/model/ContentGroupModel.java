@@ -5,9 +5,11 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents a group of related
@@ -313,5 +315,20 @@ public class ContentGroupModel extends ModelObject {
 		markListReferenceReadOnly(getPluginEntryModels());
 		markListReferenceReadOnly(getNonPluginEntryModels());
 		markListReferenceReadOnly(getNestedGroupEntryModels());
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		label = resolveNLString(bundle, label);
+		
+		// delegate to references
+		resolveReference(getDescriptionModel(), base, bundle);
+		resolveListReference(getImportModels(), base, bundle);
+		resolveListReference(getPluginEntryModels(), base, bundle);
+		resolveListReference(getNonPluginEntryModels(), base, bundle);
+		resolveListReference(getNestedGroupEntryModels(), base, bundle);
 	}
 }

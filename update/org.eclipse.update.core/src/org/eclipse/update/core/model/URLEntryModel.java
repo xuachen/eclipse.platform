@@ -6,6 +6,7 @@ package org.eclipse.update.core.model;
  */ 
 
 import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents an annotated URL entry.
@@ -18,7 +19,8 @@ import java.net.URL;
 public class URLEntryModel extends ModelObject {
 	
 	private String annotation;
-	private String url;
+	private String urlString;
+	private URL url;
 	
 	/**
 	 * Creates a uninitialized information entry model object.
@@ -46,7 +48,7 @@ public class URLEntryModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getURLString() {
-		return url;
+		return urlString;
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class URLEntryModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public URL getURL() {
-		return null;
+		return url;
 	}
 	
 	/**
@@ -78,8 +80,18 @@ public class URLEntryModel extends ModelObject {
 	 * @param url url for additional information. Can be <code>null</code>.
 	 * @since 2.0
 	 */	
-	public void setURLString(String url) {
+	public void setURLString(String urlString) {
 		assertIsWriteable();
-		this.url = url;
+		this.urlString = urlString;
+		this.url = null;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		annotation = resolveNLString(bundle, annotation);
+		url = resolveURL(base, bundle, urlString);
 	}
 }

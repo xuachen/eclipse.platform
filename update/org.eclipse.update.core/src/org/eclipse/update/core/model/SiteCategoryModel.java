@@ -1,5 +1,8 @@
 package org.eclipse.update.core.model;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -79,5 +82,16 @@ public class SiteCategoryModel extends ModelObject {
 	 */
 	public void markReadOnly() {		
 		markReferenceReadOnly(getDescriptionModel());
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		label = resolveNLString(bundle,label);
+
+		// delegate to references
+		resolveReference(getDescriptionModel(), base, bundle);
 	}
 }

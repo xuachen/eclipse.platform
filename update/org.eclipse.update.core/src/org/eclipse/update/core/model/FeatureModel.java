@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents the feature in the
@@ -25,7 +26,8 @@ public class FeatureModel extends ModelObject {
 	private String featureVersion;
 	private String label;
 	private String provider;
-	private String imageURL;
+	private String imageURLString;
+	private URL imageURL;
 	private String os;
 	private String ws;
 	private String nl;
@@ -82,7 +84,7 @@ public class FeatureModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getImageURLString() {
-		return imageURL;
+		return imageURLString;
 	}
 	
 	/**
@@ -92,7 +94,7 @@ public class FeatureModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public URL getImageURL() {
-		return null;
+		return imageURL;
 	}
 
 	/**
@@ -243,9 +245,10 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setImageURLString(String imageURL) {
+	public void setImageURLString(String imageURLString) {
 		assertIsWriteable();
-		this.imageURL = imageURL;
+		this.imageURLString = imageURLString;
+		this.imageURL = null;
 	}
 
 	/**
@@ -476,7 +479,7 @@ public class FeatureModel extends ModelObject {
 	}
 	
 	/**
-	 * 
+	 * @since 2.0
 	 */
 	public void markReadOnly() {		
 		markReferenceReadOnly(getDescriptionModel());
@@ -488,5 +491,26 @@ public class FeatureModel extends ModelObject {
 		markListReferenceReadOnly(getPluginEntryModels());
 		markListReferenceReadOnly(getNonPluginEntryModels());
 		markListReferenceReadOnly(getGroupEntryModels());
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		label = resolveNLString(bundle, label);
+		provider = resolveNLString(bundle,provider);
+		imageURL = resolveURL(base, bundle,imageURLString);
+
+		// delegate to references		
+		resolveReference(getDescriptionModel(), base, bundle);
+		resolveReference(getCopyrightModel(), base, bundle);
+		resolveReference(getLicenseModel(), base, bundle);
+		resolveReference(getUpdateSiteEntryModel(), null, bundle);
+		resolveListReference(getDiscoverySiteEntryModels(), null, bundle);
+		resolveListReference(getImportModels(), base, bundle);
+		resolveListReference(getPluginEntryModels(), base, bundle);
+		resolveListReference(getNonPluginEntryModels(), base, bundle);
+		resolveListReference(getGroupEntryModels(), base, bundle);
 	}
 }

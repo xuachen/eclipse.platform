@@ -6,6 +6,7 @@ package org.eclipse.update.core.model;
  */ 
 
 import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents a site archive reference entry.
@@ -18,7 +19,8 @@ import java.net.URL;
 public class ArchiveReferenceModel extends ModelObject {
 	
 	private String path;
-	private String url;
+	private String urlString;
+	private URL url;
 	
 	/**
 	 * Creates a uninitialized model object.
@@ -46,7 +48,7 @@ public class ArchiveReferenceModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getURLString() {
-		return url;
+		return urlString;
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class ArchiveReferenceModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public URL getURL() {
-		return null;
+		return url;
 	}
 	
 	/**
@@ -75,11 +77,20 @@ public class ArchiveReferenceModel extends ModelObject {
 	 * Sets the URL for the archive.
 	 * This object must not be read-only.
 	 *
-	 * @param url url for additional information. Can be <code>null</code>.
+	 * @param urlString url string for additional information. Can be <code>null</code>.
 	 * @since 2.0
 	 */	
-	public void setURLString(String url) {
+	public void setURLString(String urlString) {
 		assertIsWriteable();
-		this.url = url;
+		this.urlString = urlString;
+		this.url = null;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		url = resolveURL(base, bundle, urlString);
 	}
 }

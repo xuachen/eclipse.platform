@@ -6,6 +6,7 @@ package org.eclipse.update.core.model;
  */ 
  
  import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents the definition of a custom
@@ -18,7 +19,8 @@ package org.eclipse.update.core.model;
 
 public class InstallHandlerModel extends ModelObject {
 	
-	private String url;
+	private String urlString;
+	private URL url;
 	private String library;
 	private String clazz;
 	
@@ -38,7 +40,7 @@ public class InstallHandlerModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getURLString() {
-		return url;
+		return urlString;
 	}
 	
 	/**
@@ -48,7 +50,7 @@ public class InstallHandlerModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public URL getURL() {
-		return null;
+		return url;
 	}
 	
 	/**
@@ -78,12 +80,13 @@ public class InstallHandlerModel extends ModelObject {
 	 * Sets URL of the custom installation trigger page.
 	 * This object must not be read-only.
 	 *
-	 * @param url Trigger page URL. May be <code>null</code>.
+	 * @param urlString Trigger page URL. May be <code>null</code>.
 	 * @since 2.0
 	 */	
-	public void setURLString(String url) {
+	public void setURLString(String urlString) {
 		assertIsWriteable();
-		this.url = url;
+		this.urlString = urlString;
+		this.url = null;
 	}
 	
 	/**
@@ -110,5 +113,13 @@ public class InstallHandlerModel extends ModelObject {
 	public void setClassName(String clazz) {
 		assertIsWriteable();
 		this.clazz = clazz;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {
+		// resolve local elements
+		url = resolveURL(base, bundle, urlString);
 	}
 }

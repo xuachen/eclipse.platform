@@ -5,9 +5,11 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */ 
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * An object which represents a site map.
@@ -195,5 +197,15 @@ public class SiteMapModel extends ModelObject {
 		markListReferenceReadOnly(getFeatureReferenceModels());
 		markListReferenceReadOnly(getArchiveReferenceModels());
 		markListReferenceReadOnly(getCategoryModels());
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void resolve(URL base, ResourceBundle bundle) throws Exception {		
+		resolveReference(getDescriptionModel(), base, bundle);
+		resolveListReference(getFeatureReferenceModels(), base, bundle);
+		resolveListReference(getArchiveReferenceModels(), base, bundle);
+		resolveListReference(getCategoryModels(), base, bundle);
 	}
 }
