@@ -252,13 +252,4 @@ public interface IFeatureContentProvider {
 	 */
 	public IFeature getFeature();
 
-	/**
-	 * Sets the feature associated with this content provider.
-	 * In general, this method should only be called as part of
-	 * feature creation. Once set, the feature should not be reset.
-	 * 
-	 * @param feature feature for this content provider
-	 * @since 2.0
-	 */
-	public void setFeature(IFeature feature);
 }

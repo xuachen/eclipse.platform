@@ -58,6 +58,16 @@ public class FeatureReference extends ModelObject implements IFeatureReference {
 	public FeatureReference() {
 		super();
 	}
+	
+	public FeatureReference(ISite site, String urlString) {
+		setSite(site);
+		setURLString(urlString);
+	}
+	
+	public FeatureReference(ISite site, URL url) throws CoreException{
+		setSite(site);
+		setURL(url);
+	}
 
 	/**
 	 * Constructor FeatureReferenceModel.

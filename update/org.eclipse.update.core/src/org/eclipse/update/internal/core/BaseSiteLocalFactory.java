@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.update.internal.core;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.model.*;
+import org.eclipse.update.internal.configuration.*;
 /**
  * 
  */

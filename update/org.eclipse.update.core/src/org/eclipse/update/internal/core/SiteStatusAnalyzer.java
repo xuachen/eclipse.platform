@@ -26,12 +26,12 @@ public class SiteStatusAnalyzer {
 	private static List allRunningPlugins; /*VersionedIdentifier */
 	private static List allConfiguredFeatures; /*VersionedIdentifier */
 
-	private SiteLocal siteLocal;
+	private LocalSite siteLocal;
 
 	/**
 	 * 
 	 */
-	public SiteStatusAnalyzer(SiteLocal siteLocal) {
+	public SiteStatusAnalyzer(LocalSite siteLocal) {
 		this.siteLocal = siteLocal;
 	}
 

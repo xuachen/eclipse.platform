@@ -119,9 +119,7 @@ public class InstalledSiteParser {
 					// PERF: remove code
 					//SiteFileFactory archiveFactory = new SiteFileFactory();
 					featureURL = dirs[index].toURL();
-					featureRef = new FeatureReference();
-					featureRef.setSite(site);
-					featureRef.setURLString(featureURL.toExternalForm());
+					featureRef = new FeatureReference(site, featureURL.toExternalForm());
 					site.addFeatureReference(featureRef);
 				}
 			} catch (MalformedURLException e) {
@@ -166,9 +164,7 @@ public class InstalledSiteParser {
 						featureURL = currentFeatureFile.toURL();
 						// PERF: remove code
 						//SiteFileFactory archiveFactory = new SiteFileFactory();
-						featureRef = new FeatureReference();
-						featureRef.setSite(site);
-						featureRef.setURLString(featureURL.toExternalForm());
+						featureRef = new FeatureReference(site, featureURL.toExternalForm());
 						site.addFeatureReference(featureRef);
 					}
 				}

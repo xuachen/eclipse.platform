@@ -285,11 +285,8 @@ public interface IFeature extends IFeatureReference {
 	 * need to be able to return a content provider.
 	 * 
 	 * @return feature content provider
-	 * @exception CoreExcepton
 	 * @since 2.0
 	 */
-	public IFeatureContentProvider getFeatureContentProvider()
-		throws CoreException;
-
+	public IFeatureContentProvider getFeatureContentProvider();
 
 }

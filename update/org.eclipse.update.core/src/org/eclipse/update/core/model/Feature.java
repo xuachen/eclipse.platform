@@ -648,7 +648,7 @@ public class Feature extends FeatureReference implements IFeature{
 	}
 	void setFeatureContentProvider(IFeatureContentProvider contentProvider) {
 		this.contentProvider = contentProvider;
-		contentProvider.setFeature(this);
+		((FeatureContentProvider)contentProvider).setFeature(this);
 	}
 
 	/**
@@ -980,16 +980,7 @@ public class Feature extends FeatureReference implements IFeature{
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.IFeature#getFeatureContentProvider()
 	 */
-	public IFeatureContentProvider getFeatureContentProvider()
-		throws CoreException {
-		// TODO change this
-		if (contentProvider == null) {
-			if (getSite() instanceof IInstalledSite)
-				contentProvider = new FeatureExecutableContentProvider(url);
-			else 
-				contentProvider = new FeaturePackagedContentProvider(url);
-			contentProvider.setFeature(this);
-		}
+	public IFeatureContentProvider getFeatureContentProvider() {
 		return contentProvider;
 	}
 

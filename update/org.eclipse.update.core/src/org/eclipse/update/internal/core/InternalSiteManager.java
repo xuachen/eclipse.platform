@@ -64,7 +64,7 @@ public class InternalSiteManager {
 
 		if (localSite == null) {
 			try {
-				localSite = SiteLocal.internalGetLocalSite(isOptimistic);
+				localSite = LocalSite.internalGetLocalSite(isOptimistic);
 			} catch (CoreException e) {
 				exceptionOccured = e;
 				throw e;
@@ -365,8 +365,8 @@ public class InternalSiteManager {
 		internalGetLocalSite(optimisticReconciliation);
 
 		// check if new features have been found
-		if (localSite instanceof SiteLocal) {
-			return SiteLocal.newFeaturesFound;
+		if (localSite instanceof LocalSite) {
+			return LocalSite.newFeaturesFound;
 		}
 		return false;
 	}

@@ -48,6 +48,10 @@ public class URLEntry extends ModelObject implements IURLEntry {
 	public URLEntry() {
 		super();
 	}
+	
+	public URLEntry(String urlString) {
+		setURLString(urlString);
+	}
 		
 	/**
 	 * Returns the url annotation. If the model object has been resolved, 
