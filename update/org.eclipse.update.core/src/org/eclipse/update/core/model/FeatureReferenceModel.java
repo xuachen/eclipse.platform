@@ -48,7 +48,12 @@ public class FeatureReferenceModel extends ModelObject {
 	 * @since 2.0
 	 */	
 	public String[] getCategoryNames() {
-		return categoryNames;
+		if (categoryNames == null)
+			return new String[0];
+
+		String[] list = new String[categoryNames.length];
+		System.arraycopy(categoryNames, 0, list, 0, categoryNames.length);
+		return list;
 	}
 
 	/**

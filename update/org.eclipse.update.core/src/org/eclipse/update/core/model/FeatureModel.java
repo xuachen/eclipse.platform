@@ -153,7 +153,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public URLEntryModel[] getDiscoverySiteInfo() {
 		if (discoverySiteInfo == null)
-			return null;
+			return new URLEntryModel[0];
 			
 		return (URLEntryModel[]) discoverySiteInfo.toArray(new URLEntryModel[0]);
 	}
@@ -163,7 +163,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public ImportModel[] getImports() {
 		if (imports == null)
-			return null;
+			return new ImportModel[0];
 			
 		return (ImportModel[]) imports.toArray(new ImportModel[0]);
 	}
@@ -173,7 +173,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public PluginEntryModel[] getPluginEntries() {
 		if (pluginEntries == null)
-			return null;
+			return new PluginEntryModel[0];
 			
 		return (PluginEntryModel[]) pluginEntries.toArray(new PluginEntryModel[0]);
 	}
@@ -183,7 +183,7 @@ public class FeatureModel extends ModelObject {
 	 */
 	public NonPluginEntryModel[] getNonPluginEntries() {
 		if (nonPluginEntries == null)
-			return null;
+			return new NonPluginEntryModel[0];
 			
 		return (NonPluginEntryModel[]) nonPluginEntries.toArray(new NonPluginEntryModel[0]);
 	}
@@ -193,7 +193,7 @@ public class FeatureModel extends ModelObject {
 	 */	
 	public ContentGroupModel[] getGroupEntries() {
 		if (groupEntries == null)
-			return null;
+			return new ContentGroupModel[0];
 			
 		return (ContentGroupModel[]) groupEntries.toArray(new ContentGroupModel[0]);
 	}	

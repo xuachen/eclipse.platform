@@ -74,7 +74,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public String[] getIncludedGroupEntries() {
 		if (includes == null)
-			return null;
+			return new String[0];
 
 		String[] list = new String[includes.length];
 		System.arraycopy(includes, 0, list, 0, includes.length);
@@ -86,7 +86,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public String[] getExcludedGroupEntries() {
 		if (excludes == null)
-			return null;
+			return new String[0];
 
 		String[] list = new String[excludes.length];
 		System.arraycopy(excludes, 0, list, 0, excludes.length);
@@ -98,7 +98,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public ImportModel[] getImports() {
 		if (imports == null)
-			return null;
+			return new ImportModel[0];
 
 		return (ImportModel[]) imports.toArray(new ImportModel[0]);
 	}
@@ -108,7 +108,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public PluginEntryModel[] getPluginEntries() {
 		if (pluginEntries == null)
-			return null;
+			return new PluginEntryModel[0];
 
 		return (PluginEntryModel[]) pluginEntries.toArray(new PluginEntryModel[0]);
 	}
@@ -118,7 +118,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public NonPluginEntryModel[] getNonPluginEntries() {
 		if (nonPluginEntries == null)
-			return null;
+			return new NonPluginEntryModel[0];
 
 		return (NonPluginEntryModel[]) nonPluginEntries.toArray(
 			new NonPluginEntryModel[0]);
@@ -129,7 +129,7 @@ public class ContentGroupModel extends ModelObject {
 	 */	
 	public ContentGroupModel[] getNestedGroupEntries() {
 		if (nestedGroupEntries == null)
-			return null;
+			return new ContentGroupModel[0];
 
 		return (ContentGroupModel[]) nestedGroupEntries.toArray(
 			new ContentGroupModel[0]);
