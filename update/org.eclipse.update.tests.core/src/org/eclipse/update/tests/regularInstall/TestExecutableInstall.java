@@ -36,17 +36,17 @@ public class TestExecutableInstall extends UpdateManagerTestCase {
 		UpdateManagerUtils.removeFromFileSystem(target);		
 		InstallRegistry.cleanup();
 		
-		ISite remoteSite = SiteManager.getSite(SOURCE_FILE_SITE_INSTALLED);
-		IFeatureReference[] remoteFeatureReference = remoteSite.getFeatureReferences();
-		IFeature remoteFeature = remoteFeatureReference[0].getFeature();
-		ISite localSite = SiteManager.getSite(TARGET_FILE_SITE);
+		IUpdateSite remoteSite = SiteManager.getUpdateSite(SOURCE_FILE_SITE_INSTALLED,null);
+		IFeatureReference[] remoteFeatureReferences = remoteSite.getFeatureReferences();
+		IFeature remoteFeature = remoteSite.getFeature(remoteFeatureReferences[0],null);
+		IInstalledSite localSite = SiteManager.getInstalledSite(TARGET_FILE_SITE,null);
 		assertNotNull(remoteFeature);
 		remove(remoteFeature,localSite);		
-		localSite.install(remoteFeature,null,null);
+		localSite.install(remoteFeature,null,null,null,null);
 		
 		// verify
 		String site = localSite.getURL().getFile();
-		IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
+		IPluginEntry[] entries = remoteFeature.getPluginEntries(false);
 		assertTrue("no plugins entry",(entries!=null && entries.length!=0));
 		String pluginName= entries[0].getVersionedIdentifier().toString();
 		File pluginFile = new File(site,Site.DEFAULT_PLUGIN_PATH+pluginName);
