@@ -20,6 +20,8 @@ public class AntRunner implements IPlatformRunnable, IAntCoreConstants {
 	protected List buildListeners;
 	protected Vector targets;
 	protected Map userProperties;
+	protected int messageOutputLevel = 2; // Project.MSG_INFO
+	protected String buildLoggerClassName;
 
 public AntRunner() {
 	buildListeners = new ArrayList(5);
@@ -45,6 +47,15 @@ public void setBuildFileLocation(String buildFileLocation) {
 }
 
 /**
+ * 
+ * 
+ * @param 
+ */
+public void setMessageOutputLevel(int level) {
+	this.messageOutputLevel = level;
+}
+
+/**
  * Sets the executionTargets in the order they need to run.
  * 
  */
@@ -63,6 +74,15 @@ public void addBuildListener(String className) {
 	if (className == null)
 		return;
 	buildListeners.add(className);
+}
+
+/**
+ * Adds a build logger.
+ * 
+ * @param className a BuildLogger class name
+ */
+public void addBuildLogger(String className) {
+	this.buildLoggerClassName = className;
 }
 
 /**
@@ -86,9 +106,17 @@ public void run() throws CoreException {
 		// add listeners
 		Method addBuildListeners = classInternalAntRunner.getMethod("addBuildListeners", new Class[] {List.class});
 		addBuildListeners.invoke(runner, new Object[] {buildListeners});
+		// add build logger
+		if (buildLoggerClassName != null) {
+			Method addBuildLogger = classInternalAntRunner.getMethod("addBuildLogger", new Class[] {String.class});
+			addBuildLogger.invoke(runner, new Object[] {buildLoggerClassName});
+		}
 		// add properties
 		Method addUserProperties = classInternalAntRunner.getMethod("addUserProperties", new Class[] {Map.class});
 		addUserProperties.invoke(runner, new Object[] {userProperties});
+		// set message output level
+		Method setMessageOutputLevel = classInternalAntRunner.getMethod("setMessageOutputLevel", new Class[] {int.class});
+		setMessageOutputLevel.invoke(runner, new Object[] {new Integer(messageOutputLevel)});
 		// set execution targets
 		if (targets != null) {
 			Method setExecutionTargets = classInternalAntRunner.getMethod("setExecutionTargets", new Class[] {Vector.class});

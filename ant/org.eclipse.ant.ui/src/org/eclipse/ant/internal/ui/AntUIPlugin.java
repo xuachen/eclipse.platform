@@ -31,11 +31,6 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	protected IProgressMonitor currentProgressMonitor;
 
 	/**
-	 * 
-	 */
-	protected boolean shouldLogMessages;
-
-	/**
 	 * Unique identifier constant (value <code>"org.eclipse.ant.ui"</code>)
 	 * for the Ant UI plug-in.
 	 */
@@ -207,12 +202,6 @@ protected void initializeDefaultPreferences(IPreferenceStore prefs) {
 	
 }
 
-public boolean getShouldLogMessages() {
-	return shouldLogMessages;
-}
 
-public void setShouldLogMessages(boolean shouldLogMessages) {
-	this.shouldLogMessages = shouldLogMessages;
-}
 
 }
