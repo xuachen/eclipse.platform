@@ -26,6 +26,12 @@ public abstract class BaseFeatureFactory extends FeatureModelFactory implements 
 	 */
 	public abstract IFeature createFeature(URL url, ISite site) throws CoreException;
 
+	/*
+	 * @see IFeatureFactory#createFeature(ISite)
+	 */
+	public IFeature createFeature(ISite site) throws CoreException {
+		return createFeature(null/*URL*/, site);
+	}
 
 	/**
 	 * return the appropriate resource bundle for this feature

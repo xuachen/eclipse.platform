@@ -28,7 +28,7 @@ public interface ISiteContentConsumer extends IContentConsumer {
 	 * @since 2.0 
 	 */
 
-	IFeatureContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException;
+	IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException;
 
 	/**
 	 * opens a Non plugin Entry for storage
@@ -37,7 +37,7 @@ public interface ISiteContentConsumer extends IContentConsumer {
 	 * @since 2.0 
 	 */
 
-	IFeatureContentConsumer open(IPluginEntry pluginEntry) throws CoreException;
+	IContentConsumer open(IPluginEntry pluginEntry) throws CoreException;
 	
 	/**
 	 * closes the opened FeatureContentConsumer
