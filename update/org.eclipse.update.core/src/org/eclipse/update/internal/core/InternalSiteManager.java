@@ -40,8 +40,8 @@ public class InternalSiteManager {
 		sitesTypes = new HashMap();
 
 		// assign default type to protocol		
-		sitesTypes.put("http", SiteFileContentProvider.SITE_TYPE);
-		sitesTypes.put("file", SiteURLContentProvider.SITE_TYPE);
+		sitesTypes.put("http", SiteURLContentProvider.SITE_TYPE);
+		sitesTypes.put("file", SiteFileContentProvider.SITE_TYPE);
 	}
 
 	/**

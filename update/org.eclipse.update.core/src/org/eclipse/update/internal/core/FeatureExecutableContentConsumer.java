@@ -43,7 +43,7 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	 * @see IContentConsumer#open(INonPluginEntry)
 	 */
 	public IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
-		return feature.getSite().createSiteContentConsumer(feature);
+		return new NonPluginEntryContentConsumer(getContentConsumer().open(nonPluginEntry));
 	}
 
 	/*
@@ -63,9 +63,10 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	/*
 	 * @see IFeatureContentConsumer#close()
 	 */
-	public void close() {
+	public IFeatureReference close() throws CoreException {
 		closed = true;
-		if (contentConsumer!=null)	contentConsumer.close();
+		if (contentConsumer!=null)	return contentConsumer.close();
+		return null;
 	}
 
 	/*
@@ -84,5 +85,11 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 		return contentConsumer;
 	}
 
+
+	/*
+	 * @see IFeatureContentConsumer#abort()
+	 */
+	public void abort() {
+	}
 
 }

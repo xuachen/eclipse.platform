@@ -34,8 +34,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		 * 
 		 */
 		public boolean include(String entry){
-			char ch = entry.charAt(entry.length()-1);
-			return (ch!=File.separatorChar && ch!='/');
+			return (!entry.endsWith(File.separator) && !entry.endsWith("/"));
 		}
 		
 		/*

@@ -5,8 +5,10 @@ package org.eclipse.update.internal.core;
  */
 import java.io.*;
 
+import java.net.MalformedURLException;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.FeatureModel;
 
 /**
  * Site on the File System
@@ -28,7 +30,7 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	 */
 	public void store(IPluginEntry pluginEntry, String contentKey, InputStream inStream) throws CoreException {
 
-		String path = UpdateManagerUtils.getPath(site.getURL());
+		String path = UpdateManagerUtils.getPath(getSite().getURL());
 
 		// FIXME: fragment code
 		String pluginPath = null;
@@ -55,11 +57,12 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	}
 
 	/**
- 	 * move into contentSelector, comment to provider and consumer (SiteFile)
+ 	 * return tehepath in whichh the Feature will be installed
  	 */
-	private String getFeaturePath(VersionedIdentifier featureIdentifier) {
-		String path = UpdateManagerUtils.getPath(site.getURL());
-		String featurePath = path + Site.INSTALL_FEATURE_PATH + featureIdentifier.toString();
+	private String getFeaturePath() {
+		VersionedIdentifier featureIdentifier = feature.getVersionIdentifier();
+		String path = UpdateManagerUtils.getPath(getSite().getURL());
+		String featurePath = path + Site.INSTALL_FEATURE_PATH + featureIdentifier.toString() + File.separator;
 		return featurePath;
 	}
 	
@@ -67,14 +70,14 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	 * @see ISiteContentConsumer#open(INonPluginEntry)
 	 */
 	public IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
-		return new SiteFileContentConsumer(feature);
+		return new SiteFileNonPluginContentConsumer(getFeaturePath());
 	}
 
 	/*
 	 * @see ISiteContentConsumer#open(IPluginEntry)
 	 */
 	public IContentConsumer open(IPluginEntry pluginEntry) throws CoreException {
-		return new SiteFilePluginContentConsumer(pluginEntry,site);
+		return new SiteFilePluginContentConsumer(pluginEntry,getSite());
 	}
 
 	/*
@@ -82,9 +85,9 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	 */
 	public void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
 		InputStream inStream = null;
-		String featurePath = getFeaturePath(feature.getVersionIdentifier());
+		String featurePath = getFeaturePath();
 		String contentKey = contentReference.getIdentifier();
-		featurePath += featurePath.endsWith(File.separator) ? contentKey : File.separator+contentKey;		
+		featurePath += contentKey ;
 		try {
 			inStream = contentReference.getInputStream();
 			UpdateManagerUtils.copyToLocal(inStream, featurePath, null);
@@ -104,6 +107,27 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	/*
 	 * @see ISiteContentConsumer#close()
 	 */
-	public void close() {
+	public IFeatureReference close() throws CoreException {
+				
+		FeatureReference ref = new FeatureReference();
+		ref.setSite(getSite());
+		File file = null;
+		try {
+			file = new File(getFeaturePath());
+			ref.setURL(file.toURL());
+		} catch (MalformedURLException e){
+			throw newCoreException("Cannot create URL on File:"+ file.getAbsolutePath(),e);
+		}
+		return ref;
 	}
+
+	/*
+	 * @see ISiteContentConsumer#abort()
+	 */
+	public void abort() {
+	}
+	
+	private CoreException newCoreException(String s, Throwable e) throws CoreException {
+		return new CoreException(new Status(IStatus.ERROR,"org.eclipse.update.core",0,s,e));
+	}	
 }

@@ -127,14 +127,14 @@ public class Feature extends FeatureModel implements IFeature {
 		//	in case we throw a cancel exception
 		String pluginId = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 		IStatus cancelStatus = new Status(IStatus.ERROR, pluginId, IStatus.OK, "Install has been Cancelled", null);
-//		IStatus cancelStatus = new Status(IStatus.ERROR, "org.eclipse.update", IStatus.OK, "Install has been Cancelled", null);
+		//		IStatus cancelStatus = new Status(IStatus.ERROR, "org.eclipse.update", IStatus.OK, "Install has been Cancelled", null);
 		CANCEL_EXCEPTION = new CoreException(cancelStatus);
 	}
 
 	/**
 	 * Constructor
 	 */
-	public Feature(){
+	public Feature() {
 	}
 
 	/*
@@ -175,10 +175,10 @@ public class Feature extends FeatureModel implements IFeature {
 	 */
 	public IURLEntry[] getDiscoverySiteEntries() {
 		URLEntryModel[] result = getDiscoverySiteEntryModels();
-		if (result.length == 0) 
+		if (result.length == 0)
 			return new IURLEntry[0];
 		else
-			return(IURLEntry[])result;
+			return (IURLEntry[]) result;
 	}
 
 	/*
@@ -215,7 +215,7 @@ public class Feature extends FeatureModel implements IFeature {
 	public void setSite(ISite site) throws CoreException {
 		if (this.site != null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			String featureURLString = (getURL()!=null)?getURL().toExternalForm():"";
+			String featureURLString = (getURL() != null) ? getURL().toExternalForm() : "";
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Site already set for the feature " + featureURLString, null);
 			throw new CoreException(status);
 		}
@@ -313,47 +313,51 @@ public class Feature extends FeatureModel implements IFeature {
 	/*
 	 * @see IFeature#install(IFeature, IProgressMonitor) throws CoreException
 	 */
-	public void install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException {
+	public IFeatureReference install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException {
 
 		//
 		IFeatureContentConsumer consumer = targetFeature.getContentConsumer();
 
-		//finds the contentReferences for this IFeature
-		ContentReference[] references = getFeatureContentProvider().getFeatureEntryContentReferences();
-		for (int i = 0; i < references.length; i++) {
-			consumer.store(references[i], monitor);
-		}
-
-		// determine list of plugins to install
-		// find the intersection between the two arrays of IPluginEntry...
-		// The one teh site contains and teh one the feature contains
-		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
-		ISite targetSite = targetFeature.getSite();
-		IPluginEntry[] targetSitePluginEntries = (targetSite != null) ? site.getPluginEntries() : new IPluginEntry[0];
-		IPluginEntry[] pluginsToInstall = intersection(sourceFeaturePluginEntries, targetSitePluginEntries);
-
-		//finds the contentReferences for this IPluginEntry
-		for (int i = 0; i < pluginsToInstall.length; i++) {
-			IContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
-			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToInstall[i]);
-			for (int j = 0; j < references.length; j++) {
-				pluginConsumer.store(references[j], monitor);
+		try {
+			//finds the contentReferences for this IFeature
+			ContentReference[] references = getFeatureContentProvider().getFeatureEntryContentReferences();
+			for (int i = 0; i < references.length; i++) {
+				consumer.store(references[i], monitor);
 			}
-			pluginConsumer.close();
-		}
 
-		// download and install non plugins bundles
-		INonPluginEntry[] nonPluginsContentReferencesToInstall = getNonPluginEntries();
-		for (int i = 0; i < nonPluginsContentReferencesToInstall.length; i++) {
-			IContentConsumer nonPluginConsumer = consumer.open(nonPluginsContentReferencesToInstall[i]);
-			references = getFeatureContentProvider().getNonPluginEntryArchiveReferences(nonPluginsContentReferencesToInstall[i]);
-			for (int j = 0; j < references.length; j++) {
-				nonPluginConsumer.store(references[j], monitor);
+			// determine list of plugins to install
+			// find the intersection between the two arrays of IPluginEntry...
+			// The one teh site contains and teh one the feature contains
+			IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
+			ISite targetSite = targetFeature.getSite();
+			IPluginEntry[] targetSitePluginEntries = (targetSite != null) ? site.getPluginEntries() : new IPluginEntry[0];
+			IPluginEntry[] pluginsToInstall = intersection(sourceFeaturePluginEntries, targetSitePluginEntries);
+
+			//finds the contentReferences for this IPluginEntry
+			for (int i = 0; i < pluginsToInstall.length; i++) {
+				IContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
+				references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToInstall[i]);
+				for (int j = 0; j < references.length; j++) {
+					pluginConsumer.store(references[j], monitor);
+				}
+				pluginConsumer.close();
 			}
-			nonPluginConsumer.close();
-		}
 
-		consumer.close();
+			// download and install non plugins bundles
+			INonPluginEntry[] nonPluginsContentReferencesToInstall = getNonPluginEntries();
+			for (int i = 0; i < nonPluginsContentReferencesToInstall.length; i++) {
+				IContentConsumer nonPluginConsumer = consumer.open(nonPluginsContentReferencesToInstall[i]);
+				references = getFeatureContentProvider().getNonPluginEntryArchiveReferences(nonPluginsContentReferencesToInstall[i]);
+				for (int j = 0; j < references.length; j++) {
+					nonPluginConsumer.store(references[j], monitor);
+				}
+				nonPluginConsumer.close();
+			}
+		} finally {
+			// an error occured, abort
+			consumer.abort();
+		}
+		return consumer.close();
 
 	}
 
@@ -361,7 +365,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#remove(IProgressMonitor) throws CoreException
 	 */
 	public void remove(IProgressMonitor monitor) throws CoreException {
-		getSite().remove(this,monitor);
+		getSite().remove(this, monitor);
 	}
 
 	/*
@@ -416,7 +420,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 */
 	public IImport[] getImports() {
 		ImportModel[] result = getImportModels();
-		if (result.length == 0) 
+		if (result.length == 0)
 			return new IImport[0];
 		else
 			return (IImport[]) result;
@@ -451,7 +455,7 @@ public class Feature extends FeatureModel implements IFeature {
 	public IFeatureContentProvider getFeatureContentProvider() throws CoreException {
 		if (featureContentProvider == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for feature." , null);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for feature.", null);
 			throw new CoreException(status);
 		}
 		return this.featureContentProvider;
@@ -492,8 +496,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
 	 */
 	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
-		getSite().store(entry,name,inStream,monitor);
+		getSite().store(entry, name, inStream, monitor);
 	}
-
 
 }

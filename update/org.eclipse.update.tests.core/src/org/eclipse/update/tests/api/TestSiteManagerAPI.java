@@ -33,8 +33,12 @@ public class TestSiteManagerAPI extends UpdateManagerTestCase {
 	public void testUnknown() throws Exception {
 		URL url = new URL("ftp://255.255.255.255/");
 		boolean ok = false;
+		try {
 		ISite httpSite = SiteManager.getSite(url);
-		assertTrue(httpSite==null);
+		fail("Connected to ftp://255.255.255.255/, should not happen");
+		} catch (CoreException e){
+			// expected
+		}
 	}
 	
 	public void testLocalSite() throws Exception {

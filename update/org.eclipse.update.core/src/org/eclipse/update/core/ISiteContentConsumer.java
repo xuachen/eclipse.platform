@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
   * Only a FeatureContentConsumer with an IFeature parent can open sub-FeatureContentConsumer.
   */
  
-public interface ISiteContentConsumer extends IContentConsumer {
+public interface ISiteContentConsumer {
 
 	/**
 	 * Stores a content reference into the FeatureContentConsumer
@@ -53,8 +53,15 @@ public interface ISiteContentConsumer extends IContentConsumer {
 	 * @since 2.0 
 	 */
 
-	void close();	
+	IFeatureReference close() throws CoreException ;	
 	
+
+	/**
+	 * aborts the opened FeatureContentConsumer
+	 * @since 2.0 
+	 */
+
+	void abort();		
 	}
 
 

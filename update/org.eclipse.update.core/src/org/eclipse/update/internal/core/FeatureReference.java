@@ -74,7 +74,8 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		String type = getType();
 		if (feature == null) {
 			if (type== null || type.equals("")) {
-				if (getURL().toExternalForm().endsWith(FeaturePackagedContentProvider.JAR_EXTENSION)) {
+				URL url = getURL();
+				if (url!=null && url.toExternalForm().endsWith(FeaturePackagedContentProvider.JAR_EXTENSION)) {
 					// if it ends with JAR, guess it is a FeaturePackaged
 					String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
 					type=(pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE);

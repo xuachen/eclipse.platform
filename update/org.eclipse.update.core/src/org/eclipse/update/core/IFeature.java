@@ -269,7 +269,7 @@ public interface IFeature extends IPluginContainer {
 	 * @param monitor
 	 * @throws CoreException
 	 */
-	public void install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException;
+	public IFeatureReference install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Removes the feature from the Site

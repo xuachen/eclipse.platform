@@ -137,11 +137,11 @@ public class DefaultFeature extends Feature {
 	 * sets teh URL isf not already present
 	 */
 	public void setURL(URL url) throws CoreException{
-		if (getFeatureContentProvider()==null){
+		//if (getFeatureContentProvider()==null){
 			FeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
 			this.setFeatureContentProvider(contentProvider);
 			contentProvider.setFeature(this);
-		}
+		//}
 	}
 
 	}

@@ -19,8 +19,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
   * Only a FeatureContentConsumer with an IFeature parent can open sub-FeatureContentConsumer.
   */
  
-public interface IFeatureContentConsumer extends IContentConsumer {
+public interface IFeatureContentConsumer {
 
+	
 	/**
 	 * Stores a content reference into the FeatureContentConsumer
 	 * @param ContentReference the content reference to store
@@ -29,6 +30,12 @@ public interface IFeatureContentConsumer extends IContentConsumer {
 	 * @since 2.0 
 	 */
 	void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * closes the opened FeatureContentConsumer
+	 * @since 2.0 
+	 */
+	IFeatureReference close() throws CoreException;
 
 	/**
 	 * opens a Non plugin Entry for storage
@@ -48,12 +55,13 @@ public interface IFeatureContentConsumer extends IContentConsumer {
 
 	IContentConsumer open(IPluginEntry pluginEntry) throws CoreException;
 	
+		
 	/**
-	 * closes the opened FeatureContentConsumer
+	 * abort the opened FeatureContentConsumer
 	 * @since 2.0 
 	 */
 
-	void close();	
+	void abort();		
 	
 	/**
 	 * sets the feature for this content consumer

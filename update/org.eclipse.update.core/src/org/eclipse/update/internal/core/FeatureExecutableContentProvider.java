@@ -143,7 +143,8 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-			URL fileURL = provider.getArchiveReference(getArchiveID(pluginEntry));
+			String archiveID = getArchiveID(pluginEntry);
+			URL fileURL = provider.getArchiveReference(archiveID);
 			String fileString = UpdateManagerUtils.getPath(fileURL);
 
 			// return the list of all subdirectories
@@ -153,7 +154,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 			if (!pluginDir.exists())
 				throw new IOException("The File:" + fileString + "does not exist.");
 
-			result[1] = new ContentReference(null,pluginDir.toURL());
+			result[0] = new ContentReference(archiveID,pluginDir.toURL());
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive names for:" + pluginEntry.getIdentifier().toString(), e);

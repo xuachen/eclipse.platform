@@ -49,12 +49,10 @@ public class SiteFileFactory extends BaseSiteFactory {
 			site.markReadOnly();			
 			
 		} catch (IOException e) {
-			// if we cannot find the feature or the feature.xml...
-			// We should not stop the execution 
-			// but we must Log it all the time, not only when debugging...
+
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "WARNING: cannot open site.xml in the site:" + url.toExternalForm(), e);
-			UpdateManagerPlugin.getPlugin().getLog().log(status);
+			throw new CoreException(status);
 		} catch (Exception e) {
 			
 			if (e instanceof SAXException){

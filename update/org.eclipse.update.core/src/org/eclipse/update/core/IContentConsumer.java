@@ -29,7 +29,7 @@ public interface IContentConsumer {
 	 * @since 2.0 
 	 */
 
-	void close();
+	void close() throws CoreException ;
 	
 	}
 

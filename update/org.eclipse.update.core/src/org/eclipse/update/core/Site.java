@@ -106,10 +106,7 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	public IFeatureReference install(IFeature sourceFeature, IProgressMonitor monitor) throws CoreException {
 		// should start Unit Of Work and manage Progress Monitor
 		IFeature localFeature = createExecutableFeature(sourceFeature);
-		sourceFeature.install(localFeature, monitor);
-		IFeatureReference localFeatureReference = new FeatureReference();
-		localFeatureReference.setSite(this);
-		localFeatureReference.setURL(localFeature.getURL());
+		IFeatureReference localFeatureReference = sourceFeature.install(localFeature, monitor);
 		this.addFeatureReference(localFeatureReference);
 
 		// notify listeners
@@ -173,7 +170,7 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
 			result = factory.createFeature(this);
 			
-			// at least set the version indetifier to be the same
+			// at least set the version identifier to be the same
 			((FeatureModel)result).setFeatureIdentifier(sourceFeature.getVersionIdentifier().getIdentifier());
 			((FeatureModel)result).setFeatureVersion(sourceFeature.getVersionIdentifier().getVersion().toString());			
 		}

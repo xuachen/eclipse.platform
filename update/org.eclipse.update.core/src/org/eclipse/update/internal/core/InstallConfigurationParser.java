@@ -159,7 +159,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 		if (url != null) {
 			//IFeatureReference ref = ((Site) configSite.getSite()).getFeatureReferences(url);
 			IFeatureReference ref = new FeatureReference();
-			ref.setSite(((Site) configSite.getSite()));
+			ref.setSite(configSite.getSite());
 			ref.setURL(url);
 			if (ref != null)
 				if (configured){
