@@ -31,4 +31,21 @@
     </application>
    </extension>
    
+   <!-- Objects -->
+   <extension point="org.eclipse.ant.core.objects">
+      <object
+         name="org.eclipse.ant.internal.core.ant.InternalAntRunner"
+         class="org.eclipse.ant.internal.core.ant.InternalAntRunner"
+         library="lib/antcoreext.jar">
+      </object>
+   </extension>
+
+   <!-- Types -->
+   <extension point="org.eclipse.ant.core.types">
+      <type
+         name="commapatternset"
+         class="org.eclipse.ant.internal.core.ant.CommaPatternSet"
+         library="lib/antcoreext.jar">
+      </type>
+   </extension>
 </plugin>
