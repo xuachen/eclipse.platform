@@ -244,10 +244,12 @@ public class FeatureReference extends ModelObject implements IFeatureReference {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(getClass().toString() + " :");
-		buffer.append(" at ");
+		if (featureId != null)
+			buffer.append(featureId);
+		if (featureVersion != null)
+			buffer.append('_').append(featureVersion);
 		if (url != null)
-			buffer.append(url.toExternalForm());
+			buffer.append(' ').append(url.toExternalForm());
 		return buffer.toString();
 	}
 
@@ -366,10 +368,19 @@ public class FeatureReference extends ModelObject implements IFeatureReference {
 	 * @deprecated
 	 */
 	private IFeature getFeature() throws CoreException {
+		return getFeature(null);
+	}
+	
+	/**
+	 * Returns the feature this reference points to 
+	 * @return the feature on the Site
+	 * @deprecated
+	 */
+	public IFeature getFeature(IProgressMonitor monitor) throws CoreException {
 		if (feature == null) {
 			URL refURL = getURL();
 			if (site != null)
-				feature = site.getFeature(this,null);
+				feature = site.getFeature(this,monitor);
 			else
 				throw Utilities.newCoreException("Feature reference does not have a site", null);
 		}

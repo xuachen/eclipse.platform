@@ -186,7 +186,7 @@ public class TestLocalSite extends UpdateManagerTestCase {
 		IInstallConfiguration newConfig = site.cloneCurrentConfiguration();
 		newConfig.setLabel("new Label");		
 		IConfiguredSite configSite = newConfig.getConfiguredSites()[0];
-		ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicyModel();
+		ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicy();
 		configPolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_INCLUDE);
 		((ConfiguredSite)configSite).setConfigurationPolicyModel((ConfigurationPolicyModel)configPolicy);	
 		int oldNumberOfhistory = site.getConfigurationHistory().length;			
@@ -268,7 +268,7 @@ public class TestLocalSite extends UpdateManagerTestCase {
 		IInstallConfiguration newConfig = site.cloneCurrentConfiguration();
 		newConfig.setLabel("new Label");		
 		IConfiguredSite configSite = newConfig.getConfiguredSites()[0];
-		ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicyModel();
+		ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicy();
 		configPolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_INCLUDE);
 		((ConfiguredSite)configSite).setConfigurationPolicyModel((ConfigurationPolicyModel)configPolicy);	
 		int oldNumberOfhistory = site.getConfigurationHistory().length;			
@@ -356,7 +356,7 @@ public void testRetriveConfigHTTPInstallNotEnable() throws Exception {
 	IInstallConfiguration newConfig = site.cloneCurrentConfiguration();
 	newConfig.setLabel("new Label");		
 	IConfiguredSite configSite = newConfig.getConfiguredSites()[0];
-	ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicyModel();
+	ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicy();
 	configPolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_INCLUDE);
 	((ConfiguredSite)configSite).setConfigurationPolicyModel((ConfigurationPolicyModel)configPolicy);	
 	int oldNumberOfhistory = site.getConfigurationHistory().length;			

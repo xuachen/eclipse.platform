@@ -294,18 +294,6 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 
 	/**
 	 * @see org.eclipse.update.core.IIncludedFeatureReference#getFeature(boolean,
-	 * IConfiguredSite)
-	 * @deprecated
-	 */
-	public IFeature getFeature(
-		boolean perfectMatch,
-		IConfiguredSite configuredSite)
-		throws CoreException {
-		return getFeature(perfectMatch, configuredSite, null);
-	}
-
-	/**
-	 * @see org.eclipse.update.core.IIncludedFeatureReference#getFeature(boolean,
 	 * IConfiguredSite,IProgressMonitor)
 	 */
 	public IFeature getFeature(
@@ -399,13 +387,6 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 			return newRef;
 		else
 			return this;
-	}
-	/**
-	 * @see org.eclipse.update.core.IFeatureReference#getFeature()
-	 * @deprecated
-	 */
-	public IFeature getFeature() throws CoreException {
-		return getFeature(null);
 	}
 	/**
 	 * @see org.eclipse.update.core.IFeatureReference#getFeature

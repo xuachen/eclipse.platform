@@ -36,7 +36,7 @@ public class BaseSiteLocalFactory {
 	/*
 	 * 
 	 */
-	public ConfigurationPolicyModel createConfigurationPolicyModel() {
+	public ConfigurationPolicy createConfigurationPolicy() {
 		return new ConfigurationPolicy();
 	}
 	/**
@@ -45,11 +45,11 @@ public class BaseSiteLocalFactory {
 	public ConfiguredSite createConfigurationSiteModel(Site site, int policy) {
 		//create config site
 		ConfiguredSite configSite = this.createConfigurationSiteModel();
-		configSite.setSiteModel(site);
-		ConfigurationPolicyModel policyModel = this.createConfigurationPolicyModel();
+		configSite.setSite(site);
+		ConfigurationPolicy policyModel = this.createConfigurationPolicy();
 		policyModel.setPolicy(policy);
-		configSite.setConfigurationPolicyModel(policyModel);
-		((ConfigurationPolicy) policyModel).setConfiguredSiteModel(configSite);
+		configSite.setConfigurationPolicy(policyModel);
+		((ConfigurationPolicy) policyModel).setConfiguredSite(configSite);
 		return configSite;
 	}
 }

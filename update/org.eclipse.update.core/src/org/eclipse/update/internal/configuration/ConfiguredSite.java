@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.core.model.Site;
 import org.eclipse.update.internal.core.*;
 
 /**
@@ -27,9 +26,9 @@ import org.eclipse.update.internal.core.*;
 public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWritable{
 	private String[] previousPluginPath;
 
-	private Site site;
+	private IInstalledSite site;
 	private String platformURLString;
-	private ConfigurationPolicyModel policy;
+	private ConfigurationPolicy policy;
 	private InstallConfigurationModel installConfiguration;
 	private boolean installable = false;
 
@@ -59,27 +58,18 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	 */
 	public ConfiguredSite(IConfiguredSite configSite) {
 		ConfiguredSite cSite = (ConfiguredSite) configSite;
-		setSiteModel(cSite.getSiteModel());
-		setConfigurationPolicyModel(new ConfigurationPolicy(cSite.getConfigurationPolicy()));
+		setSite(cSite.getSite());
+		setConfigurationPolicy(new ConfigurationPolicy(cSite.getConfigurationPolicy()));
 		setUpdatable(cSite.isUpdatable());
 		setEnabled(cSite.isEnabled());
 		setPreviousPluginPath(cSite.getPreviousPluginPath());
 	}		
 
 	/**
-	 * returns the site
-	 * @return The ISite 
-	 * @since 2.0
-	 */
-	public Site getSiteModel() {
-		return site;
-	}
-
-	/**
 	 * Sets the site.
 	 * @param site The site to set
 	 */
-	public void setSiteModel(Site site) {
+	public void setSite(IInstalledSite site) {
 		assertIsWriteable();
 		this.site = site;
 	}
@@ -87,7 +77,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	/**
 	 * returns the policy
 	 */
-	public ConfigurationPolicyModel getConfigurationPolicyModel() {
+	public ConfigurationPolicy getConfigurationPolicy() {
 		return policy;
 	}
 
@@ -95,10 +85,10 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	 * 
 	 * @since 2.0
 	 */
-	public void setConfigurationPolicyModel(ConfigurationPolicyModel policy) {
+	void setConfigurationPolicy(ConfigurationPolicy policy) {
 		assertIsWriteable();
 		this.policy = policy;
-		policy.setConfiguredSiteModel(this);
+		policy.setConfiguredSite(this);
 	}
 
 	/**
@@ -199,14 +189,14 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	 * @see org.eclipse.update.configuration.IConfiguredSite#isEnabled()
 	 */
 	public boolean isEnabled() {
-		return getConfigurationPolicyModel().isEnabled();
+		return getConfigurationPolicy().isEnabled();
 	}
 
 	/**
 	 * @see org.eclipse.update.configuration.IConfiguredSite#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean value) {
-		getConfigurationPolicyModel().setEnabled(value);
+		getConfigurationPolicy().setEnabled(value);
 	}
 	
 	/*
@@ -308,7 +298,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	/*
 	 * @see IConfiguredSite#install(IFeature, IFeatureReference, IVerificationListener, IProgressMonitor)
 	 */
-	public IFeatureReference install(IFeature feature, IFeatureReference[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException {
+	public IFeatureReference install(IFeature feature, IFeature[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException {
 
 		// change the status if justCreated
 		if (justCreated) justCreated=false;
@@ -337,7 +327,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 		activity.setDate(new Date());
 
 		try {
-			installedFeatureRef = getSite().install(feature, optionalFeatures, verificationListener, monitor);
+			installedFeatureRef = getSite().install(feature, optionalFeatures, null, verificationListener, monitor);
 
 			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_INSTALL) {
 				UpdateCore.debug("Sucessfully installed: " + installedFeatureRef.getURL().toExternalForm());
@@ -397,8 +387,8 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 
 		try {
 			IFeatureReference referenceToRemove = null;
-			ISiteFeatureReference[] featureRef = getSite().getFeatureReferences();
-			ISiteFeatureReference ref = getSite().getFeatureReference(feature);
+			IFeatureReference[] featureRef = getSite().getFeatureReferences();
+			IFeatureReference ref = getSite().getFeatureReference(feature.getVersionedIdentifier());
 			for (int i = 0; i < featureRef.length; i++) {
 				if (featureRef[i].equals(ref)) {
 					referenceToRemove = featureRef[i];
@@ -426,7 +416,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 
 			// remove the feature
 			getSite().remove(feature, monitor);
-			getConfigurationPolicy().removeFeatureReference(referenceToRemove);
+			((ConfigurationPolicy)getConfigurationPolicy()).removeFeatureReference(referenceToRemove);
 			// everything done ok
 			activity.setStatus(IActivity.STATUS_OK);
 			// notify listeners
@@ -447,14 +437,13 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	 * @see IConfiguredSite#configure(IFeature) 
 	 */
 	public void configure(IFeature feature) throws CoreException {
-		configure(feature, null, true /*callInstallHandler*/
-		);
+		configure(feature, null, true /*callInstallHandler*/);
 	}
 
 	/*
 	 * 
 	 */
-	private void configure(IFeature feature, IFeatureReference[] optionalFeatures, boolean callInstallHandler) throws CoreException {
+	private void configure(IFeature feature, IFeature[] optionalFeatures, boolean callInstallHandler) throws CoreException {
 
 		if (feature == null) {
 			UpdateCore.warn("Attempting to configure a null feature in site:" + getSite().getURL().toExternalForm());
@@ -466,25 +455,22 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 			return;
 
 		// bottom up approach, same configuredSite
-		IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatures();
-		if (optionalFeatures != null) {
-			childrenRef = childrenToConfigure(childrenRef, optionalFeatures);
-		}
+		IFeature[] children = childrenToConfigure(feature, optionalFeatures);
 
-		for (int i = 0; i < childrenRef.length; i++) {
+		for (int i = 0; i < children.length; i++) {
 			try {
-				IFeature child = childrenRef[i].getFeature(null);
+//				IFeature child = childrenRef[i].getFeature(null);
+				IFeature child = children[i];
 				configure(child, optionalFeatures, callInstallHandler);
 			} catch (CoreException e) {
 				// will skip any bad children
-				if (!childrenRef[i].isOptional())
-					UpdateCore.warn("Unable to configure child feature: " + childrenRef[i] + " " + e);
+				if (!feature.isOptional(children[i]))
+					UpdateCore.warn("Unable to configure child feature: " + children[i] + " " + e);
 			}
 		}
 
 		// configure root feature 	
-		IFeatureReference featureReference = getSite().getFeatureReference(feature);
-		configPolicy.configure(featureReference, callInstallHandler, true);
+		configPolicy.configure(feature, callInstallHandler, true);
 
 		// notify listeners
 		Object[] siteListeners = listeners.getListeners();
@@ -500,31 +486,31 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	 * @param optionalfeatures optional features to install
 	 * @return IFeatureReference[]
 	 */
-	private IIncludedFeatureReference[] childrenToConfigure(IIncludedFeatureReference[] children, IFeatureReference[] optionalfeatures) {
+	private IFeature[] childrenToConfigure(IFeature feature, IFeature[] optionalFeatures) throws CoreException{
 
+		// bottom up approach, same configuredSite
+		IFeature[] children = feature.getIncludedFeatures(true);
+		if (optionalFeatures == null)
+			return children;
+	
 		List childrenToInstall = new ArrayList();
 		for (int i = 0; i < children.length; i++) {
-			IIncludedFeatureReference optionalFeatureToConfigure = children[i];
-			if (!optionalFeatureToConfigure.isOptional()) {
+			IFeature optionalFeatureToConfigure = children[i];
+			if (!feature.isOptional(optionalFeatureToConfigure)) {
 				childrenToInstall.add(optionalFeatureToConfigure);
 			} else {
-				for (int j = 0; j < optionalfeatures.length; j++) {
+				for (int j = 0; j < optionalFeatures.length; j++) {
 					// must compare feature as optionalFeatures are from the install site
 					// where children are on the local site
-					try {
-						IFeature installedChildren = optionalfeatures[j].getFeature(null);
-						if (installedChildren.equals(optionalFeatureToConfigure.getFeature(true, null, null))) {
-							childrenToInstall.add(optionalFeatureToConfigure);
-							break;
-						}
-					} catch (CoreException e) {
-						UpdateCore.warn("", e);
+					if (optionalFeatures[j].getVersionedIdentifier().equals(optionalFeatureToConfigure.getVersionedIdentifier())) {
+						childrenToInstall.add(optionalFeatureToConfigure);
+						break;
 					}
 				}
 			}
 		}
 
-		IIncludedFeatureReference[] result = new IIncludedFeatureReference[childrenToInstall.size()];
+		IFeature[] result = new IFeature[childrenToInstall.size()];
 		if (childrenToInstall.size() > 0) {
 			childrenToInstall.toArray(result);
 		}
@@ -541,7 +527,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	}
 
 	private boolean unconfigure(IFeature feature, boolean includePatches, boolean verifyEnableParent) throws CoreException {
-		IFeatureReference featureReference = getSite().getFeatureReference(feature);
+		IFeatureReference featureReference = getSite().getFeatureReference(feature.getVersionedIdentifier());
 
 		if (featureReference == null) {
 			UpdateCore.warn("Unable to retrieve Feature Reference for feature" + feature);
@@ -581,11 +567,10 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 				unconfigurePatches(feature);
 
 			// top down approach, same configuredSite
-			IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatures();
+			IFeature[] childrenRef = feature.getIncludedFeatures(true);
 			for (int i = 0; i < childrenRef.length; i++) {
 				try {
-					IFeature child = childrenRef[i].getFeature(true, null, null); // disable the exact feature
-					unconfigure(child, includePatches, true); // check for parent as we should be the only parent.
+					unconfigure(childrenRef[i], includePatches, true); // check for parent as we should be the only parent.
 				} catch (CoreException e) {
 					// skip any bad children
 					UpdateCore.warn("Unable to unconfigure child feature: " + childrenRef[i] + " " + e);
@@ -625,7 +610,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 				if (candidate.equals(feature))
 					continue;
 
-				IImport[] imports = candidate.getImports();
+				IImport[] imports = candidate.getImports(false);
 				for (int j = 0; j < imports.length; j++) {
 					IImport iimport = imports[j];
 					if (iimport.isPatch()) {
@@ -757,7 +742,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 				if (feature != null) {
 					// get plugin identifier
 					List sitePluginIdentifiers = new ArrayList();
-					ISite site = feature.getSite();
+					IInstalledSite site = (IInstalledSite)feature.getSite();
 					IPluginEntry[] sitePluginEntries = null;
 
 					if (site != null) {
@@ -769,7 +754,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 					}
 
 					if (sitePluginEntries.length > 0) {
-						IPluginEntry[] featurePluginEntries = feature.getPluginEntries();
+						IPluginEntry[] featurePluginEntries = feature.getPluginEntries(true);
 						for (int index = 0; index < featurePluginEntries.length; index++) {
 							IPluginEntry currentFeaturePluginEntry = featurePluginEntries[index];
 							if (!contains(currentFeaturePluginEntry.getVersionedIdentifier(), sitePluginIdentifiers)) {
@@ -888,15 +873,8 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 	/*
 	 * 
 	 */
-	public ConfigurationPolicy getConfigurationPolicy() {
-		return (ConfigurationPolicy) getConfigurationPolicyModel();
-	}
-
-	/*
-	 * 
-	 */
-	public ISite getSite() {
-		return (ISite) getSiteModel();
+	public IInstalledSite getSite() {
+		return site;
 	}
 
 	/*
@@ -916,7 +894,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 		// check the Plugins of all the features
 		// every plugin of the feature must be on the site
 		IPluginEntry[] siteEntries = getSite().getPluginEntries();
-		IPluginEntry[] featuresEntries = feature.getPluginEntries();
+		IPluginEntry[] featuresEntries = feature.getPluginEntries(true);
 		IPluginEntry[] result = UpdateManagerUtils.diff(featuresEntries, siteEntries);
 		if (result != null && (result.length != 0)) {
 			String msg = Policy.bind("SiteLocal.FeatureUnHappy");
@@ -952,7 +930,7 @@ public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWri
 
 		if (getConfigurationPolicy() == null)
 			return false;
-		IFeatureReference featureReference = getSite().getFeatureReference(feature);
+		IFeatureReference featureReference = getSite().getFeatureReference(feature.getVersionedIdentifier());
 		if (featureReference == null) {
 			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_WARNINGS)
 				UpdateCore.warn("Unable to retrieve featureReference for feature:" + feature);

@@ -31,36 +31,6 @@ public interface IIncludedFeatureReference extends IFeatureReference, IAdaptable
 	/**
 	 * Returns the referenced feature.
 	 * This is a factory method that creates the full feature object.
-	 * equivalent to getFeature(false,null);
-	 * 
-	 * @return the referenced feature
-	 * @deprecated use getFeature(IProgressMonitor) instead
-	 * @since 2.0 
-	 */
-	public IFeature getFeature() throws CoreException;
-
-	/**
-	 * Returns the referenced feature.
-	 * This is a factory method that creates the full feature object.
-	 * 
-	 * @param perfectMatch <code>true</code> if the perfect match feature feature should be returned
-	 * <code>false</code> if the best match feature should be returned.
-	 * @param configuredSite the configured site to search for the Feature. If 
-	 * the configured site is <code>null</code> the search will be done in the current configured site.
-	 * @return the referenced feature
-	 * @deprecated use getFeature(boolean,IConfiguredSite,IProgressMonitor)
-	 * instead
-	 * @since 2.0.2
-	 * <b>Note:</b> This method is part of an interim API that is still under development and expected to
-	 * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
-	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
-	 * (repeatedly) as the API evolves.
-	 */
-	public IFeature getFeature(boolean perfectMatch,IConfiguredSite configuredSite) throws CoreException;
-
-	/**
-	 * Returns the referenced feature.
-	 * This is a factory method that creates the full feature object.
 	 * 
 	 * @param perfectMatch <code>true</code> if the perfect match feature feature should be returned
 	 * <code>false</code> if the best match feature should be returned.

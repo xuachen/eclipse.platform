@@ -40,7 +40,7 @@ public interface IConfiguredSite extends IAdaptable {
 	 * (repeatedly) as the API evolves.
 	 * </p>
 	 */
-	public ISite getSite();
+	public IInstalledSite getSite();
 
 	/**
 	 * Indicates whether updates can be applied to the site.
@@ -117,7 +117,7 @@ public interface IConfiguredSite extends IAdaptable {
 	 * (repeatedly) as the API evolves.
 	 * </p>
 	 */
-	public IFeatureReference install(IFeature feature, IFeatureReference[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws CoreException;
+	public IFeatureReference install(IFeature feature, IFeature[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws CoreException;
 
 
 	/**

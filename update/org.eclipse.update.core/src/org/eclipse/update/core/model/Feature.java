@@ -984,4 +984,19 @@ public class Feature extends FeatureReference implements IFeature{
 		return contentProvider;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.IFeature#isOptional(org.eclipse.update.core.IFeature)
+	 */
+	public boolean isOptional(IFeature childFeature) {
+		if (featureIncludes == null)
+			return false;
+
+		for (int i=0; i<featureIncludes.size(); i++) {
+			IIncludedFeatureReference f = (IIncludedFeatureReference)featureIncludes.get(i);
+			if (f.isOptional() && f.getVersionedIdentifier().equals(childFeature.getVersionedIdentifier()))
+				return true;
+		}
+		return false;
+	}
 }

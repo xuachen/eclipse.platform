@@ -13,7 +13,6 @@ package org.eclipse.update.core;
 import java.net.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.update.core.model.*;
 
 /**
  * Site factory interface.

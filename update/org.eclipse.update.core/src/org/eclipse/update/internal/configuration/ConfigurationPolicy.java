@@ -18,18 +18,30 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.core.*;
 
 /**
  * 
  */
-public class ConfigurationPolicy extends ConfigurationPolicyModel {
+public class ConfigurationPolicy extends ModelObject {
 
+	private int policy;
+	private Map /* of FeatureReference */configuredFeatureReferences;
+	private Map /* of FeatureReference */unconfiguredFeatureReferences;
+	
+	// since 2.0.2
+	private IConfiguredSite configuredSite;
+	
+	// since 2.1
+	private boolean enable;
+	
 	/**
 	 * Constructor for ConfigurationPolicyModel.
 	 */
 	public ConfigurationPolicy() {
+		enable = true;
+		configuredFeatureReferences = new HashMap();
+		unconfiguredFeatureReferences = new HashMap();	
 	}
 
 	/**
@@ -40,8 +52,25 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		setPolicy(configPolicy.getPolicy());
 		setConfiguredFeatureReferences(configPolicy.getConfiguredFeatures());
 		setUnconfiguredFeatureReferences(configPolicy.getUnconfiguredFeatures());
-		setConfiguredSiteModel(configPolicy.getConfiguredSiteModel());
+		setConfiguredSite(configPolicy.getConfiguredSite());
 	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public int getPolicy() {
+		return policy;
+	}
+
+	/**
+	 * Sets the policy.
+	 * @param policy The policy to set
+	 */
+	void setPolicy(int policy) {
+		assertIsWriteable();
+		this.policy = policy;
+	}
+	
 
 	/**
 	 * @since 2.0
@@ -343,23 +372,21 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	/**
 	 * @since 2.0
 	 */
-	public IFeature[] getConfiguredFeatures() {
-		Feature[] result = getConfiguredFeaturesModel();
-		if (result.length == 0)
-			return new IFeature[0];
-		else
-			return (IFeature[]) result;
+	public IFeatureReference[] getConfiguredFeatures() {
+		if (configuredFeatureReferences==null || configuredFeatureReferences.isEmpty())
+			return new FeatureReference[0];
+		else 
+			return (FeatureReference[]) configuredFeatureReferences.keySet().toArray(arrayTypeFor(configuredFeatureReferences.keySet()));
 	}
 
 	/**
 	 * @since 2.0
 	 */
 	public IFeatureReference[] getUnconfiguredFeatures() {
-		FeatureReference[] result = getUnconfiguredFeaturesModel();
-		if (result.length == 0)
-			return new IFeatureReference[0];
+		if (unconfiguredFeatureReferences==null || unconfiguredFeatureReferences.isEmpty())
+			return new FeatureReference[0];			
 		else
-			return (IFeatureReference[]) result;
+			return (FeatureReference[]) unconfiguredFeatureReferences.keySet().toArray(arrayTypeFor(unconfiguredFeatureReferences.keySet()));			
 	}
 
 	/**
@@ -367,23 +394,29 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 * @return Returns a IConfiguredSite
 	 */
 	public IConfiguredSite getConfiguredSite() {
-		return (IConfiguredSite) getConfiguredSiteModel();
+		return configuredSite;
 	}
 
 	/**
 	 * return an array of plugin path for the array of feature reference
 	 * Each plugin path only appears once [bug 21750]
 	 */
-	private String[] getPluginString(ISite site, IFeature[] arrayOfFeatures) throws CoreException {
+	private String[] getPluginString(ISite site, IFeatureReference[] arrayOfFeatureRef) throws CoreException {
 
 		String[] result = new String[0];
 
 		// obtain path for each feature
-		if (arrayOfFeatures != null) {
+		if (arrayOfFeatureRef != null) {
 			//[bug 21750] replace the List by a Set
 			Set pluginsString = new HashSet();
-			for (int i = 0; i < arrayOfFeatures.length; i++) {
-				IFeature feature = arrayOfFeatures[i];
+			for (int i = 0; i < arrayOfFeatureRef.length; i++) {
+				IFeatureReference element = arrayOfFeatureRef[i];
+				IFeature feature = null;
+				try {
+					feature = element.getFeature(null);
+				} catch (CoreException e) {
+					UpdateCore.warn(null, e);
+				}
 				IPluginEntry[] entries = null;
 				if (feature == null) {
 					UpdateCore.warn("Null Feature", new Exception());
@@ -399,7 +432,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 					ContentReference[] featureContentReference = null;
 					try {
 						featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry, null /*IProgressMonitor*/
-						);
+								);
 					} catch (CoreException e) {
 						UpdateCore.warn(null, e);
 					}
@@ -497,5 +530,167 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			list1.toArray(resultEntry);
 
 		return resultEntry;
+	}
+	
+
+	/**
+	 * 
+	 */
+	private boolean remove(IFeatureReference feature, Map list) {
+		URL featureURL = feature.getURL();
+		boolean found = false;
+		Iterator iter = list.keySet().iterator();
+		while (iter.hasNext() && !found) {
+			FeatureReference element = (FeatureReference) iter.next();
+			if (UpdateManagerUtils.sameURL(element.getURL(),featureURL)) {
+				list.remove(element);
+				found = true;
+			}
+		}
+		return found;
+	}
+
+	/**
+	 * returns an array of string corresponding to plugins file
+	 */
+	/*package*/
+
+	
+	/**
+	 * 
+	 */
+	private void add(FeatureReference feature, Map list) {
+		URL featureURL = feature.getURL();
+		boolean found = false;
+		Iterator iter = list.keySet().iterator();
+		while (iter.hasNext() && !found) {
+			FeatureReference element = (FeatureReference) iter.next();
+			if (UpdateManagerUtils.sameURL(element.getURL(),featureURL)) {
+				found = true;
+			}
+		}
+
+		if (!found) {
+			list.put(feature,null);
+		} else {
+			UpdateCore.warn("Feature Reference :"+feature+" already part of the list.");
+		}
+	}
+
+	/**
+	 * adds a feature in the configuredReference list
+	 * also used by the parser to avoid creating another activity
+	 */
+	void addConfiguredFeatureReference(FeatureReference feature) {
+		assertIsWriteable();
+		
+		if (configuredFeatureReferences == null)
+			this.configuredFeatureReferences = new HashMap();
+		if (!configuredFeatureReferences.containsKey(feature)){
+			//DEBUG:
+			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION){
+				UpdateCore.debug("Configuring "+feature.getURLString());
+			}
+			this.add(feature, configuredFeatureReferences);
+		}	
+
+		// when user configure a feature,
+		// we have to remove it from unconfigured feature if it exists
+		// because the user doesn't know...
+		if (unconfiguredFeatureReferences != null) {
+			boolean success = remove(feature, unconfiguredFeatureReferences);
+			if (!success)
+				UpdateCore.warn("Feature not part of Unconfigured list: "+feature.getURLString());			
+		}
+
+	}
+
+	/**
+	 * adds a feature in the list
+	 * also used by the parser to avoid creating another activity
+	 */
+	void addUnconfiguredFeatureReference(FeatureReference feature) {
+		assertIsWriteable();
+		if (unconfiguredFeatureReferences == null)
+			this.unconfiguredFeatureReferences = new HashMap();
+		if (!unconfiguredFeatureReferences.containsKey(feature)){
+			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION){
+				UpdateCore.debug("Unconfiguring "+feature.getURLString());
+			}
+			this.add(feature, unconfiguredFeatureReferences);
+		}	
+
+		// an unconfigured feature is always from a configured one no ?
+		// unless it was parsed right ?
+		if (configuredFeatureReferences != null) {
+			boolean success = remove(feature, configuredFeatureReferences);
+			if (!success)
+				UpdateCore.warn("Feature not part of Configured list: "+feature.getURLString());				
+		}
+	}
+
+	/**
+	 * removes a feature from any list
+	 */
+	void removeFeatureReference(IFeatureReference feature) {
+		assertIsWriteable();
+		if (unconfiguredFeatureReferences!=null){
+			boolean success = remove(feature, unconfiguredFeatureReferences);
+			if (!success)
+				UpdateCore.warn(feature+" not part of unconfigured list.");							
+		}
+
+		if (configuredFeatureReferences != null) {
+			boolean success = remove(feature, configuredFeatureReferences);
+			if (!success)
+				UpdateCore.warn(feature+" not part of configured list.");							
+		}
+	}
+	
+	/**
+	 * Sets the unconfiguredFeatureReferences.
+	 * @param unconfiguredFeatureReferences The unconfiguredFeatureReferences to set
+	 */
+	void setUnconfiguredFeatureReferences(IFeatureReference[] featureReferences) {
+		unconfiguredFeatureReferences = new HashMap();
+		for (int i = 0; i < featureReferences.length; i++) {
+			unconfiguredFeatureReferences.put(featureReferences[i],null);
+		}
+	}
+
+
+	/**
+	 * Sets the configuredFeatureReferences.
+	 * @param configuredFeatureReferences The configuredFeatureReferences to set
+	 */
+	void setConfiguredFeatureReferences(IFeatureReference[] featureReferences) {
+		configuredFeatureReferences = new HashMap();
+		for (int i = 0; i < featureReferences.length; i++) {
+			configuredFeatureReferences.put(featureReferences[i],null);
+		}		
+		
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public boolean isEnabled() {
+		return enable;
+	}
+
+	/**
+	 * @param value
+	 */
+	void setEnabled(boolean value) {
+		enable = value;
+	}
+	
+	/**
+	 * Sets the configuredSiteModel.
+	 * @param configuredSiteModel The configuredSiteModel to set
+	 * @since 2.0.2
+	 */
+	void setConfiguredSite(IConfiguredSite configuredSite) {
+		this.configuredSite = configuredSite;
 	}
 }

@@ -86,4 +86,9 @@ public interface IInstalledSite extends ISite {
 	 */
 	public IConfiguredSite getCurrentConfiguredSite();
 
+	/**
+	 * Returns the plugin entries on this site
+	 * @return
+	 */
+	public IPluginEntry[] getPluginEntries();
 }

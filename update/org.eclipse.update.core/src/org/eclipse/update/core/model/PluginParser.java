@@ -12,6 +12,7 @@ package org.eclipse.update.core.model;
 
 
 import java.io.*;
+
 import javax.xml.parsers.*;
 
 import org.eclipse.update.core.*;

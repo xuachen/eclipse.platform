@@ -69,4 +69,14 @@ public interface IFeatureReference extends IAdaptable,IPlatformEnvironment {
 	 */
 	public boolean isPatch();
 	
+	/**
+	 * Returns the referenced feature.
+	 * This is a factory method that creates the full feature object.
+	 * 
+	 * @param monitor the progress monitor
+	 * @return the feature referenced by this feature ref
+	 * @since 3.0 
+	 */
+	public IFeature getFeature(IProgressMonitor monitor) throws CoreException;
+	
 }

@@ -289,4 +289,11 @@ public interface IFeature extends IFeatureReference {
 	 */
 	public IFeatureContentProvider getFeatureContentProvider();
 
+	/**
+	 * 
+	 * @param childFeature
+	 * @return true if childFeature is an optional child feature
+	 */
+	public boolean isOptional(IFeature childFeature);
+
 }
