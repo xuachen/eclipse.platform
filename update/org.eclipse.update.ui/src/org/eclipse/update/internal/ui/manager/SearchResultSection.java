@@ -125,7 +125,7 @@ public class SearchResultSection extends UpdateSection
 	private String getFeatureLabel(IFeature feature) {
 		String fullLabel = feature.getLabel();
 		return feature.getLabel()+" "+
-			feature.getIdentifier().getVersion().toString();
+			feature.getVersionIdentifier().getVersion().toString();
 	}
 	/*
 	 * @see IHyperlinkListener#linkActivated(Control)
