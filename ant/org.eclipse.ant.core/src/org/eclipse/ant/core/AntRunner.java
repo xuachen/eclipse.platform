@@ -98,7 +98,7 @@ public void addUserProperties(Map properties) {
 public void run() throws CoreException {
 	try {
 		ClassLoader loader = getClassLoader();
-		Class classInternalAntRunner = loader.loadClass("org.eclipse.ant.internal.core.ant.InternalAntScriptRunner");
+		Class classInternalAntRunner = loader.loadClass("org.eclipse.ant.internal.core.ant.InternalAntRunner");
 		Object runner = classInternalAntRunner.newInstance();
 		// set build file
 		Method setBuildFileLocation = classInternalAntRunner.getMethod("setBuildFileLocation", new Class[] {String.class});
