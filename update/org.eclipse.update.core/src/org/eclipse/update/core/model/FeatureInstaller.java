@@ -84,13 +84,13 @@ public class FeatureInstaller {
 		   // determine list of plugins to install
 		   // find the intersection between the plugin entries already contained
 		   // on the target site, and plugin entries packaged in source feature
-		   IPluginEntry[] sourcePlugins = sourceFeature.getPluginEntries();
+		   IPluginEntry[] sourcePlugins = sourceFeature.getPluginEntries(true);
 		   IPluginEntry[] targetPlugins = targetSite.getPluginEntries();
 		   IPluginEntry[] pluginsToInstall = UpdateManagerUtils.diff(sourcePlugins, targetPlugins);
 		   
-		   INonPluginEntry[] nonPluginsToInstall = sourceFeature.getNonPluginEntries();
+		   INonPluginEntry[] nonPluginsToInstall = sourceFeature.getNonPluginEntries(true);
 	
-		   IFeature[] children = sourceFeature.getIncludedFeatures();
+		   IFeature[] children = sourceFeature.getIncludedFeatures(true);
 		   if (optionalfeatures != null) {
 			   children =
 				   UpdateManagerUtils.optionalChildrenToInstall(
@@ -335,7 +335,7 @@ public class FeatureInstaller {
 
 	private IFeature getInstalledFeature(VersionedIdentifier versionId, IInstalledSite site) {
 		IFeature[] features = site.getFeatures(null);
-		for (int i=0; i<features.length(); i++) {
+		for (int i=0; i<features.length; i++) {
 			if (versionId.equals(features[i].getVersionedIdentifier()))
 				return features[i];
 		}
@@ -486,7 +486,7 @@ public class FeatureInstaller {
 	
 		// add the installed plugins directories as archives entry
 		ArchiveReference archive = null;
-		IPluginEntry[] pluginEntries = localFeature.getPluginEntries();
+		IPluginEntry[] pluginEntries = localFeature.getPluginEntries(true);
 		for (int i = 0; i < pluginEntries.length; i++) {
 			String versionId = pluginEntries[i].getVersionedIdentifier().toString();
 			String pluginID = Site.DEFAULT_PLUGIN_PATH + versionId + FeaturePackagedContentProvider.JAR_EXTENSION;

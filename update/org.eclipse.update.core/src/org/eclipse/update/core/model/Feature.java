@@ -30,7 +30,19 @@ import org.eclipse.update.internal.core.*;
  * @since 2.0
  */
 public class Feature extends FeatureReference implements IFeature{
+	/**
+	 * Simple file name of the default feature manifest file
+	 * @since 2.0
+	 */
+	public static final String FEATURE_FILE = "feature"; //$NON-NLS-1$
 
+	/**
+	 * File extension of the default feature manifest file
+	 * @since 2.0
+	 */
+	public static final String FEATURE_XML = FEATURE_FILE + ".xml"; //$NON-NLS-1$
+	
+	
 	private String localizedLabel;
 	private String provider;
 	private String localizedProvider;
@@ -55,6 +67,7 @@ public class Feature extends FeatureReference implements IFeature{
 	private List /*of PluginEntry*/pluginEntries;
 	private List /*of IncludedFeatureReference */	featureIncludes;
 	private List /*of NonPluginEntry*/	nonPluginEntries;
+	private IFeatureContentProvider contentProvider;
 
 	// performance
 	private URL bundleURL;
@@ -960,95 +973,18 @@ public class Feature extends FeatureReference implements IFeature{
 		return result;
 	}
 
-//	/**
-//	 * Returns an array of feature references included by this feature
-//	 * 
-//	 * @return an erray of feature references, or an empty array.
-//	 * @since 2.0
-//	 */
-//	public IIncludedFeatureReference[] getRawIncludedFeatureReferences() {
-//		if (featureIncludes == null)
-//			return new IncludedFeatureReference[0];
-//	
-//		return (IIncludedFeatureReference[]) featureIncludes.toArray(
-//			arrayTypeFor(featureIncludes));
-//	}
-//
-//	
-//	private IIncludedFeatureReference getPerfectIncludeFeature(
-//		ISite site,
-//		IIncludedFeatureReference include)
-//		throws CoreException {
-//
-//		// [20367] no site, cannot initialize nested references
-//		IFeatureReference[] refs = site.getFeatureReferences();
-//		VersionedIdentifier identifier = include.getVersionedIdentifier();
-//
-//		// too long to compute if not a file system
-//		// other solution would be to parse feature.xml
-//		// when parsing file system to create archive features/FeatureId_Ver.jar
-//		if ("file".equals(site.getURL().getProtocol())) {
-//			// check if declared on the Site
-//			if (refs != null) {
-//				for (int ref = 0; ref < refs.length; ref++) {
-//					if (refs[ref] != null) {
-//						VersionedIdentifier id =
-//							refs[ref].getVersionedIdentifier();
-//						if (identifier.equals(id)) {
-//							// found a ISiteFeatureReference that matches our IIncludedFeatureReference
-//							IncludedFeatureReference newRef =
-//								new IncludedFeatureReference(refs[ref]);
-//							newRef.isOptional(include.isOptional());
-//							if (include instanceof FeatureReference)
-//								newRef.setLabel(
-//									((FeatureReference) include)
-//										.getLabel());
-//							newRef.setMatchingRule(include.getMatch());
-//							newRef.setSearchLocation(
-//								include.getSearchLocation());
-//							return newRef;
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//		// instanciate by mapping it based on the site.xml
-//		// in future we may ask for a factory to create the feature ref
-//		IncludedFeatureReference newRef = new IncludedFeatureReference(include);
-//		newRef.setSite(getSite());
-//		IFeatureReference parentRef = getSite().getFeatureReference(this);
-//		if (parentRef instanceof FeatureReference) {
-//			newRef.setType(((FeatureReference) parentRef).getType());
-//		}
-//		String featureID =
-//			Site.DEFAULT_FEATURE_PATH + identifier.toString() + ".jar";
-//		URL featureURL =
-//			getSite().getSiteContentProvider().getArchiveReference(featureID);
-//		newRef.setURL(featureURL);
-//		newRef.setFeatureIdentifier(identifier.getIdentifier());
-//		newRef.setFeatureVersion(identifier.getVersion().toString());
-//		try {
-//			newRef.resolve(getSite().getURL(), null);
-//			// no need to get the bundle
-//			return newRef;
-//		} catch (Exception e) {
-//			throw Utilities.newCoreException(
-//				Policy.bind(
-//					"Feature.UnableToInitializeFeatureReference",
-//					identifier.toString()),
-//				e);
-//		}
-//	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.IFeature#getFeatureContentProvider()
 	 */
 	public IFeatureContentProvider getFeatureContentProvider()
 		throws CoreException {
-		if (getSite() instanceof IInstalledSite)
-			return new FeatureExecutableContentProvider(url);
-		else 
-			return new FeaturePackagedContentProvider(url);
+		if (contentProvider == null) {
+			if (getSite() instanceof IInstalledSite)
+				contentProvider = new FeatureExecutableContentProvider(url);
+			else 
+				contentProvider = new FeaturePackagedContentProvider(url);
+		}
+		return contentProvider;
 	}
 
 }
