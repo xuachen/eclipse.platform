@@ -6,9 +6,10 @@ package org.eclipse.update.tests.types;
 import java.net.URL;
 
 import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.obsolete.*;
+import org.eclipse.update.internal.core.FeatureReference;
+import org.eclipse.update.internal.core.SiteFile;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
+import org.eclipse.update.internal.core.obsolete.SiteURL;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 import org.eclipse.update.tests.implementation.SiteFTPFactory;
 

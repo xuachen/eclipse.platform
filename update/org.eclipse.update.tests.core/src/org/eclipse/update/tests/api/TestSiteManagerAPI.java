@@ -33,12 +33,8 @@ public class TestSiteManagerAPI extends UpdateManagerTestCase {
 	public void testUnknown() throws Exception {
 		URL url = new URL("ftp://255.255.255.255/");
 		boolean ok = false;
-		try {
-			ISite httpSite = SiteManager.getSite(url);
-		} catch (CoreException e){
-			ok = true;
-		}
-		if (!ok) fail();
+		ISite httpSite = SiteManager.getSite(url);
+		assertTrue(httpSite==null);
 	}
 	
 	public void testLocalSite() throws Exception {
@@ -59,9 +55,9 @@ public class TestSiteManagerAPI extends UpdateManagerTestCase {
 		assertTrue(features.length>0);
 
 		//cleanup
-		File file = new File(instSites[0].getSite().getURL().getFile()+File.separator+SiteFile.INSTALL_FEATURE_PATH+remoteFeature.getVersionIdentifier());
+		File file = new File(instSites[0].getSite().getURL().getFile()+File.separator+Site.INSTALL_FEATURE_PATH+remoteFeature.getVersionIdentifier());
 		UpdateManagerUtils.removeFromFileSystem(file);
-		file = new File(instSites[0].getSite().getURL().getFile()+File.separator+SiteFile.DEFAULT_PLUGIN_PATH+"org.eclipse.update.plugin1_1.1.1");
+		file = new File(instSites[0].getSite().getURL().getFile()+File.separator+Site.DEFAULT_PLUGIN_PATH+"org.eclipse.update.plugin1_1.1.1");
 		UpdateManagerUtils.removeFromFileSystem(file);		
 		File localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocation(),SiteLocal.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);		

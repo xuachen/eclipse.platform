@@ -77,7 +77,7 @@ public class TestRemove extends UpdateManagerTestCase {
 		File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
 		assertTrue("plugin files installed locally", !pluginFile.exists());
 
-		File featureFile = new File(site, SiteFile.INSTALL_FEATURE_PATH +featureRef);
+		File featureFile = new File(site, Site.INSTALL_FEATURE_PATH +featureRef);
 		assertTrue("feature info installed locally:"+featureFile, !featureFile.exists());
 
 

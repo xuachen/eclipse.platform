@@ -11,6 +11,7 @@ import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.*;
 
 public class SiteFTP implements ISite {
 
@@ -82,7 +83,7 @@ public class SiteFTP implements ISite {
 	/*
 	 * @see ISite#getArchives()
 	 */
-	public IURLEntry[] getArchives() {
+	public IArchiveEntry[] getArchives() {
 		return null;
 	}
  
@@ -152,13 +153,6 @@ public class SiteFTP implements ISite {
 	}
 
 	/*
-	 * @see ISite#getSiteContentConsumer()
-	 */
-	public ISiteContentConsumer getSiteContentConsumer() throws CoreException {
-		return null;
-	}
-
-	/*
 	 * @see ISite#setSiteContentConsumer(ISiteContentConsumer)
 	 */
 	public void setSiteContentConsumer(ISiteContentConsumer contentConsumer) {
@@ -213,6 +207,13 @@ public class SiteFTP implements ISite {
 	 * @see ISite#getCategory(String)
 	 */
 	public ICategory getCategory(String key) {
+		return null;
+	}
+
+	/*
+	 * @see ISite#createSiteContentConsumer(IFeature)
+	 */
+	public ISiteContentConsumer createSiteContentConsumer(IFeature feature) throws CoreException {
 		return null;
 	}
 

@@ -7,7 +7,7 @@ import java.net.URL;
 
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.ICategory;
-import org.eclipse.update.internal.core.Category;
+import org.eclipse.update.core.Category;
 import org.eclipse.update.internal.core.FeatureReference;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -23,7 +23,7 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 	public void testFileParsing() throws Exception {
 
 		ISite site = SiteManager.getSite(new URL(SOURCE_FILE_SITE,"siteTestLocalSite/"));
-		IURLEntry[] info = site.getArchives();
+		IArchiveEntry[] info = site.getArchives();
 		
 		if (info.length<=0){
 			fail("no plugins in site: "+site.getURL().toExternalForm());
@@ -35,8 +35,8 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 		String name2 = "org.eclipse.update.core.tests.feature1.plugin2_5.0.1.jar";
 		
 		for (int i =0; i<info.length; i++){
-			if (info[i].getAnnotation().equals(name1)) found1 = true;
-			if (info[i].getAnnotation().equals(name2)) found2 = true;
+			if (info[i].getPath().equals(name1)) found1 = true;
+			if (info[i].getPath().equals(name2)) found2 = true;
 		}
 		
 		if (!found1 || !found2){
@@ -53,7 +53,7 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 		IFeatureReference[] ref = site.getFeatureReferences();
 		
 		ICategory category = new Category("category","Label of category");
-		site.addCategory(category);
+		//site.addCategory(category);
 		ref[0].addCategory(category);
 		
 		ICategory[] categories = site.getCategories();

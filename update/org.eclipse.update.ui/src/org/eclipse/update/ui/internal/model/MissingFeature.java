@@ -4,13 +4,9 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.IDataEntry;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.IImport;
-import org.eclipse.update.core.IInfo;
-import org.eclipse.update.core.IPluginEntry;
-import org.eclipse.update.core.ISite;
-import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.update.core.*;
+import org.eclipse.update.core.*;
 
 public class MissingFeature implements IFeature {
 	private URL url;
@@ -51,14 +47,14 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getUpdateInfo()
 	 */
-	public IInfo getUpdateInfo() {
+	public IURLEntry getUpdateInfo() {
 		return null;
 	}
 
 	/*
 	 * @see IFeature#getDiscoveryInfos()
 	 */
-	public IInfo[] getDiscoveryInfos() {
+	public IURLEntry[] getDiscoveryInfos() {
 		return null;
 	}
 
@@ -72,21 +68,21 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getDescription()
 	 */
-	public IInfo getDescription() {
+	public IURLEntry getDescription() {
 		return null;
 	}
 
 	/*
 	 * @see IFeature#getCopyright()
 	 */
-	public IInfo getCopyright() {
+	public IURLEntry getCopyright() {
 		return null;
 	}
 
 	/*
 	 * @see IFeature#getLicense()
 	 */
-	public IInfo getLicense() {
+	public IURLEntry getLicense() {
 		return null;
 	}
 
@@ -147,16 +143,16 @@ public class MissingFeature implements IFeature {
 	}
 
 	/*
-	 * @see IFeature#getDataEntries()
+	 * @see IFeature#getNonPluginEntries()
 	 */
-	public IDataEntry[] getDataEntries() {
+	public INonPluginEntry[] getNonPluginEntries() {
 		return null;
 	}
 
 	/*
-	 * @see IFeature#addDataEntry(IDataEntry)
+	 * @see IFeature#addNonPluginEntry(INonPluginEntry)
 	 */
-	public void addDataEntry(IDataEntry dataEntry) {
+	public void addNonPluginEntry(INonPluginEntry dataEntry) {
 	}
 
 	/*
@@ -197,14 +193,14 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IPluginContainer#getDownloadSize(IPluginEntry)
 	 */
-	public int getDownloadSize(IPluginEntry entry) {
+	public long getDownloadSize(IPluginEntry entry) {
 		return 0;
 	}
 
 	/*
 	 * @see IPluginContainer#getInstallSize(IPluginEntry)
 	 */
-	public int getInstallSize(IPluginEntry entry) {
+	public long getInstallSize(IPluginEntry entry) {
 		return 0;
 	}
 
@@ -232,6 +228,77 @@ public class MissingFeature implements IFeature {
 	 * @see IPluginContainer#remove(IPluginEntry)
 	 */
 	public void remove(IPluginEntry entry) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#getVersionIdentifier()
+	 */
+	public VersionedIdentifier getVersionIdentifier() {
+		return null;
+	}
+
+	/*
+	 * @see IFeature#setSite(ISite)
+	 */
+	public void setSite(ISite site) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#getUpdateSiteEntry()
+	 */
+	public IURLEntry getUpdateSiteEntry() {
+		return null;
+	}
+
+	/*
+	 * @see IFeature#getDiscoverySiteEntries()
+	 */
+	public IURLEntry[] getDiscoverySiteEntries() {
+		return null;
+	}
+
+	/*
+	 * @see IFeature#install(IFeature, IProgressMonitor)
+	 */
+	public void install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#remove(IProgressMonitor)
+	 */
+	public void remove(IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#setFeatureContentProvider(IFeatureContentProvider)
+	 */
+	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider) {
+	}
+
+	/*
+	 * @see IFeature#getFeatureContentProvider()
+	 */
+	public IFeatureContentProvider getFeatureContentProvider() throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IFeature#setContentConsumer(IFeatureContentConsumer)
+	 */
+	public void setContentConsumer(IFeatureContentConsumer contentConsumer) {
+	}
+
+	/*
+	 * @see IFeature#getContentConsumer()
+	 */
+	public IFeatureContentConsumer getContentConsumer() throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
 	}
 
 }
