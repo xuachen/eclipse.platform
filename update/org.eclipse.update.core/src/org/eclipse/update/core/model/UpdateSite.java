@@ -177,7 +177,7 @@ public class UpdateSite extends Site implements IUpdateSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.ISite#getFeatures()
 	 */
-	public IFeature[] getFeatures() {
+	public IFeature[] getFeatures(IProgressMonitor monitor) throws CoreException {
 		// TODO Auto-generated method stub
 		return null;
 	}

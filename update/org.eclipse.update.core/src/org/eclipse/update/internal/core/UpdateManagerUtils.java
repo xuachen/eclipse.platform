@@ -550,11 +550,11 @@ public class UpdateManagerUtils {
 	 * @param optionalfeatures optional features to install
 	 * @return IFeatureReference[]
 	 */
-	public static IFeatureReference[] optionalChildrenToInstall(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
+	public static IFeature[] optionalChildrenToInstall(IFeature[] children, IFeature[] optionalfeatures) {
 
 		List optionalChildrenToInstall = new ArrayList();
 		for (int i = 0; i < children.length; i++) {
-			IFeatureReference optionalFeature = children[i];
+			IFeature optionalFeature = children[i];
 			if (!UpdateManagerUtils.isOptional(optionalFeature)) {
 				optionalChildrenToInstall.add(optionalFeature);
 			} else {
@@ -567,7 +567,7 @@ public class UpdateManagerUtils {
 			}
 		}
 
-		IFeatureReference[] result = new IFeatureReference[optionalChildrenToInstall.size()];
+		IFeature[] result = new IFeature[optionalChildrenToInstall.size()];
 		if (optionalChildrenToInstall.size() > 0) {
 			optionalChildrenToInstall.toArray(result);
 		}

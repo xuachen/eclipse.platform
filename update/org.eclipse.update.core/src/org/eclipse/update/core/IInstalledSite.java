@@ -53,29 +53,18 @@ public interface IInstalledSite extends ISite {
 
 	/**
 	 * Installs the specified feature on this site.
-	 * 
-	 * @param feature feature to install
-	 * @param verificationListener install verification listener
-	 * @param monitor install monitor, can be <code>null</code>
-	 * @exception InstallAbortedException when the user cancels the install
-	 * @exception CoreException
-	 * @since 2.0 
-	 */
-	public IFeature install(IFeature feature, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException;
-
-	/**
-	 * Installs the specified feature on this site.
 	 * Only optional features passed as parameter will be installed.
 	 * 
 	 * @param feature feature to install
 	 * @param optionalfeatures list of optional features to be installed
+	 * @param verifier jar verifier
 	 * @param verificationListener install verification listener
 	 * @param monitor install monitor, can be <code>null</code>
 	 * @exception InstallAbortedException when the user cancels the install
 	 * @exception CoreException
 	 * @since 2.0 
 	 */
-	public IFeature install(IFeature feature, IFeatureReference[] optionalfeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException;
+	public IFeature install(IFeature feature, IFeature[] optionalfeatures, IVerifier verifier, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException;
 
 	/**
 	 * Removes (uninstalls) the specified feature from this site. This method

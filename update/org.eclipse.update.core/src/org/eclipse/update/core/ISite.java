@@ -101,7 +101,7 @@ public interface ISite extends IAdaptable {
 	 * @return an array of feature references, or an empty array.
 	 * @since 2.0 
 	 */
-	public IFeature[] getFeatures();
+	public IFeature[] getFeatures(IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the referenced feature.

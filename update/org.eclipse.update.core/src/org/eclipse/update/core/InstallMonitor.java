@@ -77,6 +77,8 @@ public class InstallMonitor implements IProgressMonitor {
 	 * @since 2.0
 	 */
 	public InstallMonitor(IProgressMonitor monitor) {
+		if (monitor == null)
+			monitor = new NullProgressMonitor();
 		this.monitor = monitor;
 		this.tasks = new Stack();
 		this.taskString = ""; //$NON-NLS-1$

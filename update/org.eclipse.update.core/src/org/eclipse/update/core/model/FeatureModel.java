@@ -28,7 +28,7 @@ import org.eclipse.update.internal.core.*;
  * @see org.eclipse.update.core.Feature
  * @since 2.0
  */
-public class FeatureModel extends ModelObject {
+public class FeatureModel extends ModelObject implements IFeature{
 
 	private String featureId;
 	private String featureVersion;

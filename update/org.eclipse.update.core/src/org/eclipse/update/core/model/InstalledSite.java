@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.update.core.model;
 
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -18,6 +19,7 @@ import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.model.*;
+import org.eclipse.update.internal.core.URLEncoder;
 
 /**
  * Installed Site model object.
@@ -33,6 +35,9 @@ public class InstalledSite extends Site implements IInstalledSite {
 
 	private ConfiguredSite configuredSiteModel;
 	private List pluginEntries = new ArrayList(0);
+	private Map featureCache = new HashMap(); // key=URLKey value=IFeature
+	
+	private static FeatureParser parser = new FeatureParser();
 
 	/**
 	 * Creates an uninitialized site model object.
@@ -117,29 +122,23 @@ public class InstalledSite extends Site implements IInstalledSite {
 
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#install(org.eclipse.update.core.IFeature2, org.eclipse.update.core.IFeatureReference2[], org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
+	 * @see org.eclipse.update.core.IInstalledSite2#install(org.eclipse.update.core.IFeature, org.eclipse.update.core.IFeature[], org.eclipse.update.core.IVerifier, org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public IFeature install(
 		IFeature feature,
-		IFeatureReference[] optionalfeatures,
+		IFeature[] optionalFeatures,
+		IVerifier verifier,
 		IVerificationListener verificationListener,
 		IProgressMonitor monitor)
 		throws InstallAbortedException, CoreException {
-		// TODO Auto-generated method stub
-		return null;
+
+		// make sure we have an InstallMonitor		
+		if (!(monitor instanceof InstallMonitor))
+			monitor = new InstallMonitor(monitor);
+		FeatureInstaller installer = new FeatureInstaller();
+		return installer.install(this, feature, optionalFeatures, verifier, verificationListener, (InstallMonitor)monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#install(org.eclipse.update.core.IFeature2, org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public IFeature install(
-		IFeature feature,
-		IVerificationListener verificationListener,
-		IProgressMonitor monitor)
-		throws InstallAbortedException, CoreException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.IInstalledSite#remove(org.eclipse.update.core.IFeature2, org.eclipse.core.runtime.IProgressMonitor)
@@ -161,7 +160,7 @@ public class InstalledSite extends Site implements IInstalledSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.ISite#getFeatures()
 	 */
-	public IFeature[] getFeatures() {
+	public IFeature[] getFeatures(IProgressMonitor monitor) throws CoreException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -171,8 +170,14 @@ public class InstalledSite extends Site implements IInstalledSite {
 	 */
 	public IFeature getFeature(URL featureURL, IProgressMonitor monitor)
 		throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// First check the cache
+		URLKey key = new URLKey(featureURL);
+		IFeature feature = (IFeature) featureCache.get(key);
+		if (feature != null) 
+			return feature;
+		else
+			return createFeature(featureURL, monitor);
 	}
 
 	/* (non-Javadoc)
@@ -208,4 +213,64 @@ public class InstalledSite extends Site implements IInstalledSite {
 		pluginEntries.add(pluginEntry);
 	}
 
+	/*
+	 * 
+	 */
+	private void debug(String trace) {
+		//DEBUG
+		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_INSTALL) {
+			UpdateCore.debug(trace);
+		}
+	}
+	
+	private IFeature createFeature(URL url, IProgressMonitor monitor) throws CoreException {
+
+		if (url == null)
+			throw Utilities.newCoreException(Policy.bind("FeatureExecutableFactory.NullURL"), null);
+
+		// the URL should point to a directory
+		//url = validate(url);
+
+		InputStream featureStream = null;
+		if (monitor == null)
+			monitor = new NullProgressMonitor();
+
+		try {
+			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
+			// PERF: Do not create FeatureContentConsumer
+			//IFeatureContentConsumer contentConsumer =new FeatureExecutableContentConsumer();
+
+			URL nonResolvedURL = contentProvider.getFeatureManifestReference(null).asURL();
+			URL resolvedURL = URLEncoder.encode(nonResolvedURL);
+			featureStream = UpdateCore.getPlugin().get(resolvedURL).getInputStream();
+
+			parser.init();
+			Feature feature = parser.parse(featureStream);
+			monitor.worked(1);
+			
+			feature.setSite(this);
+			feature.setFeatureContentProvider(contentProvider);
+			feature.resolve(url, url);
+			feature.markReadOnly();
+			featureCache.put(url, feature);
+			
+			return feature;
+		} catch (CoreException e) {
+			throw e;
+		} catch (Exception e) {
+			throw Utilities.newCoreException(Policy.bind("FeatureFactory.CreatingError", url.toExternalForm()), e);
+			//$NON-NLS-1$
+		} finally {
+			try {
+				if (featureStream != null)
+					featureStream.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	protected void removeFeatureFromCache(URL featureURL) {
+		URLKey key = new URLKey(featureURL);
+		featureCache.remove(key);
+	}
 }
