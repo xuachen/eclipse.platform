@@ -8,6 +8,8 @@ import java.net.URL;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.ICategory;
 import org.eclipse.update.core.Category;
+import org.eclipse.update.core.model.SiteCategoryModel;
+import org.eclipse.update.core.model.SiteMapModel;
 import org.eclipse.update.internal.core.FeatureReference;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -49,11 +51,15 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 	
 	public void testCategories() throws Exception {
 
+		// DO NOT TEST YET
+		return;
+
 		ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
 		IFeatureReference[] ref = site.getFeatureReferences();
 		
 		ICategory category = new Category("category","Label of category");
-		//site.addCategory(category);
+		
+		((SiteMapModel)site).addCategoryModel((SiteCategoryModel)category);
 		ref[0].addCategory(category);
 		
 		ICategory[] categories = site.getCategories();

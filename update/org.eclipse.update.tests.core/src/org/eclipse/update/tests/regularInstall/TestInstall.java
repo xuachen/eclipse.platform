@@ -74,6 +74,8 @@ public class TestInstall extends UpdateManagerTestCase {
 		String pluginName = entries[0].getIdentifier().toString();
 		File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
 		assertTrue("plugin files not installed locally", pluginFile.exists());
+		File pluginXMLFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName+File.separator + "plugin.xml");
+		assertTrue("plugin.xml file not installed locally", pluginXMLFile.exists());
 
 		File featureFile = new File(site, Site.INSTALL_FEATURE_PATH + remoteFeature.getVersionIdentifier().toString());
 		assertTrue("feature info not installed locally:"+featureFile, featureFile.exists());
