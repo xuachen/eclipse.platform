@@ -122,9 +122,8 @@ public class PluginInstaller {
 	}
 
 	/*
-	 * @see ISiteContentConsumer#close() 
 	 */
-	public void close() throws CoreException {
+	public void finishInstall() throws CoreException {
 
 		if (closed) {
 			UpdateCore.warn("Attempt to close a closed SiteFilePluginContentConsumer", new Exception());

@@ -14,6 +14,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -99,7 +100,7 @@ public class TestDefaultExecutableFeatureAPI extends UpdateManagerTestCase {
 		String label = "dummy label";
 		Feature feature = getFeature();
 		feature.setLabel(label);
-		assertEquals(label,feature.getLabel());
+		assertEquals(label,feature.getName());
 	}
 
 

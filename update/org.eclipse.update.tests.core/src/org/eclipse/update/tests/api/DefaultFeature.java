@@ -30,7 +30,7 @@ public class DefaultFeature extends Feature {
 		this(targetSite);
 		this.setFeatureContentProvider(sourceFeature.getFeatureContentProvider());
 		this.setIdentifier(sourceFeature.getVersionedIdentifier());
-		this.setLabel(sourceFeature.getLabel());
+		this.setLabel(sourceFeature.getName());
 		this.setUpdateSiteEntry(sourceFeature.getUpdateSiteEntry());
 		this.setDiscoverySiteEntries(sourceFeature.getDiscoverySiteEntries());
 		this.setProvider(sourceFeature.getProvider());
@@ -38,7 +38,7 @@ public class DefaultFeature extends Feature {
 		this.setCopyright(sourceFeature.getCopyright());
 		this.setLicense(sourceFeature.getLicense());
 		this.setPluginEntries(sourceFeature.getPluginEntries());
-		this.setImage(sourceFeature.getImage());
+		this.setImage(sourceFeature.getImageURL());
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class DefaultFeature extends Feature {
 	 * @param discoveryInfos The discoveryInfos to set
 	 */
 	public void setDiscoverySiteEntries(IURLEntry[] discoveryInfos) {
-		setDiscoverySiteEntryModels((URLEntryModel[]) discoveryInfos);
+		setDiscoverySiteEntryModels((URLEntry[]) discoveryInfos);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class DefaultFeature extends Feature {
 	 * @param updateInfo The updateInfo to set
 	 */
 	public void setUpdateSiteEntry(IURLEntry updateInfo) {
-		setUpdateSiteEntryModel((URLEntryModel) updateInfo);
+		setUpdateSiteEntryModel((URLEntry) updateInfo);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class DefaultFeature extends Feature {
 	 * @param discoveryInfo The discoveryInfo to add
 	 */
 	public void addDiscoverySiteEntry(IURLEntry discoveryInfo) {
-		addDiscoverySiteEntryModel((URLEntryModel) discoveryInfo);
+		addDiscoverySiteEntryModel((URLEntry) discoveryInfo);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class DefaultFeature extends Feature {
 	 * @param description The description to set
 	 */
 	public void setDescription(IURLEntry description) {
-		setDescriptionModel((URLEntryModel) description);
+		setDescriptionModel((URLEntry) description);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class DefaultFeature extends Feature {
 	 * @param copyright The copyright to set
 	 */
 	public void setCopyright(IURLEntry copyright) {
-		setCopyrightModel((URLEntryModel) copyright);
+		setCopyrightModel((URLEntry) copyright);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class DefaultFeature extends Feature {
 	 * @param license The license to set
 	 */
 	public void setLicense(IURLEntry license) {
-		setLicenseModel((URLEntryModel) license);
+		setLicenseModel((URLEntry) license);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class DefaultFeature extends Feature {
 	 */
 	public void addImport(IImport anImport) {
 		if (anImport != null) {
-			addImportModel((ImportModel) anImport);
+			addImportModel((Import) anImport);
 		}
 	}
 
@@ -157,7 +157,7 @@ public class DefaultFeature extends Feature {
 	 */
 	public void addPluginEntry(IPluginEntry pluginEntry) {
 		if (pluginEntry != null) {
-			addPluginEntryModel((PluginEntryModel) pluginEntry);
+			addPluginEntry((PluginEntry) pluginEntry);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class DefaultFeature extends Feature {
 	 */
 	public void addNonPluginEntry(INonPluginEntry dataEntry) {
 		if (dataEntry != null) {
-			addNonPluginEntryModel((NonPluginEntryModel) dataEntry);
+			addNonPluginEntry((NonPluginEntry) dataEntry);
 		}
 	}	
 

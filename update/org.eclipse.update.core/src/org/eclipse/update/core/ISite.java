@@ -114,15 +114,16 @@ public interface ISite extends IAdaptable {
 	 */
 	public IFeature getFeature(IFeatureReference featureRef, IProgressMonitor monitor) throws CoreException;
 
+	
 	/**
 	 * Returns the feature at the specified URL.
 	 * This is a factory method that creates the full feature object.
 	 * 
 	 * @param monitor the progress monitor
-	 * @param featureURL the referenced feature url
-	 * @return the feature referenced by featureURL
+	 * @param versionId the id and version of feature to get
+	 * @return the feature referenced by versionId
 	 * @since 3.0 
 	 */
-	public IFeature getFeature(URL featureURL, IProgressMonitor monitor) throws CoreException;
+	public IFeature getFeature(VersionedIdentifier versionId, IProgressMonitor monitor) throws CoreException;
 
 }

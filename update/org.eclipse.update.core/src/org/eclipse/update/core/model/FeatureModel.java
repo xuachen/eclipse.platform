@@ -289,7 +289,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return feature rescription, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntry getDescriptionModel() {
+	public IURLEntry getDescription() {
 		//delayedResolve(); no delay
 		return description;
 	}
@@ -300,7 +300,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return copyright information, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntry getCopyrightModel() {
+	public IURLEntry getCopyright() {
 		//delayedResolve(); no delay
 		return copyright;
 	}
@@ -311,7 +311,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return feature license, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntry getLicenseModel() {
+	public IURLEntry getLicense() {
 		//delayedResolve(); no delay;
 		return license;
 	}
@@ -323,7 +323,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return update site entry, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntry getUpdateSiteEntryModel() {
+	public IURLEntry getUpdateSiteEntry() {
 		//delayedResolve(); no delay;
 		return updateSiteInfo;
 	}
@@ -336,7 +336,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @since 2.0 
 	 * @since 2.0
 	 */
-	public URLEntry[] getDiscoverySiteEntryModels() {
+	public IURLEntry[] getDiscoverySiteEntries() {
 		//delayedResolve(); no delay;
 		if (discoverySiteInfo == null)
 			return new URLEntry[0];
@@ -350,12 +350,16 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return the list of required plug-in dependencies, or an empty array.
 	 * @since 2.0
 	 */
-	public Import[] getImportModels() {
+	public IImport[] getImports(boolean environmentFilter) {
 		//delayedResolve(); no delay;
 		if (imports == null)
 			return new Import[0];
 
-		return (Import[]) imports.toArray(arrayTypeFor(imports));
+		IImport[] entries = (Import[]) imports.toArray(arrayTypeFor(imports));
+		if (environmentFilter)
+			return filterImports(entries);
+		else
+			return entries;
 	}
 
 	/**
@@ -364,11 +368,15 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return an erray of plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public PluginEntry[] getPluginEntryModels() {
+	public IPluginEntry[] getPluginEntries(boolean environmentFilter) {
 		if (pluginEntries == null)
 			return new PluginEntry[0];
-
-		return (PluginEntry[]) pluginEntries.toArray(arrayTypeFor(pluginEntries));
+		
+		IPluginEntry[] entries = (PluginEntry[]) pluginEntries.toArray(arrayTypeFor(pluginEntries));
+		if (environmentFilter)
+			return filterPluginEntry(entries);
+		else
+			return entries;
 	}
 
 	/**
@@ -414,11 +422,15 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return an erray of non-plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public NonPluginEntry[] getNonPluginEntryModels() {
+	public INonPluginEntry[] getNonPluginEntries(boolean environmentFilter) {
 		if (nonPluginEntries == null)
 			return new NonPluginEntry[0];
 
-		return (NonPluginEntry[]) nonPluginEntries.toArray(arrayTypeFor(nonPluginEntries));
+		INonPluginEntry[] entries = (NonPluginEntry[]) nonPluginEntries.toArray(arrayTypeFor(nonPluginEntries));
+		if (environmentFilter)
+			return filterNonPluginEntry(entries);
+		else
+			return entries;
 	}
 
 	/**
@@ -596,7 +608,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param installHandler install handler entry
 	 * @since 2.0
 	 */
-	void setInstallHandlerModel(InstallHandlerEntry installHandler) {
+	void setInstallHandler(InstallHandlerEntry installHandler) {
 		assertIsWriteable();
 		this.installHandler = installHandler;
 	}
@@ -608,7 +620,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param description feature description information
 	 * @since 2.0
 	 */
-	void setDescriptionModel(URLEntry description) {
+	void setDescription(URLEntry description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -620,7 +632,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param copyright feature copyright information
 	 * @since 2.0
 	 */
-	void setCopyrightModel(URLEntry copyright) {
+	void setCopyright(URLEntry copyright) {
 		assertIsWriteable();
 		this.copyright = copyright;
 	}
@@ -632,7 +644,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param license feature license information
 	 * @since 2.0
 	 */
-	void setLicenseModel(URLEntry license) {
+	void setLicense(URLEntry license) {
 		assertIsWriteable();
 		this.license = license;
 	}
@@ -656,7 +668,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param discoverySiteInfo additional update site references
 	 * @since 2.0
 	 */
-	void setDiscoverySiteEntryModels(URLEntry[] discoverySiteInfo) {
+	void setDiscoverySiteEntries(URLEntry[] discoverySiteInfo) {
 		assertIsWriteable();
 		if (discoverySiteInfo == null)
 			this.discoverySiteInfo = null;
@@ -671,7 +683,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param imports feature plug-in dependency information
 	 * @since 2.0
 	 */
-	void setImportModels(Import[] imports) {
+	void setImports(Import[] imports) {
 		assertIsWriteable();
 		if (imports == null)
 			this.imports = null;
@@ -686,7 +698,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param pluginEntries feature plug-in references
 	 * @since 2.0
 	 */
-	void setPluginEntryModels(PluginEntry[] pluginEntries) {
+	void setPluginEntries(PluginEntry[] pluginEntries) {
 		assertIsWriteable();
 		if (pluginEntries == null)
 			this.pluginEntries = null;
@@ -716,7 +728,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param discoverySiteInfo update site reference
 	 * @since 2.0
 	 */
-	void addDiscoverySiteEntryModel(URLEntry discoverySiteInfo) {
+	void addDiscoverySiteEntry(URLEntry discoverySiteInfo) {
 		assertIsWriteable();
 		if (this.discoverySiteInfo == null)
 			this.discoverySiteInfo = new ArrayList();
@@ -731,7 +743,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param importEntry plug-in dependency entry
 	 * @since 2.0
 	 */
-	void addImportModel(Import importEntry) {
+	void addImport(Import importEntry) {
 		assertIsWriteable();
 		if (this.imports == null)
 			this.imports = new ArrayList();
@@ -795,7 +807,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param discoverySiteInfo update site reference
 	 * @since 2.0
 	 */
-	void removeDiscoverySiteEntryModel(URLEntry discoverySiteInfo) {
+	void removeDiscoverySiteEntry(URLEntry discoverySiteInfo) {
 		assertIsWriteable();
 		if (this.discoverySiteInfo != null)
 			this.discoverySiteInfo.remove(discoverySiteInfo);
@@ -808,7 +820,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param importEntry plug-in dependency entry
 	 * @since 2.0
 	 */
-	void removeImportModel(Import importEntry) {
+	void removeImport(Import importEntry) {
 		assertIsWriteable();
 		if (this.imports != null)
 			this.imports.remove(importEntry);
@@ -821,7 +833,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param pluginEntry plug-in reference
 	 * @since 2.0
 	 */
-	void removePluginEntryModel(PluginEntry pluginEntry) {
+	void removePluginEntry(PluginEntry pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries != null)
 			this.pluginEntries.remove(pluginEntry);
@@ -834,7 +846,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @param nonPluginEntry non-plug-in data reference
 	 * @since 2.0
 	 */
-	void removeNonPluginEntryModel(NonPluginEntry nonPluginEntry) {
+	void removeNonPluginEntry(NonPluginEntry nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries != null)
 			this.nonPluginEntries.remove(nonPluginEntry);
@@ -847,14 +859,14 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 */
 	public void markReadOnly() {
 		super.markReadOnly();
-		markReferenceReadOnly(getDescriptionModel());
-		markReferenceReadOnly(getCopyrightModel());
-		markReferenceReadOnly(getLicenseModel());
-		markReferenceReadOnly(getUpdateSiteEntryModel());
-		markListReferenceReadOnly(getDiscoverySiteEntryModels());
-		markListReferenceReadOnly(getImportModels());
-		markListReferenceReadOnly(getPluginEntryModels());
-		markListReferenceReadOnly(getNonPluginEntryModels());
+		markReferenceReadOnly((URLEntry)getDescription());
+		markReferenceReadOnly((URLEntry)getCopyright());
+		markReferenceReadOnly((URLEntry)getLicense());
+		markReferenceReadOnly((URLEntry)getUpdateSiteEntry());
+		markListReferenceReadOnly((URLEntry[])getDiscoverySiteEntries());
+		markListReferenceReadOnly((Import[])getImports(false));
+		markListReferenceReadOnly((URLEntry[])getPluginEntries(false));
+		markListReferenceReadOnly((URLEntry[])getNonPluginEntries(false));
 	}
 
 	/**
@@ -874,18 +886,18 @@ public class FeatureModel extends ModelObject implements IFeature{
 		this.base = base;
 
 		// plugin entry and nonpluginentry are optimized too
-		resolveListReference(getPluginEntryModels(), base, bundleURL);
-		resolveListReference(getNonPluginEntryModels(), base, bundleURL);
+		resolveListReference((URLEntry[])getPluginEntries(false), base, bundleURL);
+		resolveListReference((URLEntry[])getNonPluginEntries(false), base, bundleURL);
 		
 		//URLSiteModel are optimized
-		resolveReference(getDescriptionModel(),base, bundleURL);
-		resolveReference(getCopyrightModel(),base, bundleURL);
-		resolveReference(getLicenseModel(),base, bundleURL);
-		resolveReference(getUpdateSiteEntryModel(),base, bundleURL);
-		resolveListReference(getDiscoverySiteEntryModels(),base, bundleURL);
+		resolveReference((URLEntry)getDescription(),base, bundleURL);
+		resolveReference((URLEntry)getCopyright(),base, bundleURL);
+		resolveReference((URLEntry)getLicense(),base, bundleURL);
+		resolveReference((URLEntry)getUpdateSiteEntry(),base, bundleURL);
+		resolveListReference((URLEntry[])getDiscoverySiteEntries(),base, bundleURL);
 		
 		// Import Models are optimized
-		resolveListReference(getImportModels(),base, bundleURL);
+		resolveListReference((Import[])getImports(false),base, bundleURL);
 	}
 
 	private void delayedResolve() {
@@ -929,7 +941,7 @@ public class FeatureModel extends ModelObject implements IFeature{
 	 * @return boolean
 	 */
 	public boolean isPatch() {
-		Import[] imports = getImportModels();
+		IImport[] imports = getImports(false);
 
 		for (int i = 0; i < imports.length; i++) {
 			if (imports[i].isPatch())
@@ -937,4 +949,121 @@ public class FeatureModel extends ModelObject implements IFeature{
 		}
 		return false;
 	}
+	
+	/*
+	 * Method filterFeatures.
+	 * Also implemented in Site
+	 * 
+	 * @param list
+	 * @return List
+	 */
+	private IIncludedFeatureReference[] filterFeatures(IIncludedFeatureReference[] allIncluded) {
+		List list = new ArrayList();
+		if (allIncluded != null) {
+			for (int i = 0; i < allIncluded.length; i++) {
+				IIncludedFeatureReference included = allIncluded[i];
+				if (UpdateManagerUtils.isValidEnvironment(included))
+					list.add(included);
+				else {
+					if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_WARNINGS) {
+						UpdateCore.warn(
+							"Filtered out feature reference:" + included);
+					}
+				}
+			}
+		}
+
+		IIncludedFeatureReference[] result =
+			new IIncludedFeatureReference[list.size()];
+		if (!list.isEmpty()) {
+			list.toArray(result);
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Method filterImports.
+	 * @param iImports
+	 * @return IImport[]
+	 */
+	private IImport[] filterImports(IImport[] all) {
+		List list = new ArrayList();
+		if (all != null) {
+			for (int i = 0; i < all.length; i++) {
+				if (UpdateManagerUtils.isValidEnvironment(all[i]))
+					list.add(all[i]);
+			}
+		}
+
+		IImport[] result = new IImport[list.size()];
+		if (!list.isEmpty()) {
+			list.toArray(result);
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Method filterPluginEntry.
+	 * @param iNonPluginEntrys
+	 * @return INonPluginEntry[]
+	 */
+	private INonPluginEntry[] filterNonPluginEntry(INonPluginEntry[] all) {
+		List list = new ArrayList();
+		if (all != null) {
+			for (int i = 0; i < all.length; i++) {
+				if (UpdateManagerUtils.isValidEnvironment(all[i]))
+					list.add(all[i]);
+			}
+		}
+
+		INonPluginEntry[] result = new INonPluginEntry[list.size()];
+		if (!list.isEmpty()) {
+			list.toArray(result);
+		}
+
+		return result;
+	}
+	
+	/*
+	 * Method filter.
+	 * @param result
+	 * @return IPluginEntry[]
+	 */
+	private IPluginEntry[] filterPluginEntry(IPluginEntry[] all) {
+		List list = new ArrayList();
+		if (all != null) {
+			for (int i = 0; i < all.length; i++) {
+				if (UpdateManagerUtils.isValidEnvironment(all[i]))
+					list.add(all[i]);
+			}
+		}
+
+		IPluginEntry[] result = new IPluginEntry[list.size()];
+		if (!list.isEmpty()) {
+			list.toArray(result);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns an array of feature references included by this feature
+	 * 
+	 * @return an erray of feature references, or an empty array.
+	 * @since 2.0
+	 */
+	public IIncludedFeatureReference[] getRawIncludedFeatureReferences()
+		throws CoreException {
+		if (includedFeatureReferences == null)
+			initializeIncludedReferences();
+	
+		if (includedFeatureReferences.size() == 0)
+			return new IncludedFeatureReference[0];
+	
+		return (IIncludedFeatureReference[]) includedFeatureReferences.toArray(
+			arrayTypeFor(includedFeatureReferences));
+	}
+
 }

@@ -61,7 +61,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 	public void testNested() throws Exception {
 
 		IFeature rootFeature = getRootFeature();
-		IFeatureReference[] ref = rootFeature.getIncludedFeatureReferences();
+		IFeatureReference[] ref = rootFeature.getIncludedFeatures();
 		IFeature childFeature = getChildFeature();
 		assertEquals("Children feature are not equal", childFeature, ref[0].getFeature());
 	}
@@ -101,7 +101,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 	public void testNested2() throws Exception {
 
 		IFeature rootFeature = getRootFeature2();
-		IFeatureReference[] ref = rootFeature.getIncludedFeatureReferences();
+		IFeatureReference[] ref = rootFeature.getIncludedFeatures();
 		IFeature childFeature = getChildFeature2();
 		assertEquals("Children feature are not equal", childFeature, ref[0].getFeature());
 	}

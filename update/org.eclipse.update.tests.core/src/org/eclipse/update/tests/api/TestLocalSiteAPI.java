@@ -12,8 +12,8 @@ package org.eclipse.update.tests.api;
 import java.net.URL;
 
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.CategoryModel;
-import org.eclipse.update.core.model.SiteModel;
+import org.eclipse.update.core.model.Category;
+import org.eclipse.update.core.model.Site;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestLocalSiteAPI extends UpdateManagerTestCase {
@@ -58,7 +58,7 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 		
 		ICategory category = new Category("category","Label of category");
 		
-		((SiteModel)site).addCategoryModel((CategoryModel)category);
+		((Site)site).addCategory((Category)category);
 		
 		ICategory[] categories = site.getCategories();
 		boolean found = false;

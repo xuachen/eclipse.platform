@@ -23,9 +23,10 @@ public static Test suite() {
 	suite.setName("Parsing Tests");
 	
 	// the following will take all teh test methods in teh class that start with 'test'
-	suite.addTest(new TestSuite(TestFeatureParse.class));
-	suite.addTest(new TestSuite(TestSiteParse.class));	
-	suite.addTest(new TestSuite(TestCategories.class));		
+	suite.addTest(new TestSuite(TestNewSiteParse.class));
+//	suite.addTest(new TestSuite(TestFeatureParse.class));
+//	suite.addTest(new TestSuite(TestSiteParse.class));	
+//	suite.addTest(new TestSuite(TestCategories.class));		
 	
 	// or you can specify the method
 	//suite.addTest(new TestGetFeature("methodThatDoesNotStartWithtest"));	

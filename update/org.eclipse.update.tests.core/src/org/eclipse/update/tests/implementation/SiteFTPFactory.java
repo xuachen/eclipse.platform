@@ -19,7 +19,7 @@ import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.URLEncoder;
 
-public class SiteFTPFactory extends SiteModelFactory implements ISiteFactory {
+public class SiteFTPFactory extends SiteFactory implements ISiteFactory {
 
 	public static final String FILE = "a/b/c/";
 
@@ -27,7 +27,7 @@ public class SiteFTPFactory extends SiteModelFactory implements ISiteFactory {
 	 * @see ISiteFactory#createSite(URL, boolean)
 	 */
 	public ISite createSite(URL url)
-		throws CoreException, InvalidSiteTypeException {
+		throws CoreException{
 		ISite site = null;
 		InputStream siteStream = null;
 
@@ -35,7 +35,7 @@ public class SiteFTPFactory extends SiteModelFactory implements ISiteFactory {
 			URL resolvedURL = URLEncoder.encode(url);
 			siteStream = resolvedURL.openStream();
 
-			SiteModelFactory factory = (SiteModelFactory) this;
+			SiteFactory factory = (SiteFactory) this;
 			factory.parseSite(siteStream);
 
 			site = new SiteFTP(new URL("http://eclipse.org/" + FILE));

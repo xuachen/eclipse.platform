@@ -17,7 +17,7 @@ import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.model.ConfigurationPolicyModel;
-import org.eclipse.update.internal.model.ConfiguredSiteModel;
+import org.eclipse.update.internal.model.ConfiguredSite;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestRevert extends UpdateManagerTestCase {
@@ -49,8 +49,8 @@ public class TestRevert extends UpdateManagerTestCase {
 		ConfigurationPolicy excludepolicy = new ConfigurationPolicy();
 		excludepolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_EXCLUDE);
 		IConfiguredSite oldConfigSite = old.getConfiguredSites()[0];
-		excludepolicy.setConfiguredSiteModel((ConfiguredSiteModel)oldConfigSite);		
-		((ConfiguredSiteModel)oldConfigSite).setConfigurationPolicyModel((ConfigurationPolicyModel)excludepolicy);
+		excludepolicy.setConfiguredSiteModel((ConfiguredSite)oldConfigSite);		
+		((ConfiguredSite)oldConfigSite).setConfigurationPolicyModel((ConfigurationPolicyModel)excludepolicy);
 		
 		// install one feature
 		IInstallConfiguration newConfig = site.cloneCurrentConfiguration();

@@ -217,7 +217,7 @@ public class ConfigurationView
 					if (feature instanceof MissingFeature) {
 						return UpdateUI.getFormattedMessage(
 							"ConfigurationView.missingFeature", //$NON-NLS-1$
-							feature.getLabel());
+							feature.getName());
 					}
 					String version =
 						feature
@@ -228,7 +228,7 @@ public class ConfigurationView
 					if (OperationsManager.findPendingOperation(feature)
 						!= null)
 						pending = UpdateUI.getString("ConfigurationView.pending"); //$NON-NLS-1$
-					return feature.getLabel() + " " + version + pending; //$NON-NLS-1$
+					return feature.getName() + " " + version + pending; //$NON-NLS-1$
 				} catch (CoreException e) {
 					return UpdateUI.getString("ConfigurationView.error"); //$NON-NLS-1$
 				}
@@ -786,7 +786,7 @@ public class ConfigurationView
 		boolean configured) {
 		try {
 			IIncludedFeatureReference[] included =
-				feature.getIncludedFeatureReferences();
+				feature.getIncludedFeatures();
 			for (int i = 0; i < included.length; i++) {
 				IFeature childFeature;
 				try {

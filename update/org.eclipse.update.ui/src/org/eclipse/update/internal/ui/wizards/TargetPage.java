@@ -91,7 +91,7 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 		public String getColumnText(Object obj, int col) {
 			if (obj instanceof IInstallFeatureOperation && col == 0) {
 				IFeature feature = ((IInstallFeatureOperation) obj).getFeature();
-				return feature.getLabel()
+				return feature.getName()
 					+ " " //$NON-NLS-1$
 					+ feature.getVersionedIdentifier().getVersion().toString();
 			}
@@ -443,8 +443,8 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 					UpdateUI.getFormattedMessage(
 						"IntallWizard.TargetPage.patchError", //$NON-NLS-1$
 						new String[] {
-							feature.getLabel(),
-							patchedSite.job.getFeature().getLabel()});
+							feature.getName(),
+							patchedSite.job.getFeature().getName()});
 					setPageComplete(false);
 					return;
 				}

@@ -412,4 +412,25 @@ public abstract class Site extends ModelObject implements ISite{
 		}
 		return featureModel;
 	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.ISite#getFeature(org.eclipse.update.core.VersionedIdentifier, org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public IFeature getFeature(
+		VersionedIdentifier versionId,
+		IProgressMonitor monitor)
+		throws CoreException {
+
+		IFeature[] features = getFeatures(monitor);
+		for (int i = 0; i < features.length; i++) {
+			try {
+				if (versionId.equals(features[i].getVersionedIdentifier()))
+					return features[i];
+			} catch (CoreException e) {
+				UpdateCore.warn(null, e);
+			}
+		}
+
+		return null;
+	}
+
 }

@@ -280,7 +280,7 @@ public class InstallWizard
 		URL url = feature.getSite().getURL();
 		try {
 			IIncludedFeatureReference[] irefs =
-				feature.getIncludedFeatureReferences();
+				feature.getIncludedFeatures();
 			for (int i = 0; i < irefs.length; i++) {
 				IIncludedFeatureReference iref = irefs[i];
 				boolean preserve = false;

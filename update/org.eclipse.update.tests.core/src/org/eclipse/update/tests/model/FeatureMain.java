@@ -58,7 +58,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"<feature");
 		w.println(in+"   "+"id=\""+feature.getFeatureIdentifier()+"\"");
 		w.println(in+"   "+"version=\""+feature.getFeatureVersion()+"\"");
-		w.println(in+"   "+"label=\""+feature.getLabel()+"\"");
+		w.println(in+"   "+"label=\""+feature.getName()+"\"");
 		w.println(in+"   "+"provider-name=\""+feature.getProvider()+"\"");
 		w.println(in+"   "+"image=\""+feature.getImageURLString()+"\" -> "+feature.getImageURL());
 		w.println(in+"   "+"os=\""+feature.getOS()+"\"");
@@ -67,9 +67,9 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"   "+"application=\""+feature.getApplication()+"\"");
 		w.println(in+"   "+">");
 		
-		writeDescription(w, level+1, feature.getDescriptionModel());
-		writeCopyright(w, level+1, feature.getCopyrightModel());
-		writeLicense(w, level+1, feature.getLicenseModel());
+		writeDescription(w, level+1, feature.getDescription());
+		writeCopyright(w, level+1, feature.getCopyright());
+		writeLicense(w, level+1, feature.getLicense());
 		writeURLs(w, level+1, feature);
 		writePrereqs(w, level+1, feature);
 		writePluginEntries(w, level+1, feature);
@@ -78,7 +78,7 @@ public class FeatureMain extends UpdateManagerTestCase {
         w.println(in+"</feature>");
 	}
 	
-	private static void writeDescription(PrintWriter w, int level, URLEntryModel ue) {
+	private static void writeDescription(PrintWriter w, int level, URLEntry ue) {
 		String in = getIndent(level);
 		w.println("");
 		w.println(in+"<description url=\""+ue.getURLString()+"\" -> "+ue.getURL()+">");
@@ -86,7 +86,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"</description>");
 	}
 	
-	private static void writeCopyright(PrintWriter w, int level, URLEntryModel ue) {
+	private static void writeCopyright(PrintWriter w, int level, URLEntry ue) {
 		String in = getIndent(level);
 		w.println("");
 		w.println(in+"<copyright url=\""+ue.getURLString()+"\" -> "+ue.getURL()+">");
@@ -94,7 +94,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"</copyright>");
 	}
 	
-	private static void writeLicense(PrintWriter w, int level, URLEntryModel ue) {
+	private static void writeLicense(PrintWriter w, int level, URLEntry ue) {
 		String in = getIndent(level);
 		w.println("");
 		w.println(in+"<license url=\""+ue.getURLString()+"\" -> "+ue.getURL()+">");
@@ -108,13 +108,13 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println("");
 		w.println(in+"<url>");
 		
-		URLEntryModel update = feature.getUpdateSiteEntryModel();
+		URLEntry update = feature.getUpdateSiteEntry();
 		w.println(in2+"<update");
 		w.println(in2+"   "+"url=\""+update.getURLString()+"\" -> "+update.getURL());
 		w.println(in2+"   "+"label=\""+update.getAnnotation()+"\"");
 		w.println(in2+"   "+"/>");
 		
-		URLEntryModel[] discovery = feature.getDiscoverySiteEntryModels();
+		URLEntry[] discovery = feature.getDiscoverySiteEntries();
 		for (int i=0; i<discovery.length; i++) {
 			w.println(in2+"<discovery");
 			w.println(in2+"   "+"url=\""+discovery[i].getURLString()+"\" -> "+discovery[i].getURL());
@@ -131,7 +131,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println("");
 		w.println(in+"<requires>");
 		
-		ImportModel[] imp = feature.getImportModels();
+		Import[] imp = feature.getImports();
 		for (int i=0; i<imp.length; i++) {
 			w.println(in2+"<import");
 			w.println(in2+"   "+"plugin=\""+imp[i].getIdentifier()+"\"");
@@ -147,7 +147,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		String in = getIndent(level);
 		w.println("");
 		
-		PluginEntryModel[] plugin = feature.getPluginEntryModels();
+		PluginEntry[] plugin = feature.getPluginEntries();
 		for (int i=0; i<plugin.length; i++) {
 			w.println(in+"<plugin");
 			w.println(in+"   "+"id=\""+plugin[i].getPluginIdentifier()+"\"");
@@ -166,7 +166,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		String in = getIndent(level);
 		w.println("");
 		
-		NonPluginEntryModel[] data = feature.getNonPluginEntryModels();
+		NonPluginEntry[] data = feature.getNonPluginEntries();
 		for (int i=0; i<data.length; i++) {
 			w.println(in+"<data");
 			w.println(in+"   "+"id=\""+data[i].getIdentifier()+"\"");

@@ -13,9 +13,9 @@ package org.eclipse.update.tests.parser;
 import java.net.URL;
 
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.DefaultFeatureParser;
+import org.eclipse.update.core.model.FeatureParser;
 import org.eclipse.update.core.model.FeatureModel;
-import org.eclipse.update.core.model.URLEntryModel;
+import org.eclipse.update.core.model.URLEntry;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 import org.xml.sax.SAXParseException;
@@ -49,7 +49,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/feature1.xml");
-			DefaultFeatureParser parser = new DefaultFeatureParser();
+			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
 			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
@@ -64,7 +64,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/feature1bis.xml");
-			DefaultFeatureParser parser = new DefaultFeatureParser();
+			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
 			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
@@ -79,7 +79,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/feature2.xml");
-			DefaultFeatureParser parser = new DefaultFeatureParser();
+			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
 			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
@@ -94,14 +94,14 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/feature3.xml");
-			DefaultFeatureParser parser = new DefaultFeatureParser();
+			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
 			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
-			String copyrightString = remoteFeature.getCopyrightModel().getURL().getFile();
-			boolean resolved = copyrightString.indexOf(SiteManager.getOS()) != -1;
+			String copyrightString = remoteFeature.getCopyright().getURL().getFile();
+			boolean resolved = copyrightString.indexOf(UpdateManagerUtils.getOS()) != -1;
 			assertTrue("Copyright URL not resolved:" + copyrightString, resolved);
 		} catch (SAXParseException e) {
 			fail("Exception should not be thrown" + e.getMessage());
@@ -113,15 +113,15 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/feature4.xml");
-			DefaultFeatureParser parser = new DefaultFeatureParser();
+			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
 			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
-			URLEntryModel[] models = remoteFeature.getDiscoverySiteEntryModels();
+			URLEntry[] models = remoteFeature.getDiscoverySiteEntries();
 			assertTrue("Discovery model is not a Web Model", models[0].getType()==IURLEntry.WEB_SITE);
-			URLEntryModel copyright = remoteFeature.getCopyrightModel();
+			URLEntry copyright = remoteFeature.getCopyright();
 			assertTrue("Copyright model is not an Update Model", copyright.getType()==IURLEntry.UPDATE_SITE);
 			
 		} catch (SAXParseException e) {

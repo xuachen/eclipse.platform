@@ -35,7 +35,7 @@ public class SimpleFeatureAdapter extends FeatureAdapter {
 	}
 	
 	public String getFastLabel() {
-		return feature.getLabel();
+		return feature.getName();
 	}
 	
 	public URL getURL() {
@@ -48,7 +48,7 @@ public class SimpleFeatureAdapter extends FeatureAdapter {
 	
 	public IFeatureAdapter[] getIncludedFeatures(IProgressMonitor monitor) {
 		try {
-			IIncludedFeatureReference[] included = getFeature(monitor).getIncludedFeatureReferences();
+			IIncludedFeatureReference[] included = getFeature(monitor).getIncludedFeatures();
 			SimpleFeatureAdapter[] result =
 				new SimpleFeatureAdapter[included.length];
 			for (int i = 0; i < included.length; i++) {

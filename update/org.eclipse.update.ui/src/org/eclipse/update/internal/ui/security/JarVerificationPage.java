@@ -41,7 +41,7 @@ public class JarVerificationPage extends BannerPage {
 		_fileName = verificationResult.getContentReference().getIdentifier();
 		_VerificationResult = verificationResult;
 		_strId = verificationResult.getFeature().getVersionedIdentifier().toString();
-		_strFeatureName = verificationResult.getFeature().getLabel();
+		_strFeatureName = verificationResult.getFeature().getName();
 		_strProviderName = verificationResult.getFeature().getProvider();
 		componentVerified =	(verificationResult.isFeatureVerification()) ? ".Feature" : ".File"; //$NON-NLS-1$ //$NON-NLS-2$
 	}

@@ -51,8 +51,8 @@ public class FeatureSorter extends ViewerSorter {
 		PluginVersionIdentifier v1 = f1.getVersionedIdentifier().getVersion();
 		PluginVersionIdentifier v2 = f2.getVersionedIdentifier().getVersion();
 		
-		String label1 = f1.getLabel() == null ? "" : f1.getLabel();
-		String label2 = f2.getLabel() == null ? "" : f2.getLabel();
+		String label1 = f1.getName() == null ? "" : f1.getName();
+		String label2 = f2.getName() == null ? "" : f2.getName();
 		
 		String provider1 = f1.getProvider() == null ? "" : f1.getProvider();
 		String provider2 = f2.getProvider() == null ? "" : f2.getProvider();

@@ -85,7 +85,7 @@ public class OptionalFeaturesPage extends BannerPage implements IDynamicPage {
 		public String getText(Object obj) {
 			if (obj instanceof JobRoot) {
 				IFeature feature = ((JobRoot) obj).getJob().getFeature();
-				return feature.getLabel()
+				return feature.getName()
 					+ " " //$NON-NLS-1$
 					+ feature.getVersionedIdentifier().getVersion().toString();
 			}

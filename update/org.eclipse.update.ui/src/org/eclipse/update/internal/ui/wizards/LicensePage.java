@@ -134,7 +134,7 @@ public class LicensePage extends WizardPage implements IDynamicPage {
 					IFeature feature = jobs[i].getFeature();
 					item = new TableItem(table, SWT.NONE);
 					String label =
-						feature.getLabel()
+						feature.getName()
 							+ " " //$NON-NLS-1$
 							+ feature.getVersionedIdentifier().getVersion().toString();
 					item.setText(label);

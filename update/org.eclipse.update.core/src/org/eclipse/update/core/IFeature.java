@@ -178,19 +178,19 @@ public interface IFeature extends IFeatureReference {
 	 * @return the URL pointing to the image, , or <code>null</code>.
 	 * @since 2.0 
 	 */
-	public URL getImage();
+	public URL getImageURL();
 
 	/**
 	 * Return a list of plug-in dependencies for this feature. A plug-in
 	 * dependency is a reference to a plug-in required for feature execution
 	 * that is not packaged as part of the feature.
-	 * filtered by the operating system, windowing system and architecture system
+	 * @param environmentFilter if true, return the list filtered by the operating system, windowing system and architecture system
 	 * set in <code>Sitemanager</code>
 	 * 
 	 * @return the list of required plug-in dependencies, or an empty array.
 	 * @since 2.0 
 	 */
-	public IImport[] getImports();
+	public IImport[] getImports(boolean environmentFilter);
 
 	/**
 	 * Return a list of plug-in dependencies for this feature. A plug-in
@@ -239,39 +239,22 @@ public interface IFeature extends IFeatureReference {
 	 * filtered by the operating system, windowing system and architecture system
 	 * set in <code>Sitemanager</code>
 	 * 
+	 * @param environmentFilter if true, return the entries valid in the current environment only
 	 * @return an erray of plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public IPluginEntry[] getPluginEntries();
-
-	/**
-	 * Returns an array of plug-in entries referenced by this feature
-	 * No filtering occurs
-	 * 
-	 * @return an erray of plug-in entries, or an empty array.
-	 * @since 2.1
-	 */
-	public IPluginEntry[] getRawPluginEntries();
+	public IPluginEntry[] getPluginEntries(boolean environmentFilter);
 
 	/**
 	 * Returns an array of non-plug-in entries referenced by this feature
 	 * filtered by the operating system, windowing system and architecture system
 	 * set in <code>Sitemanager</code>
 	 * 
+	 * @param environmentFilter if true, return the entries valid in the current environment only
 	 * @return an erray of non-plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public INonPluginEntry[] getNonPluginEntries();
-
-	/**
-	 * Returns an array of non-plug-in entries referenced by this feature
-	 * No filtering occurs
-	 * 
-	 * @return an erray of non-plug-in entries, or an empty array.
-	 * @since 2.1
-	 */
-	public INonPluginEntry[] getRawNonPluginEntries();
-
+	public INonPluginEntry[] getNonPluginEntries(boolean environmentFilter);
 
 	/**
 	 * Returns the download size of the feature, if it can be determined.

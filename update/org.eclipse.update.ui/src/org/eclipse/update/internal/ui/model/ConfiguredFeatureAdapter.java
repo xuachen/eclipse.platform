@@ -69,7 +69,7 @@ public class ConfiguredFeatureAdapter
 	public IFeatureAdapter[] getIncludedFeatures(IProgressMonitor monitor) {
 		try {
 			IIncludedFeatureReference[] included =
-				getFeature(null).getIncludedFeatureReferences();
+				getFeature(null).getIncludedFeatures();
 			ConfiguredFeatureAdapter[] result =
 				new ConfiguredFeatureAdapter[included.length];
 			if (monitor == null)

@@ -11,6 +11,8 @@
 package org.eclipse.update.core;
 
 
+import java.net.*;
+
 import org.eclipse.core.runtime.*;
 
 
@@ -87,6 +89,4 @@ public interface IUpdateSite extends ISite {
 	 * @since 2.0
 	 */
 	public IFeatureReference getFeatureReference(IFeature feature);
-
-
 }

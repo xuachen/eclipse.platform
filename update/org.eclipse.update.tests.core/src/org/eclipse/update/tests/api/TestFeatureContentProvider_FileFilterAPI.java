@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.update.tests.api;
-import org.eclipse.update.core.FeatureContentProvider;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.FeatureExecutableContentProvider;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 

@@ -31,8 +31,6 @@ public class SiteMain extends UpdateManagerTestCase {
 		try {
 			process("site_with_type.xml",w);
 			fail("InvalidSiteTypeException not thrown");
-		} catch (InvalidSiteTypeException e) {
-			assertEquals(e.getNewType(),"some.other.site.type");
 		} finally {
 			w.close();
 		}
@@ -40,9 +38,9 @@ public class SiteMain extends UpdateManagerTestCase {
 	
 	private static void process(String xml, PrintWriter w) throws Exception {
 		
-		SiteModelFactory factory = new SiteModelFactory();
+		SiteFactory factory = new SiteFactory();
 		InputStream is = null;
-		SiteModel site = null;
+		Site site = null;
 		
 		w.println("");
 		w.println("Parsing site map ...");
@@ -65,7 +63,7 @@ public class SiteMain extends UpdateManagerTestCase {
 		writeSite(w,0,site);
 	}
 	
-	private static void writeSite(PrintWriter w, int level, SiteModel site) {
+	private static void writeSite(PrintWriter w, int level, Site site) {
 		if (site == null) return;
 		
 		String in = getIndent(level);
@@ -83,7 +81,7 @@ public class SiteMain extends UpdateManagerTestCase {
         w.println(in+"</feature>");
 	}
 	
-	private static void writeDescription(PrintWriter w, int level, URLEntryModel ue) {
+	private static void writeDescription(PrintWriter w, int level, URLEntry ue) {
 		if (ue == null) return;
 		String in = getIndent(level);
 		w.println("");
@@ -92,7 +90,7 @@ public class SiteMain extends UpdateManagerTestCase {
 		w.println(in+"</description>");
 	}
 	
-	private static void writeFeatures(PrintWriter w, int level, SiteModel site) {
+	private static void writeFeatures(PrintWriter w, int level, Site site) {
 		String in = getIndent(level);
 		getIndent(level+1);
 		w.println("");
@@ -108,11 +106,11 @@ public class SiteMain extends UpdateManagerTestCase {
 		}
 	}
 	
-	private static void writeArchives(PrintWriter w, int level, SiteModel site) {
+	private static void writeArchives(PrintWriter w, int level, Site site) {
 		String in = getIndent(level);
 		w.println("");
 		
-		ArchiveReferenceModel[] archive = site.getArchiveReferenceModels();
+		ArchiveReference[] archive = site.getArchives();
 		for (int i=0; i<archive.length; i++) {
 			w.println(in+"<archive");
 			w.println(in+"   "+"path=\""+archive[i].getPath()+"\"");
@@ -121,12 +119,12 @@ public class SiteMain extends UpdateManagerTestCase {
 		}
 	}
 	
-	private static void writeCategoryDefs(PrintWriter w, int level, SiteModel site) {
+	private static void writeCategoryDefs(PrintWriter w, int level, Site site) {
 		String in = getIndent(level);
 		getIndent(level+1);
 		w.println("");
 		
-		CategoryModel[] cat = site.getCategoryModels();
+		Category[] cat = site.getCategories();
 		for (int i=0; i<cat.length; i++) {
 			w.println(in+"<category-def");
 			w.println(in+"   "+"name=\""+cat[i].getName()+"\"");

@@ -52,7 +52,7 @@ public class FeatureGeneralPropertyPage
 		layout.numColumns = 2;
 		composite.setLayout(layout);
 
-		addField(composite, UpdateUI.getString("FeatureGeneralPropertyPage.name"), feature.getLabel()); //$NON-NLS-1$
+		addField(composite, UpdateUI.getString("FeatureGeneralPropertyPage.name"), feature.getName()); //$NON-NLS-1$
 		addField(
 			composite,
 			UpdateUI.getString("FeatureGeneralPropertyPage.id"), //$NON-NLS-1$
@@ -63,7 +63,7 @@ public class FeatureGeneralPropertyPage
 			feature.getVersionedIdentifier().getVersion().toString());
 		addField(composite, UpdateUI.getString("FeatureGeneralPropertyPage.provider"), feature.getProvider()); //$NON-NLS-1$
 		long size = feature.getInstallSize();
-		if (size != ContentEntryModel.UNKNOWN_SIZE)
+		if (size != ContentEntry.UNKNOWN_SIZE)
 			addField(composite, UpdateUI.getString("FeatureGeneralPropertyPage.size"), new Long(size).toString() + " KB"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}

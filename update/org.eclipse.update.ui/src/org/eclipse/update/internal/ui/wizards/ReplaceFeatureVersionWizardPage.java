@@ -53,7 +53,7 @@ public class ReplaceFeatureVersionWizardPage extends WizardPage {
 			}
 			public String getText(Object element) {
 				IFeature feature = (IFeature) element;
-				return feature.getLabel() + " " + feature.getVersionedIdentifier().getVersion().toString(); //$NON-NLS-1$
+				return feature.getName() + " " + feature.getVersionedIdentifier().getVersion().toString(); //$NON-NLS-1$
 			}
 		});
 		

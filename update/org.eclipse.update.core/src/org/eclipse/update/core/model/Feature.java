@@ -135,7 +135,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IURLEntry getUpdateSiteEntry() {
-		return (IURLEntry) getUpdateSiteEntryModel();
+		return (IURLEntry) getUpdateSiteEntry();
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IURLEntry[] getDiscoverySiteEntries() {
-		URLEntry[] result = getDiscoverySiteEntryModels();
+		URLEntry[] result = getDiscoverySiteEntries();
 		if (result.length == 0)
 			return new IURLEntry[0];
 		else
@@ -170,7 +170,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IURLEntry getDescription() {
-		return (IURLEntry) getDescriptionModel();
+		return (IURLEntry) getDescription();
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IURLEntry getCopyright() {
-		return (IURLEntry) getCopyrightModel();
+		return (IURLEntry) getCopyright();
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IURLEntry getLicense() {
-		return (IURLEntry) getLicenseModel();
+		return (IURLEntry) getLicense();
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getImage()
 	 * @since 2.0
 	 */
-	public URL getImage() {
+	public URL getImageURL() {
 		return getImageURL();
 	}
 
@@ -210,7 +210,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IImport[] getRawImports() {
-		Import[] result = getImportModels();
+		Import[] result = getImports();
 		if (result.length == 0)
 			return new IImport[0];
 		else
@@ -551,7 +551,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IPluginEntry[] getRawPluginEntries() {
-		PluginEntry[] result = getPluginEntryModels();
+		PluginEntry[] result = getPluginEntries();
 		if (result.length == 0)
 			return new IPluginEntry[0];
 		else
@@ -597,7 +597,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public INonPluginEntry[] getRawNonPluginEntries() {
-		NonPluginEntry[] result = getNonPluginEntryModels();
+		NonPluginEntry[] result = getNonPluginEntries();
 		if (result.length == 0)
 			return new INonPluginEntry[0];
 		else
@@ -611,7 +611,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public int getNonPluginEntryCount() {
-		return getNonPluginEntryModels().length;
+		return getNonPluginEntries().length;
 	}
 
 	/**

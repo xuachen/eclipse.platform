@@ -53,11 +53,11 @@ public class MoreInfoGenerator {
 		out.print("<HEAD>"); //$NON-NLS-1$
 		out.println(
 			"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">"); //$NON-NLS-1$
-		out.println("<TITLE>"+feature.getLabel()+"</TITLE>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<TITLE>"+feature.getName()+"</TITLE>"); //$NON-NLS-1$ //$NON-NLS-2$
 		out.println("</HEAD>"); //$NON-NLS-1$
 		out.println("<HTML>"); //$NON-NLS-1$
 		out.println("<BODY>"); //$NON-NLS-1$
-		out.println("<H1><CENTER>" + feature.getLabel() + "</CENTER></H1>"); //$NON-NLS-1$ //$NON-NLS-2$
+		out.println("<H1><CENTER>" + feature.getName() + "</CENTER></H1>"); //$NON-NLS-1$ //$NON-NLS-2$
 		createProfileTable(job, out);
 		createDescription(feature, out);
 		out.println("<hr>"); //$NON-NLS-1$
@@ -145,7 +145,7 @@ public class MoreInfoGenerator {
 	}
 	
 	private String getImageURL(IFeature feature) {
-		URL imageURL = feature.getImage();
+		URL imageURL = feature.getImageURL();
 		if (imageURL==null)
 			imageURL = UpdateUIImages.getDefaultProviderImageURL();
 		return imageURL.toString();

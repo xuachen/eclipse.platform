@@ -112,7 +112,7 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getLabel()
 	 */
-	public String getLabel() {
+	public String getName() {
 		if (reference != null
 			&& reference instanceof IIncludedFeatureReference) {
 			String name = ((IIncludedFeatureReference) reference).getName();
@@ -202,7 +202,7 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getImage()
 	 */
-	public URL getImage() {
+	public URL getImageURL() {
 		return null;
 	}
 
@@ -395,7 +395,7 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getIncludedFeatureReferences()
 	 */
-	public IIncludedFeatureReference[] getIncludedFeatureReferences()
+	public IIncludedFeatureReference[] getIncludedFeatures()
 		throws CoreException {
 		return new IIncludedFeatureReference[0];
 	}
@@ -411,7 +411,7 @@ public class MissingFeature implements IFeature {
 	 */
 	public IIncludedFeatureReference[] getRawIncludedFeatureReferences()
 		throws CoreException {
-		return getIncludedFeatureReferences();
+		return getIncludedFeatures();
 	}
 
 	/**

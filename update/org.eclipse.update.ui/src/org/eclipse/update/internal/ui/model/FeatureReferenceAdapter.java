@@ -52,7 +52,7 @@ public class FeatureReferenceAdapter extends FeatureAdapter {
 		final IFeatureReference [] included;
 		
 		try {
-			included = 	getFeature(null).getIncludedFeatureReferences();
+			included = 	getFeature(null).getIncludedFeatures();
 		}
 		catch (CoreException e) {
 			return;
@@ -87,7 +87,7 @@ public class FeatureReferenceAdapter extends FeatureAdapter {
 	public IFeatureAdapter[] getIncludedFeatures(IProgressMonitor monitor) {
 		try {
 			IFeatureReference[] included =
-				getFeature(monitor).getIncludedFeatureReferences();
+				getFeature(monitor).getIncludedFeatures();
 			FeatureReferenceAdapter[] result =
 				new FeatureReferenceAdapter[included.length];
 			for (int i = 0; i < included.length; i++) {

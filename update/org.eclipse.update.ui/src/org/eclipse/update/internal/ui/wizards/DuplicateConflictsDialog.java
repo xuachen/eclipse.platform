@@ -59,7 +59,7 @@ public class DuplicateConflictsDialog extends MessageDialog {
 					DuplicateConflictsValidator.IdEntry entry =
 						(DuplicateConflictsValidator.IdEntry) (list).get(i);
 					if (entry.isInstallCandidate())
-						return entry.getFeature().getLabel();
+						return entry.getFeature().getName();
 				}
 			}
 			return super.getText(obj);

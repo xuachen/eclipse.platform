@@ -57,7 +57,7 @@ public class DiscoveryFolder extends BookmarkFolder {
 					continue;
 				IFeature cfeature = candidate.getFeature(null);
 				IFeatureReference[] irefs =
-					cfeature.getIncludedFeatureReferences();
+					cfeature.getIncludedFeatures();
 				for (int j = 0; j < irefs.length; j++) {
 					IFeatureReference iref = irefs[j];
 					VersionedIdentifier ivid = iref.getVersionedIdentifier();

@@ -182,15 +182,6 @@ public class UpdateSite extends Site implements IUpdateSite {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.ISite#getFeature(java.net.URL, org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public IFeature getFeature(URL featureURL, IProgressMonitor monitor)
-		throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.IUpdateSite#getFeatureReference(org.eclipse.update.core.IFeature)

@@ -57,22 +57,22 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseValid1() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] feature = remoteSite.getFeatureReferenceModels();
-		CategoryModel[] categories = remoteSite.getCategoryModels();
-		ArchiveReferenceModel[] archives = remoteSite.getArchiveReferenceModels();
+		FeatureReference[] feature = remoteSite.getFeatureReferenceModels();
+		Category[] categories = remoteSite.getCategories();
+		ArchiveReference[] archives = remoteSite.getArchives();
 
 		assertTrue("Wrong number of features", feature.length == 6);
 		assertTrue("Wrong number of categories", categories.length == 3);
 		assertTrue("Wrong number of archives", archives.length == 0);
 
 		String path = new URL(SOURCE_FILE_SITE + "parsertests/").getFile();
-		String path2 = remoteSite.getDescriptionModel().getURL().getFile();
+		String path2 = remoteSite.getDescription().getURL().getFile();
 		assertEquals(path + "index.html", path2);
 
 	}
@@ -80,25 +80,25 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseValid2() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/reddot.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] feature = remoteSite.getFeatureReferenceModels();
-		CategoryModel[] categories = remoteSite.getCategoryModels();
-		ArchiveReferenceModel[] archives = remoteSite.getArchiveReferenceModels();
+		FeatureReference[] feature = remoteSite.getFeatureReferenceModels();
+		Category[] categories = remoteSite.getCategories();
+		ArchiveReference[] archives = remoteSite.getArchives();
 
 		assertTrue("Wrong number of features", feature.length == 2);
 		assertTrue("Wrong number of categories", categories.length == 1);
 		assertTrue("Wrong number of archives", archives.length == 2);
 
 		String valideString = "This category contains all of the <currently> available versions of Red Dot feature. <greeting>Hello, world!</greeting>";
-		assertEquals(valideString, remoteSite.getCategoryModels()[0].getDescriptionModel().getAnnotation());
+		assertEquals(valideString, remoteSite.getCategories()[0].getDescription().getAnnotation());
 
 		String path = new URL(SOURCE_FILE_SITE + "parsertests/").getFile();
-		String path2 = remoteSite.getDescriptionModel().getURL().getFile();
+		String path2 = remoteSite.getDescription().getURL().getFile();
 		assertEquals(path + "index.html", path2);
 
 	}
@@ -106,25 +106,25 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseValid3() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/reddot1.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] feature = remoteSite.getFeatureReferenceModels();
-		CategoryModel[] categories = remoteSite.getCategoryModels();
-		ArchiveReferenceModel[] archives = remoteSite.getArchiveReferenceModels();
+		FeatureReference[] feature = remoteSite.getFeatureReferenceModels();
+		Category[] categories = remoteSite.getCategories();
+		ArchiveReference[] archives = remoteSite.getArchives();
 
 		assertTrue("Wrong number of features", feature.length == 2);
 		assertTrue("Wrong number of categories", categories.length == 1);
 		assertTrue("Wrong number of archives", archives.length == 2);
 
 		String valideString = "This category contains all of the <currently> available versions of Red Dot feature.";
-		assertEquals(valideString, remoteSite.getCategoryModels()[0].getDescriptionModel().getAnnotation());
+		assertEquals(valideString, remoteSite.getCategories()[0].getDescription().getAnnotation());
 
 		String path = new URL(SOURCE_FILE_SITE + "parsertests/").getFile();
-		String path2 = remoteSite.getDescriptionModel().getURL().getFile();
+		String path2 = remoteSite.getDescription().getURL().getFile();
 		assertEquals(path + "index.html", path2);
 
 	}
@@ -132,15 +132,15 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseValid4() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "SiteURLTest/data/site.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] feature = remoteSite.getFeatureReferenceModels();
+		FeatureReference[] feature = remoteSite.getFeatureReferenceModels();
 		//CategoryModel[] categories = remoteSite.getCategoryModels();
-		ArchiveReferenceModel[] archives = remoteSite.getArchiveReferenceModels();
+		ArchiveReference[] archives = remoteSite.getArchives();
 
 		assertTrue("Wrong number of features", feature.length == 2);
 		assertTrue("Wrong number of archives", archives.length == 3);
@@ -152,7 +152,7 @@ public class TestSiteParse extends UpdateManagerTestCase {
 		assertEquals(path2, archives[0].getURL());
 
 		String path = new URL(SOURCE_FILE_SITE + "SiteURLTest/data/info/").getFile();
-		String path3 = remoteSite.getDescriptionModel().getURL().getFile();
+		String path3 = remoteSite.getDescription().getURL().getFile();
 		assertEquals(path + "siteInfo.html", path3);
 
 	}
@@ -160,15 +160,15 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseValid5() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site2.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] featureRef = remoteSite.getFeatureReferenceModels();
+		FeatureReference[] featureRef = remoteSite.getFeatureReferenceModels();
 		//CategoryModel[] categories = remoteSite.getCategoryModels();
-		ArchiveReferenceModel[] archives = remoteSite.getArchiveReferenceModels();
+		ArchiveReference[] archives = remoteSite.getArchives();
 
 		assertTrue("Wrong number of features", featureRef.length == 1);
 		assertTrue("Wrong number of archives", archives.length == 0);
@@ -186,15 +186,15 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseValid6() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site4.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] featureRef = remoteSite.getFeatureReferenceModels();
+		FeatureReference[] featureRef = remoteSite.getFeatureReferenceModels();
 		//CategoryModel[] categories = remoteSite.getCategoryModels();
-		ArchiveReferenceModel[] archives = remoteSite.getArchiveReferenceModels();
+		ArchiveReference[] archives = remoteSite.getArchives();
 
 		assertTrue("Wrong number of features", featureRef.length == 2);
 		assertTrue("Wrong number of archives", archives.length == 0);
@@ -213,13 +213,13 @@ public class TestSiteParse extends UpdateManagerTestCase {
 	public void testParseUnknownCategory() throws Exception {
 
 		URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site3.xml");
-		DefaultSiteParser parser = new DefaultSiteParser();
+		UpdateSiteParser parser = new UpdateSiteParser();
 		parser.init(new SiteFileFactory());
 		URL resolvedURL = URLEncoder.encode(remoteURL);
-		SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+		Site remoteSite = parser.parse(resolvedURL.openStream());
 		remoteSite.resolve(remoteURL, null);
 
-		FeatureReferenceModel[] featureRef = remoteSite.getFeatureReferenceModels();
+		FeatureReference[] featureRef = remoteSite.getFeatureReferenceModels();
 		ICategory[] categories = ((SiteFeatureReference) featureRef[0]).getCategories();
 		assertTrue(categories.length == 0);
 	}
@@ -228,10 +228,10 @@ public class TestSiteParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site7.xml");
-			DefaultSiteParser parser = new DefaultSiteParser();
+			UpdateSiteParser parser = new UpdateSiteParser();
 			parser.init(new SiteFileFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+			Site remoteSite = parser.parse(resolvedURL.openStream());
 			remoteSite.resolve(remoteURL, null);
 
 		} catch (SAXParseException e) {
@@ -243,10 +243,10 @@ public class TestSiteParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site8.xml");
-			DefaultSiteParser parser = new DefaultSiteParser();
+			UpdateSiteParser parser = new UpdateSiteParser();
 			parser.init(new SiteFileFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+			Site remoteSite = parser.parse(resolvedURL.openStream());
 			remoteSite.resolve(remoteURL, null);
 
 		} catch (SAXParseException e) {
@@ -258,10 +258,10 @@ public class TestSiteParse extends UpdateManagerTestCase {
 
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site9.xml");
-			DefaultSiteParser parser = new DefaultSiteParser();
+			UpdateSiteParser parser = new UpdateSiteParser();
 			parser.init(new SiteFileFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			SiteModel remoteSite = parser.parse(resolvedURL.openStream());
+			Site remoteSite = parser.parse(resolvedURL.openStream());
 			remoteSite.resolve(remoteURL, null);
 		} catch (SAXParseException e) {
 			fail("Exception should not be thrown" + e.getMessage());
@@ -270,10 +270,10 @@ public class TestSiteParse extends UpdateManagerTestCase {
 
 	public void testParseValid10() throws Exception {
 
-		SiteModel remoteSite = null;
+		Site remoteSite = null;
 		try {
 			URL remoteURL = new URL(SOURCE_FILE_SITE + "parsertests/site10.xml");
-			DefaultSiteParser parser = new DefaultSiteParser();
+			UpdateSiteParser parser = new UpdateSiteParser();
 			parser.init(new SiteFileFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
 			remoteSite = parser.parse(resolvedURL.openStream());
@@ -281,7 +281,7 @@ public class TestSiteParse extends UpdateManagerTestCase {
 		} catch (SAXParseException e) {
 			fail("Exception should not be thrown" + e.getMessage());
 		}
-		FeatureReferenceModel[] models = remoteSite.getFeatureReferenceModels();
+		FeatureReference[] models = remoteSite.getFeatureReferenceModels();
 		assertEquals("Invalid versioned identifier", models[0].getFeatureIdentifier(), "org.eclipse.test.feature");
 	}
 

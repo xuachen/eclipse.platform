@@ -40,7 +40,7 @@ public abstract class FeatureAdapter extends UIModelObject implements IFeatureAd
 	public String toString() {
 		try {
 			IFeature feature = getFeature(null);
-			return feature.getLabel();
+			return feature.getName();
 		}
 		catch (CoreException e) {
 			return UpdateUI.getString("FeatureAdapter.failure"); //$NON-NLS-1$
@@ -48,7 +48,7 @@ public abstract class FeatureAdapter extends UIModelObject implements IFeatureAd
 	}
 	public boolean hasIncludedFeatures(IProgressMonitor monitor) {
 		try {
-			IFeatureReference [] included = getFeature(monitor).getIncludedFeatureReferences();
+			IFeatureReference [] included = getFeature(monitor).getIncludedFeatures();
 			return included.length>0;
 		}
 		catch (CoreException e) {

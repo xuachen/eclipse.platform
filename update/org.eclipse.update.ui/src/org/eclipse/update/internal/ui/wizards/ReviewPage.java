@@ -70,7 +70,7 @@ public class ReviewPage
 
 			switch (column) {
 				case 0 :
-					return feature.getLabel();
+					return feature.getName();
 				case 1 :
 					return feature
 						.getVersionedIdentifier()
@@ -116,7 +116,7 @@ public class ReviewPage
 		private boolean includes(IFeature feature, VersionedIdentifier vid) {
 			try {
 				IFeatureReference[] irefs =
-					feature.getIncludedFeatureReferences();
+					feature.getIncludedFeatures();
 				for (int i = 0; i < irefs.length; i++) {
 					IFeatureReference iref = irefs[i];
 					IFeature ifeature = iref.getFeature(null);

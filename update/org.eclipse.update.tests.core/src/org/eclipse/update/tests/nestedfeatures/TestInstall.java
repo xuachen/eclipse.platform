@@ -76,7 +76,7 @@ public class TestInstall extends UpdateManagerTestCase {
 
 		// verify child Feature
 		IFeature childFeature =
-			remoteFeature.getIncludedFeatureReferences()[0].getFeature();
+			remoteFeature.getIncludedFeatures()[0].getFeature();
 		entries = childFeature.getPluginEntries();
 		assertTrue("no plugins entry", (entries != null && entries.length != 0));
 		pluginName = entries[0].getVersionedIdentifier().toString();
@@ -186,7 +186,7 @@ public class TestInstall extends UpdateManagerTestCase {
 
 		// verify child Feature
 		IFeature childFeature =
-			remoteFeature.getIncludedFeatureReferences()[0].getFeature();
+			remoteFeature.getIncludedFeatures()[0].getFeature();
 		entries = childFeature.getPluginEntries();
 		assertTrue("no plugins entry", (entries != null && entries.length != 0));
 		pluginName = entries[0].getVersionedIdentifier().toString();
