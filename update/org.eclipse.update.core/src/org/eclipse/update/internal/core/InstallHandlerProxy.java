@@ -143,7 +143,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 	/*
 	 * @see IInstallHandler#allPluginsInstalled
 	 */
-	public void completeInstall(IFeatureContentConsumer consumer)
+	public void completeInstall()
 		throws CoreException {
 		if (handler == null)
 			return;
@@ -151,7 +151,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 			try {
 				if (DEBUG)
 					debug("calling completeInstall()");
-				handler.completeInstall(consumer);
+				handler.completeInstall();
 			} catch (Throwable e) {
 				handleExceptionInCall(e, feature);
 			}

@@ -118,18 +118,10 @@ public interface IInstallHandler {
 	 * interpreted in any way by the platform (beyond downloading)).
 	 * 
 	 * @see #HANDLER_ACTION_INSTALL
-	 * @param consumer content consumer for the feature. The install handler
-	 * can choose to use this consumer to install the non-plug-in data,
-	 * or can handle the data in any other way. If using the consumer,
-	 * the install handler should only call 
-	 * @see IFeatureContentConsumer#store(ContentReference, IProgressMonitor)
-	 * and @see IFeatureContentConsumer#open(INonPluginEntry)
-	 * methods of the consumer. 
 	 * @exception CoreException terminates the action
 	 * @since 2.0
 	 */
-	public void completeInstall(IFeatureContentConsumer consumer)
-		throws CoreException;
+	public void completeInstall() throws CoreException;
 
 	/**
 	 * Called at the end of the install action.

@@ -145,11 +145,10 @@ public class BaseInstallHandler implements IInstallHandler {
 	/**
 	 * Called after the feature files and any downloaded plug-ins have
 	 * been installed. 
-	 * 
-	 * @see IInstallHandler#completeInstall(IFeatureContentConsumer)
-	 * @since 2.0
+	 *
+	 * @since 3.0
 	 */
-	public void completeInstall(IFeatureContentConsumer consumer)
+	public void completeInstall()
 		throws CoreException {
 	}
 

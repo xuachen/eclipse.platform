@@ -199,6 +199,7 @@ public class FeatureInstaller {
 				   storeFeature(sourceFeature, references[i], subMonitor);
 			   }
 			   // TODO should this be targetFeature ?
+//*****************************************************
 			   InstallRegistry.registerFeature(sourceFeature);
 		   } else {
 			   monitor.worked(1);
