@@ -192,7 +192,7 @@ public class Main {
 	private static final String CFG_FRAMEWORK = "osgi.framework"; //$NON-NLS-1$
 	private static final String CFG_SPLASHPATH = "osgi.splashPath"; //$NON-NLS-1$
 	private static final String CFG_SPLASHLOCATION = "osgi.splashLocation"; //$NON-NLS-1$
-	private static final String CFG_BASEJARS = "osgi.baseJars"; //$NON-NLS-1$
+	private static final String CFG_CLASSPATH = "osgi.frameworkClassPath"; //$NON-NLS-1$
 	private static final String CFG_EOF = "eof"; //$NON-NLS-1$
 
 	// log file handling
@@ -381,7 +381,7 @@ public class Main {
 	}
 
 	private void addBaseJars(String devBase, ArrayList result) throws MalformedURLException {
-		String baseJarList = System.getProperty(CFG_BASEJARS, "core.jar, console.jar, osgi.jar, resolver.jar, defaultAdaptor.jar, eclipseAdaptor.jar");
+		String baseJarList = System.getProperty(CFG_CLASSPATH, "core.jar, console.jar, osgi.jar, resolver.jar, defaultAdaptor.jar, eclipseAdaptor.jar");
 		String[] baseJars = getArrayFromList(baseJarList);
 		for (int i = 0; i < baseJars.length; i++) {
 			String string = baseJars[i];
