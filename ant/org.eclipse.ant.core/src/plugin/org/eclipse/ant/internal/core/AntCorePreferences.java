@@ -15,9 +15,9 @@ public class AntCorePreferences {
 	protected List defaultTasks;
 	protected List defaultTypes;
 	protected List defaultURLs;
-	protected List customTasks;
-	protected List customTypes;
-	protected List customURLs;
+	protected Task[] customTasks;
+	protected Type[] customTypes;
+	protected URL[] customURLs;
 	protected Map defaultObjects;
 	protected List pluginClassLoaders;
 
@@ -33,19 +33,19 @@ public AntCorePreferences(Map defaultTasks, Map defaultObjects, Map defaultTypes
 }
 
 protected void restoreCustomObjects() {
-	customTasks = new ArrayList(10);
-	customTypes = new ArrayList(10);
+	customTasks = new Task[0];
+	customTypes = new Type[0];
 	customURLs = computeCustomURLs();
 }
 
-protected List computeCustomURLs() {
+protected URL[] computeCustomURLs() {
 	List result = new ArrayList(10);
 	IPluginDescriptor descriptor = Platform.getPlugin("org.apache.ant").getDescriptor();
 	addLibraries(descriptor, result);
 	descriptor = Platform.getPlugin("org.apache.xerces").getDescriptor();
 	addLibraries(descriptor, result);
 	addToolsJar(result);
-	return result;
+	return (URL[]) result.toArray(new URL[result.size()]);
 }
 
 protected List computeDefaultTasks(Map tasks) {
@@ -198,7 +198,7 @@ public URL[] getURLs() {
 	if (defaultURLs != null)
 		result.addAll(defaultURLs);
 	if (customURLs != null)
-		result.addAll(customURLs);
+		result.addAll(Arrays.asList(customURLs));
 	return (URL[]) result.toArray(new URL[result.size()]);
 }
 
@@ -221,54 +221,36 @@ public List getTasks() {
 	if (defaultTasks != null)
 		result.addAll(defaultTasks);
 	if (customTasks != null)
-		result.addAll(customTasks);
+		result.addAll(Arrays.asList(customTasks));
 	return result;
 }
 
-public List getCustomTasks() {
-	List result = new ArrayList(10);
-	if (customTasks != null)
-		result.addAll(customTasks);
-	return result;
+public Task[] getCustomTasks() {
+	return customTasks;
 }
 
-public List getCustomTypes() {
-	List result = new ArrayList(10);
-	if (customTypes != null)
-		result.addAll(customTypes);
-	return result;
+public Type[] getCustomTypes() {
+	return customTypes;
 }
 
-public List getCustomURLs() {
-	List result = new ArrayList(10);
-	if (customURLs != null)
-		result.addAll(customURLs);
-	return result;
+public URL[] getCustomURLs() {
+	return customURLs;
 }
 
-public void addCustomTask(Task task) {
-	customTasks.add(task);
+public void addCustomTasks(Task[] tasks) {
+	this.customTasks = tasks;
 }
 
-public void addCustomType(Type type) {
-	customTypes.add(type);
+public void addCustomTypes(Type[] types) {
+	this.customTypes = types;
 }
 
-public void addCustomURL(URL url) {
-	customURLs.add(url);
+public void addCustomURLs(URL[] urls) {
+	this.customURLs = urls;
 }
 
-public void removeCustomTask(Task task) {
-	customTasks.remove(task);
-}
 
-public void removeCustomType(Type type) {
-	customTypes.remove(type);
-}
 
-public void removeCustomURL(URL url) {
-	customURLs.remove(url);
-}
 
 /**
  * Returns default + custom types.
@@ -278,7 +260,7 @@ public List getTypes() {
 	if (defaultTypes != null)
 		result.addAll(defaultTypes);
 	if (customTypes != null)
-		result.addAll(customTypes);
+		result.addAll(Arrays.asList(customTypes));
 	return result;
 }
 
