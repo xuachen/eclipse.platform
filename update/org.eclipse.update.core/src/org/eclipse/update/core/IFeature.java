@@ -1,7 +1,7 @@
 package org.eclipse.update.core;
 
 /*
- * (c) Copyright IBM Corp. 2000, 2001.
+ * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
  
@@ -260,9 +260,6 @@ public interface IFeature extends IPluginContainer {
 	 * @deprecated seems nobody uses it
 	 * @since 2.0 
 	 */
-	// FIXME: javadoc	
-	String[] getArchives();
-	
 	/**
 	 * Returns an array of archives identifier that compose the feature.
 	 * 
@@ -316,7 +313,26 @@ public interface IFeature extends IPluginContainer {
 	 */
 
 	String getApplication();
-		
+	
+	/**
+	 * Sets the IFeatureContentProvider for this feature
+	 * @since 2.0
+	 */
+	void setFeatureContentProvider(IFeatureContentProvider featureContentProvider);
+	
+	/**
+	 * Sets the IContentConsumer for this feature
+	 * @since 2.0
+	 */
+	void setContentConsumer(IContentConsumer contentConsumer);
+
+	/**
+	 *Returns the IContentConsumer for this feature
+	 * @throws CoreException when the Feature does not allow storage.
+	 * @since 2.0
+	 */
+	IContentConsumer getContentConsumer() throws CoreException;
+				
 }
 
 

@@ -1,6 +1,6 @@
 package org.eclipse.update.internal.core;
 /*
- * (c) Copyright IBM Corp. 2000, 2001.
+ * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
 import java.io.*;
@@ -11,6 +11,7 @@ import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.ISiteContentProvider;
 import org.eclipse.update.core.model.SiteCategoryModel;
 import org.eclipse.update.core.model.SiteMapModel;
 import org.eclipse.update.core.model.*;
@@ -40,8 +41,19 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	private ListenersList listeners = new ListenersList();
 	private URL siteURL;
 	private URL infoURL;
+	
 	/**
-	 * Constructor for AbstractSite
+	 * The content consumer of the Site
+	 */
+	private IContentConsumer contentConsumer;	
+
+	/**
+	 * The content provider of the Site
+	 */
+	private ISiteContentProvider siteContentProvider;	
+	
+	/**
+	 * Constructor for Site
 	 */
 	public Site(URL siteReference) throws CoreException, InvalidSiteTypeException {
 		super();
@@ -424,6 +436,41 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 */
 	public IPluginEntry[] getPluginEntries() {
 		return null;
+	}
+	
+		/*
+	 * @see ISite#setContentConsumer(IContentConsumer)
+	 */
+	public void setContentConsumer(IContentConsumer contentConsumer) {
+		this.contentConsumer = contentConsumer;
+	}
+
+	/*
+	 * @see ISite#getContentConsumer()
+	 */
+	public IContentConsumer getContentConsumer()  throws CoreException {
+		if (contentConsumer==null){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "ContentConsumer not set for site:" + getURL().toExternalForm(),null);
+			throw new CoreException(status);
+		}
+		
+		return contentConsumer;
+	}
+	
+
+	/*
+	 * @see ISite#setSiteContentProvider(ISiteContentProvider)
+	 */
+	public void setSiteContentProvider(ISiteContentProvider siteContentProvider) {
+		this.siteContentProvider = siteContentProvider;
+	}
+
+	/*
+	 * @see ISite#getSiteContentProvider()
+	 */
+	public ISiteContentProvider getSiteContentProvider() {
+		return siteContentProvider;
 	}
 
 }

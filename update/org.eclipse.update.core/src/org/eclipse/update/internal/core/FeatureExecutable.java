@@ -97,6 +97,18 @@ public class FeatureExecutable extends Feature {
 	}
 
 	/**
+	 * @see AbstractFeature#getContentReferences()
+	 */
+	public String[] getArchiveID(IFeature feature) {
+		String[] names = new String[getPluginEntryCount()];
+		IPluginEntry[] entries = getPluginEntries();
+		for (int i = 0; i < getPluginEntryCount(); i++) {
+			names[i] = getArchiveID(entries[i]);
+		}
+		return names;
+	}
+	
+	/**
 	 * return the path for a pluginEntry
 	 */
 	private String getPath(IPluginEntry pluginEntry) throws Exception {
@@ -131,18 +143,6 @@ public class FeatureExecutable extends Feature {
 	}
 
 	/**
-	 * @see AbstractFeature#getArchives()
-	 */
-	public String[] getArchives() {
-		String[] names = new String[getPluginEntryCount()];
-		IPluginEntry[] entries = getPluginEntries();
-		for (int i = 0; i < getPluginEntryCount(); i++) {
-			names[i] = getArchiveID(entries[i]);
-		}
-		return names;
-	}
-
-	/**
 	 * @see AbstractFeature#isExecutable()
 	 */
 	public boolean isExecutable() {
@@ -165,14 +165,14 @@ public class FeatureExecutable extends Feature {
 	/**
 	 * @see AbstractFeature#getInputStreamFor(String)
 	 */
-	protected InputStream getInputStreamFor(String name) throws IOException {
+	protected InputStream getInputStreamFor(IFeature feature,String name) throws IOException {
 	
 		InputStream result = null;
 		try {
 			File entry = new File(getFeaturePath(), name);
 			result = new FileInputStream(entry);
 		} catch (IOException e) {
-			throw new IOException( "Error during retrieving the Stream of :" + name + " in feature:" + getURL().toExternalForm()+"\r\n"+e.toString());
+			throw new IOException( "Error during retrieving the Stream of :" + name + " in feature:" + feature.getURL().toExternalForm()+"\r\n"+e.toString());
 		}
 		return result;
 	}
@@ -180,7 +180,7 @@ public class FeatureExecutable extends Feature {
 	/**
 	 * @see AbstractFeature#getStorageUnitNames()
 	 */
-	protected String[] getStorageUnitNames()  throws CoreException {
+	protected String[] getStorageUnitNames(IFeature feature)  throws CoreException {
 		String[] result = new String[0];
 		try {
 			File featureDir = new File(getFeaturePath());
@@ -189,7 +189,7 @@ public class FeatureExecutable extends Feature {
 			files.toArray(result);
 		} catch (Exception e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive names for:" + getIdentifier().toString(), e);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive names for:" + feature.getIdentifier().toString(), e);
 			throw new CoreException(status);
 		}
 		return result;

@@ -53,11 +53,11 @@ public class FeaturePackaged extends Feature {
 			SiteFile tempSite = (SiteFile)SiteManager.getTempSite();
 			
 			InputStream inStream = null;
-			String[] names = getStorageUnitNames();
+			String[] names = getStorageUnitNames(this);
 			if (names != null) {
 				openFeature();
 				for (int j = 0; j < names.length; j++) {
-					if ((inStream = getInputStreamFor(names[j])) != null)
+					if ((inStream = getInputStreamFor(this,names[j])) != null)
 						 tempSite.storeFeatureInfo(getIdentifier(), names[j], inStream);
 				}
 				closeFeature();
@@ -168,9 +168,9 @@ public class FeaturePackaged extends Feature {
 	}
 
 	/**
-	 * @see AbstractFeature#getContentReferences()
+	 * @see AbstractFeature#getArchiveID()
 	 */
-	public String[] getArchives() {
+	public String[] getArchiveID(IFeature feature) {
 		String[] names = new String[getPluginEntryCount()];
 		IPluginEntry[] entries = getPluginEntries();
 		for (int i = 0; i < getPluginEntryCount(); i++) {
@@ -189,7 +189,7 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#getInputStreamFor(String)
 	 */
-	protected InputStream getInputStreamFor(String name) throws CoreException, IOException {
+	protected InputStream getInputStreamFor(IFeature feature,String name) throws CoreException, IOException {
 		InputStream result = null;
 		try {
 			// ensure the file is local
@@ -205,7 +205,7 @@ public class FeaturePackaged extends Feature {
 			result = currentOpenJarFile.getInputStream(entry);
 
 		} catch (IOException e) {
-			throw new IOException("Error opening :" + name + " in feature archive:" + getURL().toExternalForm() + "\r\n" + e.toString());
+			throw new IOException("Error opening :" + name + " in feature archive:" + feature.getURL().toExternalForm() + "\r\n" + e.toString());
 		}
 		return result;
 	}
@@ -213,14 +213,14 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#getStorageUnitNames()
 	 */
-	protected String[] getStorageUnitNames() throws CoreException {
+	protected String[] getStorageUnitNames(IFeature feature) throws CoreException {
 
 		// make sure the feature archive has been transfered locally
 		transferLocally();
 
 		// get the URL of the feature JAR file 
 		// must exist as we tranfered it locally
-		String path = UpdateManagerUtils.getPath(getURL());					
+		String path = UpdateManagerUtils.getPath(feature.getURL());					
 		String[] result = getJAREntries(path);
 
 		return result;
@@ -331,7 +331,7 @@ public class FeaturePackaged extends Feature {
 	public ResourceBundle getResourceBundle() throws IOException, CoreException {
 
 		ResourceBundle result = null;
-		String[] names = getStorageUnitNames();
+		String[] names = getStorageUnitNames(this);
 		String base = FEATURE_FILE;
 
 		// retrive names in teh JAR that starts with the basename
@@ -365,7 +365,7 @@ public class FeaturePackaged extends Feature {
 			int index = 0;
 			while (!found && index < attempt.length) {
 				if (baseNames.contains(attempt[index])) {
-					result = new PropertyResourceBundle(getInputStreamFor(attempt[index]));
+					result = new PropertyResourceBundle(getInputStreamFor(this,attempt[index]));
 					found = true;
 				}
 				index++;

@@ -5,6 +5,7 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
  
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
@@ -31,7 +32,7 @@ public interface IContentReference {
 	 * @since 2.0 
 	 */
 
-	InputStream getInputStream();
+	InputStream getInputStream() throws IOException;
 	
 }
 

@@ -11,6 +11,8 @@ import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.IFeatureContentProvider;
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
 /**
  * Abstract Class that implements most of the behavior of a feature
@@ -43,7 +45,17 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * This URL can be a Jar file, a directory or any URL that is understood by the 
 	 * Subclass of AbstractFeature.
 	 */
-	private URL url;
+	private URL featureURL;
+	
+	/**
+	 * The content provider of the Feature
+	 */
+	private IFeatureContentProvider featureContentProvider;
+
+	/**
+	 * The content consumer of the Feature
+	 */
+	private IContentConsumer contentConsumer;
 
 	/**
 	 * Static block to initialize the possible CANCEL ERROR
@@ -78,7 +90,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 */
 	public Feature(URL url, ISite targetSite) throws CoreException {
 		this.site = targetSite;
-		this.url = url;
+		this.featureURL = url;
 	}
 
 	/**
@@ -98,7 +110,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 
 	/**
 	 * @see IFeature#getURL()
-	 * Do not hydrate. Initialization will not populate the url.
+	 * Do not hydrate. Initialization will not populate the featureURL.
 	 * If the URL is null, then the creation hasn't set the URL, so return null.
 	 * It has to be set at creation time or using the set method 
 	 * Usually done from the site when creating the Feature. 
@@ -106,7 +118,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * The DefaultSiteParser is setting it at creation time
 	 */
 	public URL getURL() {
-		return url;
+		return featureURL;
 	}
 
 	/**
@@ -123,7 +135,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * Can be overriden 
 	 */
 	public URL getRootURL() throws MalformedURLException, IOException, CoreException {
-		return url;
+		return featureURL;
 	}
 
 	/**
@@ -190,11 +202,11 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	}
 
 	/**
-	 * Sets the url
-	 * @param url The url to set
+	 * Sets the featureURL
+	 * @param featureURL The featureURL to set
 	 */
 	public void setURL(URL url) {
-		this.url = url;
+		this.featureURL = url;
 	}
 
 	/**
@@ -352,101 +364,45 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
 		IPluginEntry[] targetSitePluginEntries = targetFeature.getSite().getPluginEntries();
 		Site tempSite = (Site) SiteManager.getTempSite();
-
+		List contentReferencesToInstall = new ArrayList();
+		
+		//
+		IContentConsumer consumer = getContentConsumer();
+		
+		//finds the contentReferences for this IFeature
+		IContentReference[] references = getFeatureContentProvider().getArchivesContentReferences(this);
+		for (int i = 0; i < references.length; i++) {
+			consumer.store(references[i],monitor);
+		}
+		
 		// determine list of plugins to install
 		// find the intersection between the two arrays of IPluginEntry...
 		// The one teh site contains and teh one the feature contains
 		IPluginEntry[] pluginsToInstall = intersection(sourceFeaturePluginEntries, targetSitePluginEntries);
-
-		// private abstract - Determine list of content references id /archives id /bundles id that 
-		// map the list of plugins to install
-		String[] archiveIDToInstall = getContentReferenceToInstall(pluginsToInstall);
-
-		try {
-			// download and install data bundles
-			// before we set the site of teh feature to the TEMP site
-			INonPluginEntry[] dataEntries = getNonPluginEntries();
-			if (dataEntries.length > 0) {
-				downloadDataLocally(targetFeature, dataEntries, monitor);
+			
+		//finds the contentReferences for this IPluginEntry
+		for (int i = 0; i < pluginsToInstall.length; i++) {
+			IContentConsumer pluginConsumer = consumer.opens(pluginsToInstall[i]);
+			references = getFeatureContentProvider().getArchivesContentReferences(pluginsToInstall[i]);
+			for (int j = 0; j < references.length; j++) {
+				consumer.store(references[j],monitor);
 			}
-
-			// optmization, may be private to implementation
-			// copy *blobs/content references/archives/bundles* in TEMP space
-			if (((Site) getSite()).optimize()) {
-				if (archiveIDToInstall != null) {
-					downloadArchivesLocally(tempSite, archiveIDToInstall, monitor);
-				}
-			}
-
-			// obtain the list of *Streamable Storage Unit*
-			// from the archive
-			if (monitor != null) {
-				int total = pluginsToInstall == null ? 1 : pluginsToInstall.length + 1;
-				monitor.beginTask("Install feature " + getLabel(), total);
-			}
-			if (pluginsToInstall != null) {
-				InputStream inStream = null;
-				for (int i = 0; i < pluginsToInstall.length; i++) {
-					if (monitor != null) {
-						monitor.subTask("Installing plug-in: " + pluginsToInstall[i]);
-						if (monitor.isCanceled()) {
-							throw CANCEL_EXCEPTION;
-						}
-					}
-
-					open(pluginsToInstall[i]);
-					String[] names = getStorageUnitNames(pluginsToInstall[i]);
-					if (names != null) {
-						for (int j = 0; j < names.length; j++) {
-							if ((inStream = getInputStreamFor(pluginsToInstall[i], names[j])) != null)
-								targetFeature.store(pluginsToInstall[i], names[j], inStream);
-						}
-					}
-					close(pluginsToInstall[i]);
-					if (monitor != null) {
-						monitor.worked(1);
-						if (monitor.isCanceled()) {
-							throw CANCEL_EXCEPTION;
-						}
-					}
-
-				}
-			}
-
-			// install the Feature info
-			InputStream inStream = null;
-			String[] names = getStorageUnitNames();
-			if (names != null) {
-				openFeature();
-				if (monitor != null) {
-					monitor.subTask("Installing Feature information");
-					if (monitor.isCanceled()) {
-						throw CANCEL_EXCEPTION;
-					}
-				}
-
-				for (int j = 0; j < names.length; j++) {
-					if ((inStream = getInputStreamFor(names[j])) != null)
-						 ((Site) targetFeature.getSite()).storeFeatureInfo(getIdentifier(), names[j], inStream);
-				}
-				closeFeature();
-				if (monitor != null) {
-					monitor.worked(1);
-					if (monitor.isCanceled()) {
-						throw CANCEL_EXCEPTION;
-					}
-				}
-
-			}
-
-		} catch (IOException e) {
-			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error during Install", e);
-			throw new CoreException(status);
-		} finally {
-			//do not clean up TEMP drive
-			// as other feature may be there... clean up when exiting the plugin
+			pluginConsumer.close();
 		}
+		
+		// download and install non plugins bundles
+		INonPluginEntry[] nonPluginsContentReferencesToInstall = getNonPluginEntries();
+		for (int i = 0; i < nonPluginsContentReferencesToInstall.length; i++) {
+			IContentConsumer nonPluginConsumer = consumer.opens(nonPluginsContentReferencesToInstall[i]);			
+			references = getFeatureContentProvider().getArchivesReferences(nonPluginsContentReferencesToInstall[i]);
+			for (int j = 0; j < references.length; j++) {
+				consumer.store(references[j],monitor);
+			}
+			nonPluginConsumer.close();
+		}			
+			
+		consumer.close();
+
 	}
 
 	/**
@@ -489,7 +445,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 			}
 
 			// install the Feature info
-			String[] names = getStorageUnitNames();
+			String[] names = getStorageUnitNames(this);
 			if (names != null) {
 				if (monitor != null) {
 					monitor.subTask("Removing Feature information");
@@ -776,7 +732,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * Private implementation of the feature. return the list of ID.
 	 * Call the site with the ID to get the URL of the contentReference of the Site
 	 */
-	public abstract String[] getArchives();
+	public abstract String[] getArchiveID(IFeature feature);
 
 	/**
 	 * return the archive ID for a plugin
@@ -798,7 +754,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * return the list of FILE to be transfered from within the Feature
 	 */
-	protected abstract String[] getStorageUnitNames() throws CoreException;
+	protected abstract String[] getStorageUnitNames(IFeature feature) throws CoreException;
 
 	/**
 	 * return the Stream of the FILE to be transfered for a Plugin
@@ -808,7 +764,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * return the Stream of FILE to be transfered from within the Feature
 	 */
-	protected abstract InputStream getInputStreamFor(String name) throws IOException, CoreException;
+	protected abstract InputStream getInputStreamFor(IFeature feature,String name) throws IOException, CoreException;
 
 	/**
 	 * returns the list of archive to transfer/install
@@ -823,6 +779,149 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	*/
 	public Object getAdapter(Class adapter) {
 		return null;
+	}
+
+	/*
+	 * @see IFeature#setFeatureContentProvider(IFeatureContentProvider)
+	 */
+	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider) {
+	}
+
+	/**
+	 * Gets the featureContentProvider.
+	 * @return Returns a IFeatureContentProvider
+	 */
+	public IFeatureContentProvider getFeatureContentProvider(){
+		return featureContentProvider;
+	}
+
+/**
+	 * Method install.
+	 * @param targetFeature
+	 * @param monitor
+	 * @throws CoreException
+	 */
+	public void old_install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException {
+
+		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
+		IPluginEntry[] targetSitePluginEntries = targetFeature.getSite().getPluginEntries();
+		Site tempSite = (Site) SiteManager.getTempSite();
+
+		// determine list of plugins to install
+		// find the intersection between the two arrays of IPluginEntry...
+		// The one teh site contains and teh one the feature contains
+		IPluginEntry[] pluginsToInstall = intersection(sourceFeaturePluginEntries, targetSitePluginEntries);
+
+		// private abstract - Determine list of content references id /archives id /bundles id that 
+		// map the list of plugins to install
+		String[] archiveIDToInstall = getContentReferenceToInstall(pluginsToInstall);
+
+		try {
+			// download and install data bundles
+			// before we set the site of teh feature to the TEMP site
+			INonPluginEntry[] dataEntries = getNonPluginEntries();
+			if (dataEntries.length > 0) {
+				downloadDataLocally(targetFeature, dataEntries, monitor);
+			}
+
+			// optmization, may be private to implementation
+			// copy *blobs/content references/archives/bundles* in TEMP space
+			if (((Site) getSite()).optimize()) {
+				if (archiveIDToInstall != null) {
+					downloadArchivesLocally(tempSite, archiveIDToInstall, monitor);
+				}
+			}
+
+			// obtain the list of *Streamable Storage Unit*
+			// from the archive
+			if (monitor != null) {
+				int total = pluginsToInstall == null ? 1 : pluginsToInstall.length + 1;
+				monitor.beginTask("Install feature " + getLabel(), total);
+			}
+			if (pluginsToInstall != null) {
+				InputStream inStream = null;
+				for (int i = 0; i < pluginsToInstall.length; i++) {
+					if (monitor != null) {
+						monitor.subTask("Installing plug-in: " + pluginsToInstall[i]);
+						if (monitor.isCanceled()) {
+							throw CANCEL_EXCEPTION;
+						}
+					}
+
+					open(pluginsToInstall[i]);
+					String[] names = getStorageUnitNames(pluginsToInstall[i]);
+					if (names != null) {
+						for (int j = 0; j < names.length; j++) {
+							if ((inStream = getInputStreamFor(pluginsToInstall[i], names[j])) != null)
+								targetFeature.store(pluginsToInstall[i], names[j], inStream);
+						}
+					}
+					close(pluginsToInstall[i]);
+					if (monitor != null) {
+						monitor.worked(1);
+						if (monitor.isCanceled()) {
+							throw CANCEL_EXCEPTION;
+						}
+					}
+
+				}
+			}
+
+			// install the Feature info
+			InputStream inStream = null;
+			String[] names = getStorageUnitNames(this);
+			if (names != null) {
+				openFeature();
+				if (monitor != null) {
+					monitor.subTask("Installing Feature information");
+					if (monitor.isCanceled()) {
+						throw CANCEL_EXCEPTION;
+					}
+				}
+
+				for (int j = 0; j < names.length; j++) {
+					if ((inStream = getInputStreamFor(this,names[j])) != null)
+						 ((Site) targetFeature.getSite()).storeFeatureInfo(getIdentifier(), names[j], inStream);
+				}
+				closeFeature();
+				if (monitor != null) {
+					monitor.worked(1);
+					if (monitor.isCanceled()) {
+						throw CANCEL_EXCEPTION;
+					}
+				}
+
+			}
+
+		} catch (IOException e) {
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error during Install", e);
+			throw new CoreException(status);
+		} finally {
+			//do not clean up TEMP drive
+			// as other feature may be there... clean up when exiting the plugin
+		}
+	}
+
+
+	/*
+	 * @see IFeature#setContentConsumer(IContentConsumer)
+	 */
+	public void setContentConsumer(IContentConsumer contentConsumer) {
+		this.contentConsumer = contentConsumer;
+	}
+
+	/*
+	 * @see IFeature#getContentConsumer()
+	 */
+	public IContentConsumer getContentConsumer()  throws CoreException {
+		if (contentConsumer==null){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "ContentConsumer not set for feature:" + getURL().toExternalForm(),null);
+			throw new CoreException(status);
+		}
+		
+		return contentConsumer;
 	}
 
 }

@@ -20,12 +20,14 @@ public class FeatureExecutableFactory extends FeatureModelFactory implements IFe
 		FeatureExecutable feature = null;
 		InputStream featureStream = null;
 		
-		try {		
-			featureStream = url.openStream();
+		try {	
+			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
+			featureStream = contentProvider.getFeatureManifest().openStream();
 			FeatureModelFactory factory = (FeatureModelFactory) this;
 			feature = (FeatureExecutable) factory.parseFeature(featureStream);
 			feature.setURL(url);
 			feature.setSite(site);
+			feature.setFeatureContentProvider(contentProvider);
 			feature.resolve(url, getResourceBundle(url));
 			feature.markReadOnly();
 		} catch (IOException e) {
