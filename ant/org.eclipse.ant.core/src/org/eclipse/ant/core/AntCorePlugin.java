@@ -1,4 +1,8 @@
 package org.eclipse.ant.core;
+/*
+ * (c) Copyright IBM Corp. 2000, 2001.
+ * All Rights Reserved.
+ */
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,22 +44,22 @@ public class AntCorePlugin extends Plugin {
 	public static final String PI_ANTCORE= "org.eclipse.ant.core";
 
 	/**
-	 * Simple identifier constant (value <code>"tasks"</code>)
+	 * Simple identifier constant (value <code>"antTasks"</code>)
 	 * for the Ant tasks extension point.
 	 */
-	public static final String PT_TASKS = "tasks";
+	public static final String PT_TASKS = "antTasks";
 
 	/**
-	 * Simple identifier constant (value <code>"objects"</code>)
+	 * Simple identifier constant (value <code>"antObjects"</code>)
 	 * for the Ant tasks extension point.
 	 */
-	public static final String PT_OBJECTS = "objects";
+	public static final String PT_OBJECTS = "antObjects";
 
 	/**
-	 * Simple identifier constant (value <code>"types"</code>)
+	 * Simple identifier constant (value <code>"antTypes"</code>)
 	 * for the Ant tasks extension point.
 	 */
-	public static final String PT_TYPES = "types";
+	public static final String PT_TYPES = "antTypes";
 
 	/**
 	 * Simple identifier constant (value <code>"class"</code>)
