@@ -88,7 +88,7 @@ public class SiteURL extends Site {
 	/**
 	 * @see IPluginContainer#getDownloadSize(IPluginEntry)
 	 */
-	public int getDownloadSize(IPluginEntry entry) {
+	public long getDownloadSize(IPluginEntry entry) {
 		Assert.isTrue(entry instanceof PluginEntry);
 		return ((PluginEntry)entry).getDownloadSize();
 	}
@@ -97,7 +97,7 @@ public class SiteURL extends Site {
 	/**
 	 * @see IPluginContainer#getInstallSize(IPluginEntry)
 	 */
-	public int getInstallSize(IPluginEntry entry) {
+	public long getInstallSize(IPluginEntry entry) {
 		Assert.isTrue(entry instanceof PluginEntry);
 		return ((PluginEntry)entry).getInstallSize();
 	}

@@ -99,7 +99,7 @@ public interface IPluginEntry {
 	 * @since 2.0 
 	 */
 
-	int getDownloadSize();
+	long getDownloadSize();
 
 
 	/**
@@ -112,7 +112,7 @@ public interface IPluginEntry {
 	 * @since 2.0 
 	 */
 
-	int getInstallSize(); 
+	long getInstallSize(); 
 	
 }
 

@@ -43,7 +43,7 @@ public interface IPluginContainer extends IAdaptable {
 	 * @since 2.0 
 	 */
 
-	int getDownloadSize(IPluginEntry entry) ;
+	long getDownloadSize(IPluginEntry entry) ;
 	
 	/**
 	 * Size of the plug-in in KiloBytes
@@ -51,7 +51,7 @@ public interface IPluginContainer extends IAdaptable {
 	 * @since 2.0 
 	 */
 
-	int getInstallSize(IPluginEntry entry) ;
+	long getInstallSize(IPluginEntry entry) ;
 
 	/**
 	 * Adds a pluginEntry to the list of managed pluginEntry

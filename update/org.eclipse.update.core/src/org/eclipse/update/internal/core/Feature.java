@@ -260,7 +260,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * @see IPluginContainer#getDownloadSize(IPluginEntry)
 	 */
-	public int getDownloadSize(IPluginEntry entry) {
+	public long getDownloadSize(IPluginEntry entry) {
 		Assert.isTrue(entry instanceof PluginEntry);
 		return ((PluginEntry) entry).getDownloadSize();
 	}
@@ -268,7 +268,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * @see IPluginContainer#getInstallSize(IPluginEntry)
 	 */
-	public int getInstallSize(IPluginEntry entry) {
+	public long getInstallSize(IPluginEntry entry) {
 		Assert.isTrue(entry instanceof PluginEntry);
 		return ((PluginEntry) entry).getInstallSize();
 	}
@@ -284,7 +284,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * 
 	 */
 	public long getDownloadSize(ISite site) throws CoreException {
-		int result = 0;
+		long result = 0;
 		IPluginEntry[] entriesToInstall = this.getPluginEntries();
 		if (site != null) {
 			IPluginEntry[] siteEntries = site.getPluginEntries();
@@ -294,7 +294,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		if (entriesToInstall == null || entriesToInstall.length == 0) {
 			result = -1;
 		} else {
-			int pluginSize = 0;
+			long pluginSize = 0;
 			int i = 0;
 			while (i < entriesToInstall.length && pluginSize != -1) {
 				pluginSize = getDownloadSize(entriesToInstall[i]);
@@ -315,7 +315,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getInstallSize(ISite)
 	 */
 	public long getInstallSize(ISite site) throws CoreException {
-		int result = 0;
+		long result = 0;
 		IPluginEntry[] entriesToInstall = this.getPluginEntries();
 		if (site != null) {
 			IPluginEntry[] siteEntries = site.getPluginEntries();
@@ -324,7 +324,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		if (entriesToInstall == null || entriesToInstall.length == 0) {
 			result = -1;
 		} else {
-			int pluginSize = 0;
+			long pluginSize = 0;
 			int i = 0;
 			while (i < entriesToInstall.length && pluginSize != -1) {
 				pluginSize = getInstallSize(entriesToInstall[i]);
@@ -531,39 +531,6 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		((Site)getSite()).remove(entry);		
 	}	
 	
-	/** 
-	 * initialize teh feature by reading the feature.xml if it exists
-	 */
-	public void initializeFeature() throws CoreException {
-
-			InputStream featureStream = null;
-			try {
-				featureStream = getInputStreamFor(FEATURE_XML);
-				new FeatureParser(featureStream, this);
-			} catch (IOException e) {
-				// if we cannot find the feature and or the feature.xml...
-				// We should not stop the execution 
-				// but we must Log it all the time, not only when debugging...
-				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-				IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "Error opening feature.xml in the feature archive:" + url.toExternalForm(), e);
-				UpdateManagerPlugin.getPlugin().getLog().log(status);
-			} catch (SAXException e) {
-				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-				IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "Error parsing feature.xml in the feature archive:" + url.toExternalForm(), e);
-				throw new CoreException(status);
-			} finally {
-				try {
-					featureStream.close();
-				} catch (Exception e) {
-				}
-				try {
-					closeFeature();
-				} catch (Exception e) {
-				}
-			}
-
-	}
-
 	/**
 	 */
 	private void downloadArchivesLocally(ISite tempSite, String[] archiveIDToInstall, IProgressMonitor monitor) throws CoreException, IOException {

@@ -29,7 +29,7 @@ public interface INonPluginEntry {
 	 * @since 2.0 
 	 */
 
-	int getDownloadSize();
+	long getDownloadSize();
 
 
 	/**
@@ -42,7 +42,7 @@ public interface INonPluginEntry {
 	 * @since 2.0 
 	 */
 
-	int getInstallSize(); 
+	long getInstallSize(); 
 	
 }
 

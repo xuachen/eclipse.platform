@@ -3,67 +3,40 @@ package org.eclipse.update.internal.core;
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
  */
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.xml.serialize.IndentPrinter;
 import org.eclipse.update.core.IImport;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.core.model.ImportModel;
 
 /**
  * Defaurl implementation of IImport
  */
-public class DefaultImport implements IImport {
-
-	/**
-	 * The identifer
-	 */
-	private VersionedIdentifier id;
+public class DefaultImport extends ImportModel implements IImport {
 	
-	/**
-	 * the matching rule
-	 */
-	private int rule;
-
-	/**
-	 * Constructor for DefaultImport.
-	 */
-	public DefaultImport(VersionedIdentifier identifier, int rule) {
-		super();
-		this.id = identifier;
-		this.rule = rule;
+	private static Map table;
+	
+	static {
+		table = new HashMap();
+		table.put("compatible",new Integer(IImport.RULE_COMPATIBLE));
+		table.put("perfect",new Integer(IImport.RULE_PERFECT));
+		table.put("equivalent",new Integer(IImport.RULE_EQUIVALENT));	
+		table.put("greaterOrHigher",new Integer(IImport.RULE_GRATER_OR_EQUAL));
 	}
 
-	/**
-	 * Constructor for DefaultImport.
-	 */
-	public DefaultImport(String id, String ver, int rule) {
-		this(new VersionedIdentifier(id,ver),rule);
-	}
 	/**
 	 * @see IImport#getIdentifier()
 	 */
 	public VersionedIdentifier getIdentifier() {
-		return id;
+		return new VersionedIdentifier(getPluginIdentifier(),getPluginVersion());
 	}
 
 	/**
 	 * @see IImport#getRule()
 	 */
 	public int getRule() {
-		return rule;
-	}
-
-	/**
-	 * Sets the id.
-	 * @param id The id to set
-	 */
-	public void setId(VersionedIdentifier id) {
-		this.id = id;
-	}
-
-	/**
-	 * Sets the rule.
-	 * @param rule The rule to set
-	 */
-	public void setRule(int rule) {
-		this.rule = rule;
+		return ((Integer)table.get(getMatchingRuleName())).intValue();
 	}
 
 }

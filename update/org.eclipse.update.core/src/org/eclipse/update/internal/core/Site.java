@@ -517,14 +517,14 @@ public abstract class Site implements ISite, IWritable {
 	/*
 	 * @see IPluginContainer#getDownloadSize(IPluginEntry)
 	 */
-	public int getDownloadSize(IPluginEntry entry) {
+	public long getDownloadSize(IPluginEntry entry) {
 		return 0;
 	}
 
 	/*
 	 * @see IPluginContainer#getInstallSize(IPluginEntry)
 	 */
-	public int getInstallSize(IPluginEntry entry) {
+	public long getInstallSize(IPluginEntry entry) {
 		return 0;
 	}
 
