@@ -34,7 +34,6 @@ public class UpdateSite extends Site implements IUpdateSite {
 	private Set /*of Category*/ categories;
 	private List features = new ArrayList(0);
 	private boolean featuresLoaded = false;
-	private static FeatureParser parser = new FeatureParser();
 	
 
 	/**

@@ -224,15 +224,15 @@ public class FeatureInstaller {
 
 			   if (success) {
 				   targetFeature = completeInstall();
-				   if (targetFeature == null) {
-				   		targetFeature = alreadyInstalledFeature; // 18867
-					   if (targetFeature != null
-						   && optionalfeatures != null
-						   && optionalfeatures.length > 0) {
-						   // reinitialize as new optional children may have been installed
-						   reinitializeFeature(targetFeature);
-					   }
-				   }
+//				   if (targetFeature == null) {
+//				   		targetFeature = alreadyInstalledFeature; // 18867
+//					   if (targetFeature != null
+//						   && optionalfeatures != null
+//						   && optionalfeatures.length > 0) {
+//						   // reinitialize as new optional children may have been installed
+//						   reinitializeFeature(targetFeature);
+//					   }
+//				   }
 				   // close the log
 				   recoveryLog.close(ErrorRecoveryLog.END_INSTALL_LOG);
 			   } else {
@@ -264,10 +264,10 @@ public class FeatureInstaller {
 		   }
 	
 	   }
-	   return targetFeature;
 			
 // TODO need to refresh the targetfeature and the installed site one installation is complete
-			return targetFeature;
+		//return targetFeature;
+	   return null;
 	}
 	
 	private void verifyReferences(

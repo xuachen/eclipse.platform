@@ -34,8 +34,6 @@ public class InstalledSite extends Site implements IInstalledSite {
 
 	private ConfiguredSite configuredSiteModel;
 	private List pluginEntries = new ArrayList(0);
-	
-	private static FeatureParser parser = new FeatureParser();
 
 	/**
 	 * Creates an uninitialized site model object.

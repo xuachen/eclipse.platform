@@ -66,5 +66,4 @@ public interface IPluginEntry extends IPlatformEnvironment,IAdaptable {
 	 * @since 2.0 
 	 */
 	public long getInstallSize();
-
 }

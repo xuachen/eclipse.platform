@@ -28,28 +28,6 @@ import org.eclipse.core.runtime.*;
 public interface ISite extends IAdaptable {
 
 	/**
-	 * Default type for an installed feature. Different concrete feature
-	 * implementations can be registered together with their corresponding type
-	 * using the <code>org.eclipse.update.core.featureTypes</code> 
-	 * extension point.
-	 * 
-	 * @since 2.0
-	 */
-	public static final String DEFAULT_INSTALLED_FEATURE_TYPE = "org.eclipse.update.core.installed";
-	//$NON-NLS-1$		
-
-	/**
-	 * Default type for a packaged feature. Different concrete feature
-	 * implementations can be registered together with their corresponding type
-	 * using the <code>org.eclipse.update.core.featureTypes</code> 
-	 * extension point.
-	 * 
-	 * @since 2.0
-	 */
-	public static final String DEFAULT_PACKAGED_FEATURE_TYPE = "org.eclipse.update.core.packaged";
-	//$NON-NLS-1$		
-
-	/**
 	 * If we are unable to access a site, the returned CoreException will contain
 	 * this return code.
 	 * 
@@ -149,4 +127,12 @@ public interface ISite extends IAdaptable {
 	 * @since 2.0
 	 */
 	public IFeatureReference getFeatureReference(VersionedIdentifier versionId);
+	
+
+	/**
+	 * Returns the content provider for this site.
+	 * 
+	 * @since 2.0
+	 */
+	public ISiteContentProvider getSiteContentProvider() throws CoreException;
 }

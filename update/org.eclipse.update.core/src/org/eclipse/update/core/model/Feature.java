@@ -646,6 +646,10 @@ public class Feature extends FeatureReference implements IFeature{
 		else
 			this.nonPluginEntries = new ArrayList(Arrays.asList(nonPluginEntries));
 	}
+	void setFeatureContentProvider(IFeatureContentProvider contentProvider) {
+		this.contentProvider = contentProvider;
+		contentProvider.setFeature(this);
+	}
 
 	/**
 	 * Adds an additional update site reference.
@@ -978,11 +982,13 @@ public class Feature extends FeatureReference implements IFeature{
 	 */
 	public IFeatureContentProvider getFeatureContentProvider()
 		throws CoreException {
+		// TODO change this
 		if (contentProvider == null) {
 			if (getSite() instanceof IInstalledSite)
 				contentProvider = new FeatureExecutableContentProvider(url);
 			else 
 				contentProvider = new FeaturePackagedContentProvider(url);
+			contentProvider.setFeature(this);
 		}
 		return contentProvider;
 	}

@@ -32,7 +32,7 @@ public class InstalledSiteParser {
 	/*
 	 * @see ISiteFactory#createSite(URL,boolean)
 	 */
-	public Site parse(URL url) throws CoreException{
+	public IInstalledSite parse(URL url) throws CoreException{
 		InputStream siteStream = null;
 	
 		try {

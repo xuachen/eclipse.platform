@@ -243,18 +243,21 @@ public class SiteManager {
 		}
 		
 	private static IInstalledSite createInstalledSite(URL url, IProgressMonitor monitor) throws CoreException {
-		InstalledSite site = null;
+		IInstalledSite site = null;
 
 		if (monitor != null)
 			monitor.worked(1);
 
 		if ("file".equalsIgnoreCase(url.getProtocol())) {
 			File dir = new File(url.getFile());
-			if (dir != null && dir.isDirectory() && !(new File(dir, Site.SITE_XML).exists())) {
-				installedSiteParser.parse(url) ;
+			if (!dir.exists() && !dir.mkdirs()) {
+				UpdateCore.log("Cannot create local site "+dir, null);
 			}
+			site = installedSiteParser.parse(url) ;
+			// set the content provider
+			SiteContentProvider contentProvider = new SiteURLContentProvider(url);
+			((InstalledSite)site).setSiteContentProvider(contentProvider);
 		}
-
 		return site;
 	}
 

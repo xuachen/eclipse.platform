@@ -14,6 +14,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -41,7 +42,7 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 		IFeature remoteFeature = remoteSite.getFeature(remoteFeatureReferences[0],null);
 		IInstalledSite localSite = SiteManager.getInstalledSite(TARGET_FILE_SITE,null);
 		assertNotNull(remoteFeature);
-		remove(remoteFeature,localSite);		
+	//	remove(remoteFeature,localSite);		
 		localSite.install(remoteFeature,null,null,null,null);
 		
 		
@@ -95,9 +96,9 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 		UpdateManagerUtils.removeFromFileSystem(target);
 		
 		URL newURL = new File(dataPath + "ExecutableFeaturePackagedSite/data/").toURL();
-		ISite remoteSite = SiteManager.getSite(newURL);
+		IUpdateSite remoteSite = SiteManager.getUpdateSite(newURL,null);
 		IFeatureReference[] featuresRef = remoteSite.getFeatureReferences();
-		ISite localSite = SiteManager.getSite(TARGET_FILE_SITE);
+		IInstalledSite localSite = SiteManager.getInstalledSite(TARGET_FILE_SITE,null);
 		IFeature remoteFeature = null;
 		
 		// at least one executable feature and on packaged
@@ -108,7 +109,7 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 	
 		for (int i = 0; i < featuresRef.length; i++) {
 			try {
-				remoteFeature = featuresRef[i].getFeature();
+				remoteFeature = remoteSite.getFeature(featuresRef[i],null);
 			} catch (CoreException e){
 				Throwable e1 = e.getStatus().getException();
 				String msg = e1.getMessage().replace(File.separatorChar,'/');
@@ -118,14 +119,14 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 			}
 			if (remoteFeature!=null){
 				remove(remoteFeature,localSite);
-				localSite.install(remoteFeature,null, null);
+				localSite.install(remoteFeature,null, null,null,null);
 				
 				if (remoteFeature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider) packFeature = true;
 				if (remoteFeature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider) execFeature = true;
 	
 				// verify
 				String site = localSite.getURL().getFile();
-				IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
+				IPluginEntry[] entries = remoteFeature.getPluginEntries(false);
 				assertTrue("no plugins entry", (entries != null && entries.length != 0));
 				String pluginName = entries[0].getVersionedIdentifier().toString();
 				File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);

@@ -141,7 +141,7 @@ public abstract class UpdateManagerTestCase extends TestCase {
 	}
 
 	protected void remove(IFeature feature, ISite site) throws CoreException {
-		site.getFeatureReference(feature);
+		//site.getFeatureReference(feature.getVersionedIdentifier());
 		// remove the plugins and features dir
 		String sitePath = site.getURL().getFile();
 		File file = null;
@@ -151,7 +151,7 @@ public abstract class UpdateManagerTestCase extends TestCase {
 		System.out.println("****************************************Removing :" + file);
 		UpdateManagerUtils.removeFromFileSystem(file);
 
-		IPluginEntry[] entries = feature.getPluginEntries();
+		IPluginEntry[] entries = feature.getPluginEntries(false);
 		for (int i = 0; i < entries.length; i++) {
 			String name = entries[i].getVersionedIdentifier().getIdentifier().toString() + "_" + entries[i].getVersionedIdentifier().getVersion().toString() + File.separator;
 			file = new File(sitePath, "plugins" + File.separator + name);

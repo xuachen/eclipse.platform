@@ -101,8 +101,8 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	 */
 	public ContentReference[] getArchiveReferences(InstallMonitor monitor) throws CoreException {
 
-		IPluginEntry[] entries = getFeature().getPluginEntries();
-		INonPluginEntry[] nonEntries = getFeature().getNonPluginEntries();
+		IPluginEntry[] entries = getFeature().getPluginEntries(false);
+		INonPluginEntry[] nonEntries = getFeature().getNonPluginEntries(false);
 		List listAllContentRef = new ArrayList();
 		ContentReference[] allContentRef = new ContentReference[0];
 

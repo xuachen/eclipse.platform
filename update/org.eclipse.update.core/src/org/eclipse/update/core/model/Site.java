@@ -447,7 +447,7 @@ public abstract class Site extends ModelObject implements ISite{
 			monitor.worked(1);
 			
 			feature.setSite(this);
-			//feature.setFeatureContentProvider(contentProvider);
+			feature.setFeatureContentProvider(contentProvider);
 			feature.setURL(url);
 			feature.resolve(url, url);
 			feature.markReadOnly();
