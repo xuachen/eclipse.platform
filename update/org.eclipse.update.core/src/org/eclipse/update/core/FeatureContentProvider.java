@@ -419,7 +419,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	protected ContentReference[] peek(ContentReference archive, Feature.ProgressMonitor monitor) throws IOException {
+	protected String[] peek(ContentReference archive, Feature.ProgressMonitor monitor) throws IOException {
 		
 		// assume we have a reference that represents a jar archive.
 		File archiveFile = asLocalFile(archive, monitor);
@@ -433,9 +433,9 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		JarEntry entry;
 		while(entries.hasMoreElements()) {
 			entry = (JarEntry) entries.nextElement();
-			content.add(new JarContentReference(entry.getName(), jarArchive, entry, archiveFile));
+			content.add(entry.getName());
 		}		
-		return (ContentReference[]) content.toArray(new ContentReference[0]);
+		return (String[]) content.toArray(new String[0]);
 	}
 	
 	/**
