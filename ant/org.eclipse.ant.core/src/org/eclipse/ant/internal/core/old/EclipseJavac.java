@@ -62,6 +62,8 @@ package org.eclipse.ant.internal.core.old;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
+import org.eclipse.ant.internal.core.*;
+
 import java.io.File;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;

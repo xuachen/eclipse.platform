@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.tools.ant.types.FilterSetCollection;
 import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.ant.core.*;
+import org.eclipse.ant.internal.core.*;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 /**

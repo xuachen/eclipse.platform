@@ -6,6 +6,7 @@ package org.eclipse.ant.internal.core.old;
  */
 
 import org.eclipse.ant.core.*;
+import org.eclipse.ant.internal.core.*;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import org.apache.tools.ant.*;

@@ -83,22 +83,22 @@ public URL[] getURLs() {
 	if (customURLs != null);
 		result.addAll(customURLs);
 	// look for places that can provide more URLs
-	Map[] places = new Map[] { defaultTasks, defaultObjects, defaultTypes };
-	for (int i = 0; i < places.length; i++) {
-		if (places[i] != null)
-			addURLs(places[i].values(), result);
-	}
+//	Map[] places = new Map[] { defaultTasks, defaultObjects, defaultTypes };
+//	for (int i = 0; i < places.length; i++) {
+//		if (places[i] != null)
+//			addURLs(places[i].values(), result);
+//	}
 	return (URL[]) result.toArray(new URL[result.size()]);
 
 //	URL[] urls = null;
 //	try {
 //		urls = new URL[] {
-//			new URL("file:c:/eclipse/workspaces/newant/org.apache.xerces/xerces.jar"),
-//			new URL("file:c:/eclipse/workspaces/newant/org.apache.ant/ant.jar"),
 //			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.ant.core.ant/bin/"),
 //			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.ant.ui.ant/bin/"),
 //			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.core.resources.ant/bin/"),
-//			new URL("file:c:/ibm-jdk/lib/tools.jar")
+//			new URL("file:c:/ibm-jdk/lib/tools.jar"),
+//			new URL("file:c:/eclipse/workspaces/newant/org.apache.xerces/xerces.jar"),
+//			new URL("file:c:/eclipse/workspaces/newant/org.apache.ant/ant.jar"),
 //		};
 //	} catch (MalformedURLException e) {
 //		e.printStackTrace();

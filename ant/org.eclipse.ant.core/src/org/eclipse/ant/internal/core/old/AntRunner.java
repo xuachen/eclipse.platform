@@ -58,6 +58,7 @@ package org.eclipse.ant.internal.core.old;
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+import org.eclipse.ant.internal.core.*;
 import org.eclipse.core.boot.IPlatformRunnable;
 import java.io.*;
 import java.util.*;

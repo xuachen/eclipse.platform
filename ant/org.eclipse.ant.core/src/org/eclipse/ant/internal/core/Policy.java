@@ -1,4 +1,4 @@
-package org.eclipse.ant.internal.core.old;
+package org.eclipse.ant.internal.core;
 
 /*
  * (c) Copyright IBM Corp. 2000, 2001.
