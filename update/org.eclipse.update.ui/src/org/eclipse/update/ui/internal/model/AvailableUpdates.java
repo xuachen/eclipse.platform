@@ -191,10 +191,10 @@ class SearchAdapter extends MonitorAdapter {
 	}
 	
 	private void findUpdates(IFeature feature) {
-		IInfo updateInfo = feature.getUpdateInfo();
+		IURLEntry updateInfo = feature.getUpdateSiteEntry();
 		if (updateInfo == null) return;
 		URL updateURL = updateInfo.getURL();
-		if (updateURL==null) return;
+		if (updateURL==null) return; 
 		String pattern = UpdateUIPlugin.getResourceString(KEY_CONTACTING);
 		String text = UpdateUIPlugin.getFormattedMessage(pattern, updateURL.toString());
 		backgroundProgress.subTask(text);
@@ -208,7 +208,7 @@ class SearchAdapter extends MonitorAdapter {
 				if (isNewerVersion(feature, candidate)) {
 					// bingo - add this
 					if (searchSite==null) {
-						searchSite = new UpdateSearchSite(updateInfo.getText(), site);
+						searchSite = new UpdateSearchSite(updateInfo.getAnnotation(), site);
 						updates.add(searchSite);
 						asyncFireObjectAdded(this, searchSite);
 					}
