@@ -33,6 +33,16 @@ public interface ISiteContentProvider {
 	 */
 
 	URL getArchivesReferences(String archiveID);
+	
+	/**
+	 * Returns a Content reference for this feature
+	 * If the feature doesn't exist yet, create a new content reference
+	 * 
+	 * @return a content reference
+	 * @since 2.0 
+	 */
+
+	ContentReference getFeatureArchivesReferences(IFeature feature);	
 
 	/**
 	 * sets the site for this content provider

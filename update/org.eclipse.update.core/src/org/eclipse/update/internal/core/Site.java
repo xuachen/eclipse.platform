@@ -36,17 +36,17 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	private ListenersList listeners = new ListenersList();
 	private URL siteURL;
 	private URL infoURL;
-	
+
 	/**
 	 * The content consumer of the Site
 	 */
-	private IContentConsumer contentConsumer;	
+	private IContentConsumer contentConsumer;
 
 	/**
 	 * The content provider of the Site
 	 */
-	private ISiteContentProvider siteContentProvider;	
-	
+	private ISiteContentProvider siteContentProvider;
+
 	/**
 	 * Constructor for Site
 	 */
@@ -54,8 +54,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		super();
 		this.siteURL = siteReference;
 	}
-
-
 
 	/**
 	 * Saves the site into the site.xml
@@ -123,7 +121,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 			for (int indexRef = 0; indexRef < featureReferences.length; indexRef++) {
 				IFeatureReference element = featureReferences[indexRef];
 				if (element.getURL().equals(feature.getURL())) {
-					removeFeatureReferenceModel((FeatureReferenceModel)element);
+					removeFeatureReferenceModel((FeatureReferenceModel) element);
 					break;
 				}
 			}
@@ -141,25 +139,13 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/**
 	 * 
 	 */
-	public Feature createExecutableFeature(IFeature sourceFeature) throws CoreException {
-		String executableType =  getDefaultExecutableFeatureType();
+	public IFeature createExecutableFeature(IFeature sourceFeature) throws CoreException {
+		String executableFeatureType = getDefaultExecutableFeatureType();
 		IFeature result = null;
-		if (executableType!=null){
-			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(featureType);
-			result = factory.createFeature(url,site);
-			this.getSiteContentProvider().get
-			
-		String featurePath = getFeaturePath(sourceFeature.getIdentifier());
-		featurePath += featurePath.endsWith("/") ? "" : "/";		
-
-			try {
-				URL newLocalURL = new URL("file",null,featurePath);
-				result.getFeatureContentProvider().setURL(newLocalURL);
-			} catch (MalformedURLException e){
-					String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-					IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error creating file new Local URL for feature:" + featurePath, e);
-					throw new CoreException(status);			
-			}
+		if (executableFeatureType != null) {
+			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
+			ContentReference localFeatureContentReference = this.getSiteContentProvider().getFeatureArchivesReferences(sourceFeature);
+			result = factory.createFeature(localFeatureContentReference.asURL(), this);
 		}
 		return result;
 	}
@@ -226,8 +212,8 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	public IFeatureReference[] getFeatureReferences() {
 		int length = getFeatureReferenceModels().length;
 		IFeatureReference[] result = new IFeatureReference[length];
-		if (length>0){
-			result = (IFeatureReference[])getFeatureReferenceModels();
+		if (length > 0) {
+			result = (IFeatureReference[]) getFeatureReferenceModels();
 		}
 		return result;
 	}
@@ -238,7 +224,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @param feature The feature to add
 	 */
 	public void addFeatureReference(IFeatureReference feature) {
-		addFeatureReferenceModel((FeatureReferenceModel)feature);
+		addFeatureReferenceModel((FeatureReferenceModel) feature);
 	}
 
 	/**
@@ -247,8 +233,8 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	public IURLEntry[] getArchives() {
 		int length = getArchiveReferenceModels().length;
 		IURLEntry[] result = new IURLEntry[length];
-		if (length>0) {
-			result = (IURLEntry[])getArchiveReferenceModels();
+		if (length > 0) {
+			result = (IURLEntry[]) getArchiveReferenceModels();
 		}
 		return result;
 	}
@@ -264,7 +250,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		boolean found = false;
 
 		int length = getArchiveReferenceModels().length;
-		if (length>0) {
+		if (length > 0) {
 			for (int i = 0; i < length; i++) {
 				if (archiveId.trim().equalsIgnoreCase(getArchiveReferenceModels()[i].getPath())) {
 					result = getArchiveReferenceModels()[i].getURL();
@@ -299,7 +285,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 				UpdateManagerPlugin.getPlugin().debug("The Archive with ID:" + archive.getAnnotation() + " already exist on the site.");
 			}
 		} else {
-			addArchiveReferenceModel((ArchiveReferenceModel)archive);
+			addArchiveReferenceModel((ArchiveReferenceModel) archive);
 		}
 	}
 
@@ -448,10 +434,10 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	public IPluginEntry[] getPluginEntries() {
 		return null;
 	}
-	
-		/*
-	 * @see ISite#setContentConsumer(IContentConsumer)
-	 */
+
+	/*
+	* @see ISite#setContentConsumer(IContentConsumer)
+	*/
 	public void setContentConsumer(IContentConsumer contentConsumer) {
 		this.contentConsumer = contentConsumer;
 	}
@@ -459,16 +445,15 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/*
 	 * @see ISite#getContentConsumer()
 	 */
-	public IContentConsumer getContentConsumer()  throws CoreException {
-		if (contentConsumer==null){
+	public IContentConsumer getContentConsumer() throws CoreException {
+		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "ContentConsumer not set for site:" + getURL().toExternalForm(),null);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "ContentConsumer not set for site:" + getURL().toExternalForm(), null);
 			throw new CoreException(status);
 		}
-		
+
 		return contentConsumer;
 	}
-	
 
 	/*
 	 * @see ISite#setSiteContentProvider(ISiteContentProvider)
@@ -481,11 +466,11 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see ISite#getSiteContentProvider()
 	 */
 	public ISiteContentProvider getSiteContentProvider() throws CoreException {
-		if (contentConsumer==null){
+		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for site:" + getURL().toExternalForm(),null);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for site:" + getURL().toExternalForm(), null);
 			throw new CoreException(status);
-		}		
+		}
 		return siteContentProvider;
 	}
 

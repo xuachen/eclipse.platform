@@ -136,33 +136,33 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 
 		boolean unconfigure = true;
 		String uniqueId = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-		MultiStatus multiStatus = new MultiStatus(uniqueId,IStatus.WARNING,"Some plugin of this feature are required by the following running plugins",null);
+		MultiStatus multiStatus = new MultiStatus(uniqueId, IStatus.WARNING, "Some plugin of this feature are required by the following running plugins", null);
 
 		// plugins to remove		
-		IPluginEntry[] pluginsToRemove = ((SiteLocal)SiteManager.getLocalSite()).getUnusedPluginEntries(feature.getFeature());
-		
+		IPluginEntry[] pluginsToRemove = ((SiteLocal) SiteManager.getLocalSite()).getUnusedPluginEntries(feature.getFeature());
+
 		// all other plugins that are configured
-		IPluginDescriptor[] descriptors =Platform.getPluginRegistry().getPluginDescriptors();
+		IPluginDescriptor[] descriptors = Platform.getPluginRegistry().getPluginDescriptors();
 
 		for (int i = 0; i < descriptors.length; i++) {
-			if (require(descriptors[i],pluginsToRemove)){
-				Status status = new Status(IStatus.WARNING,uniqueId,IStatus.OK,descriptors[i].getUniqueIdentifier(),null);
-				multiStatus.add(status);				
+			if (require(descriptors[i], pluginsToRemove)) {
+				Status status = new Status(IStatus.WARNING, uniqueId, IStatus.OK, descriptors[i].getUniqueIdentifier(), null);
+				multiStatus.add(status);
 			}
 		}
-		
-		if (multiStatus.getChildren().length>0){
-			unconfigure = handler.reportProblem("Are you certain to want to unconfigure this feature ?",multiStatus);
+
+		if (multiStatus.getChildren().length > 0) {
+			unconfigure = handler.reportProblem("Are you certain to want to unconfigure this feature ?", multiStatus);
 		}
 
-		if (unconfigure){
+		if (unconfigure) {
 			//Start UOW ?
 			ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_UNCONFIGURE);
 			activity.setLabel(feature.getFeature().getIdentifier().toString());
 			activity.setDate(new Date());
-	
+
 			addUnconfiguredFeatureReference(feature);
-	
+
 			// everything done ok
 			activity.setStatus(IActivity.STATUS_OK);
 			((InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration()).addActivity(activity);
@@ -173,18 +173,18 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 	 * returns true if the pluginDescripto requires one or more pluginEntry
 	 * and the pluginDescriptor is not part of the pluginEntries
 	 */
-	private boolean require(IPluginDescriptor descriptor, IPluginEntry[] entries){
+	private boolean require(IPluginDescriptor descriptor, IPluginEntry[] entries) {
 		boolean result = false;
-		if (descriptor != null && entries!=null){
+		if (descriptor != null && entries != null) {
 			IPluginPrerequisite[] prereq = descriptor.getPluginPrerequisites();
 			//FIXME: todo  list
-				
-			}
+
+		}
 		return result;
 	}
 
 	/**
-	 * returns an array of string corresponding to plugin
+	 * returns an array of string corresponding to plugins file
 	 */
 	/*package*/
 	String[] getPluginPath(ISite site) throws CoreException {
@@ -207,24 +207,23 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 				IFeatureReference element = (IFeatureReference) iter.next();
 				IFeature feature = element.getFeature();
 				IPluginEntry[] entries = feature.getPluginEntries();
-				
+
 				for (int index = 0; index < entries.length; index++) {
 					IPluginEntry entry = entries[index];
 					String id = entry.getIdentifier().toString();
 					// obtain the path of the plugin directories on the site	
-					ContentReference[] featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry);				
-
-					ContentReference siteContentReference = site.getSiteContentProvider().getArchivesReferences(archiveID);
-					
-					URL url =  siteContentReference.asFile().toURL();
-					if (url!=null){
-						// make it relative to teh site
-						String path = UpdateManagerUtils.getURLAsString(site.getURL(),url);
-						// add end "/"
-						path += (path.endsWith(File.separator) || path.endsWith("/"))?"":File.separator;
-						// add plugin.xml or fragment.xml
-						path += entry.isFragment()?"fragment.xml":"plugin.xml"; //FIXME: fragments
-						pluginsString.add(path);
+					ContentReference[] featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry);
+					for (int j = 0; j < featureContentReference.length; j++) {
+						URL url = site.getSiteContentProvider().getArchivesReferences(featureContentReference[j].getIdentifier());
+						if (url != null) {
+							// make it relative to teh site
+							String path = UpdateManagerUtils.getURLAsString(site.getURL(), url);
+							// add end "/"
+							path += (path.endsWith(File.separator) || path.endsWith("/")) ? "" : File.separator;
+							// add plugin.xml or fragment.xml
+							path += entry.isFragment() ? "fragment.xml" : "plugin.xml"; //FIXME: fragments
+							pluginsString.add(path);
+						}
 					}
 				}
 			}

@@ -55,7 +55,7 @@ public class FeaturePackaged extends DefaultFeature {
 			InputStream inStream = null;
 			String[] names = getStorageUnitNames(this);
 			if (names != null) {
-				openFeature();
+//				openFeature();
 				for (int j = 0; j < names.length; j++) {
 					if ((inStream = getInputStreamFor(this,names[j])) != null)
 						 tempSite.storeFeatureInfo(getIdentifier(), names[j], inStream);
@@ -146,7 +146,7 @@ public class FeaturePackaged extends DefaultFeature {
 		try {
 			String path = UpdateManagerUtils.getPath(getURL());			
 			URL resolvedURL = UpdateManagerUtils.resolveAsLocal(getURL(),path,null);
-			this.setURL(resolvedURL);
+//			this.setURL(resolvedURL);
 
 			// DEBUG:
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_INSTALL) {
