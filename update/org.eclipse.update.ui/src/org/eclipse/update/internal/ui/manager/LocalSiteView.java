@@ -172,7 +172,7 @@ class LocalSiteLabelProvider extends LabelProvider {
 		}
 		if (obj instanceof IFeature) {
 			IFeature feature = (IFeature)obj;
-			String version = feature.getIdentifier().getVersion().toString();
+			String version = feature.getVersionIdentifier().getVersion().toString();
 			return feature.getLabel() + " "+version;
 		}
 		return super.getText(obj);
