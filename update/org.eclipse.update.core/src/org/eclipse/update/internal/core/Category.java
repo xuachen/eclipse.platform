@@ -7,14 +7,14 @@ import java.io.PrintWriter;
 import java.util.Comparator;
 import org.eclipse.update.core.ICategory;
 import org.eclipse.update.core.IURLEntry;
+import org.eclipse.update.core.model.SiteCategoryModel;
+import org.eclipse.update.core.model.URLEntryModel;
 
 /**
  * Default Implementation of ICategory
  */
-public class Category implements ICategory {
+public class Category extends SiteCategoryModel implements ICategory {
 	
-	private String name;
-	private String label;
 	private IURLEntry description;
 	private static Comparator comp;
 	
@@ -28,43 +28,9 @@ public class Category implements ICategory {
 	 * Constructor
 	 */
 	public Category(String name, String label){
-		this.name = name;
-		this.label = label;
+		setName(name);
+		setLabel(label);
 	}
-
-	/**
-	 * @see ICategory#getName()
-	 */
-	public String getName() {
-		return name;
-	}
-
-
-	/**
-	 * @see ICategory#getLabel()
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-
-	/**
-	 * Sets the name
-	 * @param name The name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	/**
-	 * Sets the label
-	 * @param label The label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
 
 	/*
 	 * @see Object#equals(Object)
@@ -115,7 +81,7 @@ public class Category implements ICategory {
 	 * @see ICategory#getDescription()
 	 */
 	public IURLEntry getDescription() {
-		return description;
+		return (IURLEntry)description;
 	}
 
 	/**
@@ -123,7 +89,7 @@ public class Category implements ICategory {
 	 * @param description The description to set
 	 */
 	public void setDescription(IURLEntry description) {
-		this.description = description;
+		setDescriptionModel((URLEntryModel) description);
 	}
 }
 

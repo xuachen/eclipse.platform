@@ -11,9 +11,10 @@ import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.SiteMapModel;
 import org.xml.sax.SAXException;
 
-public abstract class Site implements ISite, IWritable {
+public abstract class Site extends SiteMapModel implements ISite, IWritable {
 
 	/**
 	 * default path under the site where plugins will be installed
@@ -44,7 +45,6 @@ public abstract class Site implements ISite, IWritable {
 
 	private ListenersList listeners = new ListenersList();
 	private URL siteURL;
-	private String siteType;
 	private URL infoURL;
 	private List features;
 	private Set categories;
@@ -540,11 +540,4 @@ public abstract class Site implements ISite, IWritable {
 	public void store(IPluginEntry entry, String name, InputStream inStream) throws CoreException {
 	}
 
-	/*
-	 * @see ISite#getType()
-	 */
-	public String getType() {
-		return siteType;
-	};
-
-}
+	}
