@@ -47,7 +47,7 @@ public class TestFeatureType extends UpdateManagerTestCase {
 		IFeatureFactory factory = factories.getFactory("org.eclipse.update.core.exe");
 		
 		ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
-		URL featureURL = new URL(SOURCE_FILE_SITE,"install/features/features3/");
+		URL featureURL = new URL(SOURCE_FILE_SITE,"install/features/feature3/");
 		
 		IFeature anotherFeature = factory.createFeature(featureURL,site);
 		
@@ -84,7 +84,7 @@ public class TestFeatureType extends UpdateManagerTestCase {
 		
 		IFeature anotherFeature = factory.createFeature(feature.getURL(),site);
 
-		assertTrue(feature instanceof FeatureExecutable);		
+		assertTrue(feature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider);		
 		assertTrue(((FeatureReference)ref).getType().equals("org.eclipse.update.tests.core.feature1"));		
 		assertTrue("Factory doesn't create same feature",feature.getVersionIdentifier().equals(anotherFeature.getVersionIdentifier()));
 

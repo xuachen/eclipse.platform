@@ -25,7 +25,7 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 	/*
 	 * @see ISiteFactory#createSite(URL)
 	 */
-	public abstract ISite createSite(URL url) throws CoreException;
+	public abstract ISite createSite(URL url) throws CoreException, InvalidSiteTypeException;
 
 
 	/**

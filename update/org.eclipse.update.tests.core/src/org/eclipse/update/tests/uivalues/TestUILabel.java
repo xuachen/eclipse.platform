@@ -40,6 +40,9 @@ public class TestUILabel extends UpdateManagerTestCase {
 			print(feature.getCopyright(),"Copyright");			
 			print(feature.getDescription(),"Description");				
 			
+			// check that it downloads the feature.jar under the cover
+			// and unpack it
+			
 			URL url = feature.getLicense().getURL();
 			if (url!=null){
 				assertTrue((new File(url.getFile())).exists());

@@ -15,6 +15,7 @@ import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.core.model.SiteMapModel;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
+import org.xml.sax.SAXException;
 
 public class SiteFileFactory extends BaseSiteFactory {
 
@@ -26,7 +27,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 	/*
 	 * @see ISiteFactory#createSite(URL)
 	 */
-	public ISite createSite(URL url) throws CoreException {
+	public ISite createSite(URL url) throws CoreException, InvalidSiteTypeException {
 
 		Site site = null;
 		URL siteXML = null;		
@@ -57,6 +58,14 @@ public class SiteFileFactory extends BaseSiteFactory {
 			IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "WARNING: cannot open site.xml in the site:" + url.toExternalForm(), e);
 			UpdateManagerPlugin.getPlugin().getLog().log(status);
 		} catch (Exception e) {
+			
+			if (e instanceof SAXException){
+				SAXException exception = (SAXException) e;
+				if(exception.getException() instanceof InvalidSiteTypeException){
+					throw (InvalidSiteTypeException)exception.getException();
+				}
+			}
+			
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "Error parsing site.xml in the site:" + url.toExternalForm(), e);
 			throw new CoreException(status);
@@ -129,7 +138,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 					// the URL must ends with '/' for the bundle to be resolved
 					newFilePath = featurePath + dir[index] + "/";
 					featureURL = new URL("file", null, newFilePath);						
-					Feature newFeature = createPackagedFeature(featureURL);
+					IFeature newFeature = createFeature(featureURL);
 					
 					featureRef = archiveFactory.createFeatureReferenceModel();
 					featureRef.setSiteModel(site);
@@ -169,7 +178,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 					SiteFileFactory archiveFactory = new SiteFileFactory();							
 					newFilePath = featurePath + dir[index];
 					featureURL = new URL("file", null, newFilePath);						
-					Feature newFeature = createPackagedFeature(featureURL);
+					IFeature newFeature = createFeature(featureURL);
 					
 					featureRef = archiveFactory.createFeatureReferenceModel();
 					featureRef.setSiteModel(site);
@@ -310,28 +319,13 @@ public class SiteFileFactory extends BaseSiteFactory {
 	/**
 	 * 
 	 */
-	private Feature createPackagedFeature(URL url) throws CoreException {
-		String packagedFeatureType = site.getDefaultInstallableFeatureType();
-		Feature result = null;
-		if (packagedFeatureType != null) {
-			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(packagedFeatureType);
-			result = (Feature)factory.createFeature(url, site);
-		}
-		return result;
+	private IFeature createFeature(URL url) throws CoreException {
+		FeatureReference ref = new FeatureReference();
+		ref.setSite(site);
+		ref.setURL(url);
+		return ref.getFeature();
 	}
 
-	/**
-	 * 
-	 */
-	private IFeature createExecutableFeature(IFeature sourceFeature) throws CoreException {
-		String executableFeatureType = site.getDefaultExecutableFeatureType();
-		IFeature result = null;
-		if (executableFeatureType != null) {
-			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
-			result = factory.createFeature(site);
-		}
-		return result;
-	}
 		
 
 	/*
@@ -339,6 +333,14 @@ public class SiteFileFactory extends BaseSiteFactory {
 	 */
 	public SiteMapModel createSiteMapModel() {
 		return new SiteFile();
+	}
+
+
+	/*
+	 * @see SiteModelFactory#canParseSiteType(String)
+	 */
+	public boolean canParseSiteType(String type) {
+		return (super.canParseSiteType(type) || SiteFileContentProvider.SITE_TYPE.equalsIgnoreCase(type));
 	}
 
 }

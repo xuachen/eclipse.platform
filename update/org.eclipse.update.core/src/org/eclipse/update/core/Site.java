@@ -18,9 +18,6 @@ import org.eclipse.update.internal.core.Writer;
 
 public class Site extends SiteMapModel implements ISite, IWritable {
 
-	public static final String HTTP_SITE_TYPE = "org.eclipse.update.core.http";
-	public static final String FILE_SITE_TYPE = "org.eclipse.update.core.file";	
-
 	/**
 	 * default path under the site where features will be installed
 	 */
