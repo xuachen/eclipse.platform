@@ -1,0 +1,108 @@
+package org.eclipse.update.core;
+
+/*
+ * (c) Copyright IBM Corp. 2000, 2002.
+ * All Rights Reserved.
+ */ 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+/**
+ * Default content reference. 
+ * Implements a simple URL or local File wrapper.
+ * </p>
+ * @since 2.0
+ */
+public class ContentRef {
+	
+	private String id;
+	private URL url;	// reference is either URL reference *OR*
+	private File file;	//    local file reference
+	
+	public static final long UNKNOWN = -1;
+
+	/**
+	 * Constructor for ContentRef.
+	 */
+	public ContentRef(String id, URL url) {
+		this.id = id;
+		this.url = url;
+		this.file = null;
+	}
+	
+	/**
+	 * Constructor for ContentRef.
+	 */
+	public ContentRef(String id, File file) {
+		this.id = id;
+		this.file = file;
+		this.url = null;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public String getIdentifier() {
+		return id;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public InputStream getInputStream() throws IOException {
+		if (file != null)
+			return new FileInputStream(file);
+		else
+			return url.openStream();
+	}	
+	
+	/**
+	 * @since 2.0
+	 */
+	public long getInputSize() {
+		return UNKNOWN;
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public boolean isLocalReference() {
+		if (file != null)
+			return true;
+		else
+			return url.getProtocol().equals("file");
+	}	
+		
+	/**
+	 * Returns a local file for the content reference.
+	 * Returns <code>null</code> if content reference cannot
+	 * be returned as a local file. Note, that this method
+	 * <b>does not</b> cause the file to be downloaded if it
+	 * is not already local.
+	 * 
+	 * @since 2.0
+	 */
+	public File asFile() {
+		if (file != null)
+			return file;
+			
+		if (url.getProtocol().equals("file"))
+			return new File(url.getFile());
+			
+		return null;
+	}
+			
+	/**
+	 * @since 2.0
+	 */
+	public String toString() {
+		if (file != null)
+			return file.getAbsolutePath();
+		else
+			return url.toExternalForm();
+	}
+}
