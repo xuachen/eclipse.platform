@@ -1412,6 +1412,17 @@ public class Main {
 		}
 	}
 	private void setInstallLocation(String location) {
+		// TODO If the URL is a file: url and we are on a filesystem which is case insensitive but
+		// case-retaining then convert the first char (drive letter) to lowercase 
+		// This is at best a hack but people use the location as a key and do equals
+		if (location.startsWith("file:")) {
+			if (new File("d:foo").equals(new File("D:foo")))
+				if (Character.isUpperCase(location.charAt(5))) {
+					char[] chars = location.toCharArray();
+					chars[5] = Character.toLowerCase(chars[5]);
+					location = new String(chars);
+				}
+		}	
 		installLocation = location;
 		System.getProperties().setProperty("eclipse.installURL", location); //$NON-NLS-1$
 	}
