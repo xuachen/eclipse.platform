@@ -27,7 +27,7 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getIdentifier()
 	 */
-	public VersionedIdentifier getIdentifier() {
+	public VersionedIdentifier getVersionIdentifier() {
 		return id;
 	}
 
