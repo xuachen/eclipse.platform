@@ -36,7 +36,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 			return null;
 		}
 
-		public Version getVersion() {
+		public PluginVersionIdentifier getVersion() {
 			if (id != null)
 				return id.getVersion();
 			return null;
