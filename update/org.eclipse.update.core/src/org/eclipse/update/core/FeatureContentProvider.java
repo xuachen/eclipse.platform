@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
+import java.util.jar.JarEntry;
 
 import org.eclipse.core.runtime.CoreException;
 
@@ -304,13 +304,13 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		// run through the entries and unjar
 		String entryName;
 		String entryId;
-		ZipEntry entry;
+		JarEntry entry;
 		InputStream is;
 		OutputStream os;
 		File localFile;
 		while(entries.hasMoreElements()) {
-			entryName = (String) entries.nextElement();
-			entry = jarArchive.getEntry(entryName);
+			entry = (JarEntry) entries.nextElement();
+			entryName = entry.getName();
 			if (entry != null && selector != null && selector.include(entryName)) {
 				is = null;
 				os = null;
@@ -344,7 +344,8 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		JarFile jarArchive = new JarFile(archiveFile);
 		
 		// unjar the entry
-		ZipEntry entry = jarArchive.getEntry(entryName);
+		entryName = entryName.replace(File.separatorChar,'/');
+		JarEntry entry = jarArchive.getJarEntry(entryName);
 		String entryId;
 		if (entry != null) {
 			InputStream is = null;
@@ -381,13 +382,15 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		Enumeration entries = jarArchive.entries();
 		
 		// run through the entries and create content references
+		JarEntry entry;
 		String entryName;
 		String entryId;
 		while(entries.hasMoreElements()) {
-			entryName = (String) entries.nextElement();
+			entry = (JarEntry) entries.nextElement();
+			entryName = entry.getName();
 			if (selector != null && selector.include(entryName)) {
 				entryId = selector==null ? entryName : selector.defineIdentifier(entryName);
-				content.add(new JarContentReference(entryId, archiveFile, entryName));
+				content.add(new JarContentReference(entryId, jarArchive, entry, archiveFile));
 			}
 		}		
 		return (ContentReference[]) content.toArray(new ContentReference[0]);
@@ -403,8 +406,11 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		
 		// assume we have a reference that represents a jar archive.
 		File archiveFile = asLocalFile(archive, monitor);
+		entryName = entryName.replace(File.separatorChar,'/');
+		JarFile jarArchive = new JarFile(archiveFile);
+		JarEntry entry = jarArchive.getJarEntry(entryName);
 		String entryId = selector==null ? entryName : selector.defineIdentifier(entryName);
-		return new JarContentReference(entryId, archiveFile, entryName);
+		return new JarContentReference(entryId, jarArchive, entry, archiveFile);
 	}
 	
 	/**
@@ -413,7 +419,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	protected String[] peek(ContentReference archive, Feature.ProgressMonitor monitor) throws IOException {
+	protected ContentReference[] peek(ContentReference archive, Feature.ProgressMonitor monitor) throws IOException {
 		
 		// assume we have a reference that represents a jar archive.
 		File archiveFile = asLocalFile(archive, monitor);
@@ -424,12 +430,12 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		Enumeration entries = jarArchive.entries();
 		
 		// run through the entries and collect entry names
-		String entryName;
+		JarEntry entry;
 		while(entries.hasMoreElements()) {
-			entryName = (String) entries.nextElement();
-			content.add(entryName);
+			entry = (JarEntry) entries.nextElement();
+			content.add(new JarContentReference(entry.getName(), jarArchive, entry, archiveFile));
 		}		
-		return (String[]) content.toArray(new String[0]);
+		return (ContentReference[]) content.toArray(new ContentReference[0]);
 	}
 	
 	/**

@@ -5,12 +5,13 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */ 
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.eclipse.core.runtime.*;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
+import java.net.URLConnection;
 
 /**
  * Default content reference. 
@@ -23,6 +24,8 @@ public class ContentReference {
 	protected String id;
 	protected URL url;	// reference is either URL reference *OR*
 	protected File file;	//    local file reference
+		
+	private URLConnection connection;
 	
 	public static final long UNKNOWN_SIZE = -1;
 
@@ -62,15 +65,30 @@ public class ContentReference {
 	public InputStream getInputStream() throws IOException {
 		if (file != null)
 			return new FileInputStream(file);
-		else
-			return url.openStream();
+		else {
+			if (connection == null)
+				connection = url.openConnection();
+			return connection.getInputStream();
+		}
 	}	
 	
 	/**
 	 * @since 2.0
 	 */
 	public long getInputSize() {
-		return UNKNOWN_SIZE;
+		if (file != null)
+			return file.length();
+		else {
+			if (connection == null) {
+				try {
+			 		connection = url.openConnection();
+				} catch (IOException e) {
+					return ContentReference.UNKNOWN_SIZE;
+				}
+			}
+			long size = connection.getContentLength();
+			return size == -1 ? ContentReference.UNKNOWN_SIZE : size;
+		}
 	}
 	
 	/**
@@ -128,5 +146,12 @@ public class ContentReference {
 			return file.getAbsolutePath();
 		else
 			return url.toExternalForm();
+	}
+	
+	/**
+	 * @since 2.0
+	 */
+	public void setIdentifier(String id) {
+		this.id = id;
 	}
 }

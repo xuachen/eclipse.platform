@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -23,33 +24,36 @@ import java.util.zip.ZipEntry;
 
 public class JarContentReference extends ContentReference {
 	
-	protected String entryName;
+	protected JarFile jarFile;
+	protected JarEntry entry;
 	
 	/**
 	 * Constructor for ContentRef.
+	 * 
+	 * NOTE: java.util.jar/zip do not allow the File object to be
+	 * 		extracted from JarFile/ ZipFile. So both the JarFile
+	 * 		and its corresponding File need to be passed into
+	 * 		the costructor in order for the reference to function
+	 * 		correctly.
 	 */
-	public JarContentReference(String id, File file, String entryName) {
+	public JarContentReference(String id, JarFile jarFile, JarEntry entry, File file) {
 		super(id, file);
-		this.entryName = entryName;
+		this.jarFile = jarFile;
+		this.entry = entry;
 	}
 
 	/*
 	 * @see ContentReference#getInputStream()
 	 */
-	public InputStream getInputStream() throws IOException {
-
-		JarFile jarArchive = new JarFile(file);
-		ZipEntry entry = jarArchive.getEntry(entryName);
-		if (entry == null)
-			throw new FileNotFoundException(file.getAbsolutePath()+" "+entryName);
-		return jarArchive.getInputStream(entry);
+	public InputStream getInputStream() throws IOException {		
+		return jarFile.getInputStream(entry);
 	}
 
 	/*
 	 * @see ContentReference#getInputSize()
 	 */
 	public long getInputSize() {
-		return ContentReference.UNKNOWN_SIZE;
+		return entry.getSize();
 	}
 
 	/*
@@ -65,7 +69,7 @@ public class JarContentReference extends ContentReference {
 	public URL asURL() {
 		try {
 			String fileName = file.getAbsolutePath().replace(File.separatorChar,'/');
-			return new URL("jar:file:"+fileName+"!/"+entryName);
+			return new URL("jar:file:"+fileName+"!/"+entry.getName());
 		} catch(MalformedURLException e) {
 			return null;
 		}
