@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.update.internal.model;
+package org.eclipse.update.internal.configuration;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -125,7 +125,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 		//site url
 		String urlString = attributes.getValue("url"); //$NON-NLS-1$
 		siteURL = new URL(urlString);
-		ISite site = SiteManager.getSite(siteURL,null);
+		IInstalledSite site = SiteManager.getInstalledSite(siteURL,null);
 		sites.put(urlString,site);
 
 		// policy
@@ -182,19 +182,15 @@ public class InstallConfigurationParser extends DefaultHandler {
 		boolean configured = configuredString.trim().equalsIgnoreCase("true") ? true : false; //$NON-NLS-1$
 
 		if (url != null) {
-			SiteFeatureReference ref = new SiteFeatureReference();
-			ref.setSite((ISite) configSite.getSiteModel());
-			ref.setURL(url);
-			if (ref != null)
-				if (configured) {
-					(configSite.getConfigurationPolicyModel()).addConfiguredFeatureReference(ref);
-				} else
-					(configSite.getConfigurationPolicyModel()).addUnconfiguredFeatureReference(ref);
+			FeatureReference ref = new FeatureReference(configSite.getSiteModel(), url);
+			if (configured) {
+				(configSite.getConfigurationPolicyModel()).addConfiguredFeatureReference(ref);
+			} else
+				(configSite.getConfigurationPolicyModel()).addUnconfiguredFeatureReference(ref);
 
 			//updateURL
 			String updateURLString = attributes.getValue("updateURL"); //$NON-NLS-1$
-			URLEntry entry = new URLEntry();
-			entry.setURLString(updateURLString);
+			URLEntry entry = new URLEntry(updateURLString);
 			entry.resolve(siteURL,null);
 
 			// DEBUG:		

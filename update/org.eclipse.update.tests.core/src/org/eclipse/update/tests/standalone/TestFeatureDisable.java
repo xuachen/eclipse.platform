@@ -71,7 +71,7 @@ public class TestFeatureDisable extends StandaloneManagerTestCase {
 			new File(
 				new URL(
 					localSite.getURL(),
-					"platform.cfg.metadata/" + SiteLocal.SITE_LOCAL_FILE)
+					"platform.cfg.metadata/" + LocalSite.SITE_LOCAL_FILE)
 					.getFile());
 		System.out.println(localFile.getAbsolutePath());
 		assertTrue(localFile.exists());

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.configuration.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -166,9 +167,9 @@ public class TestInstall extends UpdateManagerTestCase {
 	public void testInstall() throws Exception {
 
 		// cleanup local files...
-		URL localURL = ((SiteLocal) SiteManager.getLocalSite()).getLocationURL();
+		URL localURL = ((LocalSite) SiteManager.getLocalSite()).getLocationURL();
 		File localFile =
-			new File(new URL(localURL, SiteLocal.SITE_LOCAL_FILE).getFile());
+			new File(new URL(localURL, LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);
 
 		URL INSTALL_SITE = null;
@@ -279,8 +280,8 @@ public class TestInstall extends UpdateManagerTestCase {
 		File localFile =
 			new File(
 				new URL(
-					((SiteLocal) SiteManager.getLocalSite()).getLocationURL(),
-					SiteLocal.SITE_LOCAL_FILE)
+					((LocalSite) SiteManager.getLocalSite()).getLocationURL(),
+					LocalSite.SITE_LOCAL_FILE)
 					.getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);
 

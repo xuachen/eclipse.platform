@@ -31,7 +31,7 @@ import org.eclipse.ui.plugin.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.model.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.parts.AboutInfo;
 import org.eclipse.update.internal.ui.security.*;

@@ -14,6 +14,7 @@ import java.net.URL;
 
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -29,8 +30,8 @@ public class TestBackward extends UpdateManagerTestCase {
 	public void testSimpleBackward() throws Exception {
 
 		// cleanup
-		SiteLocal siteLocal = ((SiteLocal)SiteManager.getLocalSite());
-		File localFile = new File(new URL(siteLocal.getLocationURL(),SiteLocal.SITE_LOCAL_FILE).getFile());
+		LocalSite siteLocal = ((LocalSite)SiteManager.getLocalSite());
+		File localFile = new File(new URL(siteLocal.getLocationURL(),LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);		
 		UpdateManagerUtils.removeFromFileSystem(new File(((InstallConfiguration)siteLocal.getCurrentConfiguration()).getURL().getFile()));
 		InternalSiteManager.localSite=null;		
@@ -59,9 +60,9 @@ public class TestBackward extends UpdateManagerTestCase {
 		assertTrue(newConfigSite.getInstallConfiguration().equals(current));
 		
 		// cleanup
-		localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),SiteLocal.SITE_LOCAL_FILE).getFile());
+		localFile = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);		
-		localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),SiteLocal.DEFAULT_CONFIG_FILE).getFile());
+		localFile = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),LocalSite.DEFAULT_CONFIG_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);	
 	
 	}

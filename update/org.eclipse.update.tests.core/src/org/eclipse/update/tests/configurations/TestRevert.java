@@ -16,8 +16,9 @@ import org.eclipse.core.boot.IPlatformConfiguration;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.model.ConfigurationPolicyModel;
-import org.eclipse.update.internal.model.ConfiguredSite;
+import org.eclipse.update.internal.configuration.*;
+import org.eclipse.update.internal.configuration.ConfigurationPolicyModel;
+import org.eclipse.update.internal.configuration.ConfiguredSite;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
 public class TestRevert extends UpdateManagerTestCase {
@@ -32,8 +33,8 @@ public class TestRevert extends UpdateManagerTestCase {
 	public void testSimpleRevertInstall() throws Exception {
 
 		// cleanup
-		SiteLocal siteLocal = ((SiteLocal)SiteManager.getLocalSite());
-		File localFile = new File(new URL(siteLocal.getLocationURL(),SiteLocal.SITE_LOCAL_FILE).getFile());
+		LocalSite siteLocal = ((LocalSite)SiteManager.getLocalSite());
+		File localFile = new File(new URL(siteLocal.getLocationURL(),LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);		
 		UpdateManagerUtils.removeFromFileSystem(new File(((InstallConfiguration)siteLocal.getCurrentConfiguration()).getURL().getFile()));
 		InternalSiteManager.localSite=null;		
@@ -80,7 +81,7 @@ public class TestRevert extends UpdateManagerTestCase {
 		
 		// check
 		String time = ""+site.getCurrentConfiguration().getCreationDate().getTime();
-		File file = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),SiteLocal.DEFAULT_CONFIG_PREFIX+time+".xml").getFile());
+		File file = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),LocalSite.DEFAULT_CONFIG_PREFIX+time+".xml").getFile());
 		assertTrue("new configuration does not exist", file.exists());
 		
 		
@@ -111,16 +112,16 @@ public class TestRevert extends UpdateManagerTestCase {
 		assertEquals("wrong number of unconfigured features",oldNumberUnconfiguredFeatures+2,newNumberUnconfiguredFeatures);
 		
 		// cleanup
-		localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),SiteLocal.SITE_LOCAL_FILE).getFile());
+		localFile = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);		
-		localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),SiteLocal.DEFAULT_CONFIG_FILE).getFile());
+		localFile = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),LocalSite.DEFAULT_CONFIG_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);				
 		UpdateManagerUtils.removeFromFileSystem(file);	
 		time = ""+newConfig.getCreationDate().getTime();
-		file = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),"DefaultConfig"+time+".xml").getFile());	
+		file = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),"DefaultConfig"+time+".xml").getFile());	
 		UpdateManagerUtils.removeFromFileSystem(file);	
 		time = ""+newConfig2.getCreationDate().getTime();
-		file = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),"DefaultConfig"+time+".xml").getFile());	
+		file = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),"DefaultConfig"+time+".xml").getFile());	
 		UpdateManagerUtils.removeFromFileSystem(file);	
 	}
 

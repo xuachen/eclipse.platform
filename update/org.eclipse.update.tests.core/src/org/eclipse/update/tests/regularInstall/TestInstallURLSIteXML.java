@@ -15,6 +15,7 @@ import java.net.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.*;
 
@@ -179,7 +180,7 @@ public class TestInstallURLSIteXML extends UpdateManagerTestCase {
 	public void testInstall() throws Exception {
 
 		// cleanup local files...
-		SiteLocal siteLocal = ((SiteLocal) SiteManager.getLocalSite());
+		LocalSite siteLocal = ((LocalSite) SiteManager.getLocalSite());
 		File localFile = new File(siteLocal.getLocationURL().getFile());
 		//if (!localFile.exists()) fail("LocalSite file doesn't exist ->"+localFile.getAbsolutePath()+"<-");
 		UpdateManagerUtils.removeFromFileSystem(localFile.getParentFile());		
@@ -299,8 +300,8 @@ public class TestInstallURLSIteXML extends UpdateManagerTestCase {
 		File localFile =
 			new File(
 				new URL(
-					((SiteLocal) SiteManager.getLocalSite()).getLocationURL(),
-					SiteLocal.SITE_LOCAL_FILE)
+					((LocalSite) SiteManager.getLocalSite()).getLocationURL(),
+					LocalSite.SITE_LOCAL_FILE)
 					.getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);
 

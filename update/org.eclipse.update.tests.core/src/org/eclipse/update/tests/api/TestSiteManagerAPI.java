@@ -15,6 +15,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.configuration.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -66,7 +67,7 @@ public class TestSiteManagerAPI extends UpdateManagerTestCase {
 		UpdateManagerUtils.removeFromFileSystem(file);
 		file = new File(instSites[0].getSite().getURL().getFile()+File.separator+Site.DEFAULT_PLUGIN_PATH+"org.eclipse.update.plugin1_1.1.1");
 		UpdateManagerUtils.removeFromFileSystem(file);		
-		File localFile = new File(new URL(((SiteLocal)SiteManager.getLocalSite()).getLocationURL(),SiteLocal.SITE_LOCAL_FILE).getFile());
+		File localFile = new File(new URL(((LocalSite)SiteManager.getLocalSite()).getLocationURL(),LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);	
 		UpdateManagerUtils.removeFromFileSystem(new File(((InstallConfiguration)site.getCurrentConfiguration()).getURL().getFile()));				
 		

@@ -22,7 +22,7 @@ import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.model.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.search.*;
 import org.eclipse.update.operations.*;
 import org.eclipse.update.search.*;
@@ -324,7 +324,7 @@ public class UpdateUtils {
 		IConfiguredSite[] sites = config.getConfiguredSites();
 		for (int i = 0; i < sites.length; i++) {
 			IConfiguredSite site = sites[i];
-			IFeatureReference[] refs = site.getFeatureReferences();
+			IFeatureReference[] refs = site.getFeatures();
 			for (int j = 0; j < refs.length; j++) {
 				IFeatureReference ref = refs[j];
 				try {

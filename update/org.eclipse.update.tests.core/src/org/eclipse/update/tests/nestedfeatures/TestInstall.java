@@ -15,6 +15,7 @@ import java.net.URL;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.configuration.ILocalSite;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
 
@@ -224,9 +225,9 @@ public class TestInstall extends UpdateManagerTestCase {
 	public void testInstall() throws Exception {
 
 		// cleanup local files...
-		URL localURL = ((SiteLocal) SiteManager.getLocalSite()).getLocationURL();
+		URL localURL = ((LocalSite) SiteManager.getLocalSite()).getLocationURL();
 		File localFile =
-			new File(new URL(localURL, SiteLocal.SITE_LOCAL_FILE).getFile());
+			new File(new URL(localURL, LocalSite.SITE_LOCAL_FILE).getFile());
 		UpdateManagerUtils.removeFromFileSystem(localFile);
 		InstallRegistry.cleanup();
 

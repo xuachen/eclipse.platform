@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
+import org.eclipse.update.internal.configuration.*;
 import org.eclipse.update.internal.model.*;
 
 
