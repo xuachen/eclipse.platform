@@ -146,7 +146,7 @@ public interface IFeature extends IFeatureReference {
 	 * none was specified
 	 * @since 2.0
 	 */
-	public IInstallHandlerEntry getInstallHandlerEntry();
+	public IInstallHandlerEntry getInstallHandler();
 
 	/**
 	 * Returns the feature description.
@@ -193,17 +193,6 @@ public interface IFeature extends IFeatureReference {
 	public IImport[] getImports(boolean environmentFilter);
 
 	/**
-	 * Return a list of plug-in dependencies for this feature. A plug-in
-	 * dependency is a reference to a plug-in required for feature execution
-	 * that is not packaged as part of the feature.
- 	 * No filtering occurs
-	 * 
-	 * @return the list of required plug-in dependencies, or an empty array.
-	 * @since 2.1
-	 */
-	public IImport[] getRawImports();
-	
-	/**
 	 * Return the identifier of the primary plugin associated to this feature
 	 * or <code>null</code> if the feature is not a primary feature.
 	 * If the primary plugin id is not specified and the feature is a primary
@@ -220,19 +209,11 @@ public interface IFeature extends IFeatureReference {
 	 * filtered by the operating system, windowing system and architecture system
 	 * set in <code>Sitemanager</code>
 	 * 
+	 * @param environmentFilter if true, return the entries valid in the current environment only
 	 * @return an erray of feature references, or an empty array.
 	 * @since 2.0
 	 */
-	public IFeature[] getIncludedFeatures() throws CoreException;
-
-	/**
-	 * Returns an array of feature references included by this feature
-	 * No filtering occurs
-	 * 
-	 * @return an erray of feature references, or an empty array.
-	 * @since 2.0
-	 */
-	public IFeature[] getRawIncludedFeatureReferences() throws CoreException;
+	public IFeature[] getIncludedFeatures(boolean environmentFilter) throws CoreException;
 
 	/**
 	 * Returns an array of plug-in entries referenced by this feature
@@ -256,25 +237,6 @@ public interface IFeature extends IFeatureReference {
 	 */
 	public INonPluginEntry[] getNonPluginEntries(boolean environmentFilter);
 
-	/**
-	 * Returns the download size of the feature, if it can be determined.
-	 * 
-	 * @see org.eclipse.update.core.model.ContentEntryModel#UNKNOWN_SIZE
-	 * @return download size of the feature in KiloBytes, or an indication 
-	 * the size could not be determined
-	 * @since 2.0 
-	 */
-	public long getDownloadSize();
-
-	/**
-	 * Returns the install size of the feature, if it can be determined.
-	 * 
-	 * @see org.eclipse.update.core.model.ContentEntryModel#UNKNOWN_SIZE
-	 * @return install size of the feature in KiloBytes, or an indication 
-	 * the size could not be determined
-	 * @since 2.0 
-	 */
-	public long getInstallSize();
 
 	/**
 	 * Indicates whether the feature can be used as a primary feature.

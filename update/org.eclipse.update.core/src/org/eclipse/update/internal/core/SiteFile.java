@@ -130,7 +130,7 @@ public class SiteFile extends Site {
 			monitor = new InstallMonitor(progress);
 
 		// Setup optional install handler
-		InstallHandlerProxy handler = new InstallHandlerProxy(IInstallHandler.HANDLER_ACTION_UNINSTALL, feature, feature.getInstallHandlerEntry(), monitor);
+		InstallHandlerProxy handler = new InstallHandlerProxy(IInstallHandler.HANDLER_ACTION_UNINSTALL, feature, feature.getInstallHandler(), monitor);
 		boolean success = false;
 		Throwable originalException = null;
 
@@ -352,8 +352,8 @@ public class SiteFile extends Site {
 		result = factory.createFeature(/*URL*/null, this, null);
 
 		// at least set the version identifier to be the same
-		 ((FeatureModel) result).setFeatureIdentifier(sourceFeature.getVersionedIdentifier().getIdentifier());
-		((FeatureModel) result).setFeatureVersion(sourceFeature.getVersionedIdentifier().getVersion().toString());
+		 ((Feature) result).setFeatureIdentifier(sourceFeature.getVersionedIdentifier().getIdentifier());
+		((Feature) result).setFeatureVersion(sourceFeature.getVersionedIdentifier().getVersion().toString());
 		return result;
 	}
 

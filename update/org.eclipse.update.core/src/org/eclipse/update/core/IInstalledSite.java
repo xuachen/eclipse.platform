@@ -86,5 +86,4 @@ public interface IInstalledSite extends ISite {
 	 */
 	public IConfiguredSite getCurrentConfiguredSite();
 
-
 }

@@ -59,7 +59,7 @@ public interface IFeatureReference extends IAdaptable,IPlatformEnvironment {
 	 * @exception CoreException
 	 * @since 2.0 
 	 */
-	public VersionedIdentifier getVersionedIdentifier() throws CoreException;
+	public VersionedIdentifier getVersionedIdentifier();
 
 	/**
 	 * Returns <code>true</code> if this feature is patching another feature,

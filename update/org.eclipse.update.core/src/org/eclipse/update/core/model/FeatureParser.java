@@ -119,7 +119,7 @@ public class FeatureParser extends DefaultHandler {
 	 * @exception IOException
 	 * @since 2.0
 	 */
-	public FeatureModel parse(InputStream in) throws SAXException, IOException {
+	public Feature parse(InputStream in) throws SAXException, IOException {
 		stateStack.push(new Integer(STATE_INITIAL));
 		currentState = ((Integer) stateStack.peek()).intValue();
 		parser.parse(new InputSource(in), this);
@@ -127,8 +127,8 @@ public class FeatureParser extends DefaultHandler {
 			throw new SAXException(Policy.bind("DefaultFeatureParser.NoFeatureTag"));
 		//$NON-NLS-1$
 		else {
-			if (objectStack.peek() instanceof FeatureModel) {
-				return (FeatureModel) objectStack.pop();
+			if (objectStack.peek() instanceof Feature) {
+				return (Feature) objectStack.pop();
 			} else {
 				String stack = ""; //$NON-NLS-1$
 				Iterator iter = objectStack.iterator();
@@ -226,7 +226,7 @@ public class FeatureParser extends DefaultHandler {
 
 		// variables used
 		URLEntry info = null;
-		FeatureModel featureModel = null;
+		Feature featureModel = null;
 		String text = null;
 		int innerState = 0;
 
@@ -245,19 +245,19 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof String) {
 					text = (String) objectStack.pop();
-					FeatureModel feature = (FeatureModel) objectStack.peek();
-					feature.getDescription().setAnnotation(text);
+					Feature feature = (Feature) objectStack.peek();
+					((URLEntry)feature.getDescription()).setAnnotation(text);
 				}
 				//do not pop
 				break;
 
 			case STATE_INCLUDES :
 				stateStack.pop();
-				if (objectStack.peek() instanceof IncludedFeatureReferenceModel) {
-					IncludedFeatureReferenceModel includedFeatureRefModel = ((IncludedFeatureReferenceModel) objectStack.pop());
-					if (objectStack.peek() instanceof FeatureModel) {
-						featureModel = (FeatureModel) objectStack.peek();
-						featureModel.addIncludedFeatureReferenceModel(includedFeatureRefModel);
+				if (objectStack.peek() instanceof IncludedFeatureReference) {
+					IncludedFeatureReference includedFeatureRefModel = ((IncludedFeatureReference) objectStack.pop());
+					if (objectStack.peek() instanceof Feature) {
+						featureModel = (Feature) objectStack.peek();
+						featureModel.addIncludedFeatureReference(includedFeatureRefModel);
 					}
 				}
 				break;
@@ -266,8 +266,8 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof InstallHandlerEntry) {
 					InstallHandlerEntry handlerModel = (InstallHandlerEntry) objectStack.pop();
-					featureModel = (FeatureModel) objectStack.peek();
-					if (featureModel.getInstallHandlerModel() != null)
+					featureModel = (Feature) objectStack.peek();
+					if (featureModel.getInstallHandler() != null)
 						internalError(Policy.bind("DefaultFeatureParser.ElementAlreadySet", getState(state)));
 					//$NON-NLS-1$
 					//$NON-NLS-1$
@@ -292,8 +292,8 @@ public class FeatureParser extends DefaultHandler {
 					innerState = ((Integer) stateStack.peek()).intValue();
 					switch (innerState) {
 						case STATE_FEATURE :
-							if (objectStack.peek() instanceof FeatureModel) {
-								featureModel = (FeatureModel) objectStack.peek();
+							if (objectStack.peek() instanceof Feature) {
+								featureModel = (Feature) objectStack.peek();
 								if (featureModel.getDescription() != null)
 									internalError(Policy.bind("DefaultFeatureParser.ElementAlreadySet", getState(state)));
 								//$NON-NLS-1$
@@ -328,8 +328,8 @@ public class FeatureParser extends DefaultHandler {
 					innerState = ((Integer) stateStack.peek()).intValue();
 					switch (innerState) {
 						case STATE_FEATURE :
-							if (objectStack.peek() instanceof FeatureModel) {
-								featureModel = (FeatureModel) objectStack.peek();
+							if (objectStack.peek() instanceof Feature) {
+								featureModel = (Feature) objectStack.peek();
 								if (featureModel.getCopyright() != null)
 									internalError(Policy.bind("DefaultFeatureParser.ElementAlreadySet", getState(state)));
 								//$NON-NLS-1$
@@ -364,8 +364,8 @@ public class FeatureParser extends DefaultHandler {
 					innerState = ((Integer) stateStack.peek()).intValue();
 					switch (innerState) {
 						case STATE_FEATURE :
-							if (objectStack.peek() instanceof FeatureModel) {
-								featureModel = (FeatureModel) objectStack.peek();
+							if (objectStack.peek() instanceof Feature) {
+								featureModel = (Feature) objectStack.peek();
 								if (featureModel.getLicense() != null)
 									internalError(Policy.bind("DefaultFeatureParser.ElementAlreadySet", getState(state)));
 								//$NON-NLS-1$
@@ -392,13 +392,13 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof URLEntry) {
 					info = (URLEntry) objectStack.pop();
-					if (objectStack.peek() instanceof FeatureModel) {
-						featureModel = (FeatureModel) objectStack.peek();
+					if (objectStack.peek() instanceof Feature) {
+						featureModel = (Feature) objectStack.peek();
 						if (featureModel.getUpdateSiteEntry() != null) {
 							internalError(Policy.bind("DefaultFeatureParser.ElementAlreadySet", getState(state)));
 							//$NON-NLS-1$
 						} else {
-							featureModel.setUpdateSiteEntryModel(info);
+							featureModel.setUpdateSiteEntry(info);
 						}
 					}
 				}
@@ -408,8 +408,8 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof URLEntry) {
 					info = (URLEntry) objectStack.pop();
-					if (objectStack.peek() instanceof FeatureModel) {
-						featureModel = (FeatureModel) objectStack.peek();
+					if (objectStack.peek() instanceof Feature) {
+						featureModel = (Feature) objectStack.peek();
 						featureModel.addDiscoverySiteEntry(info);
 					}
 				}
@@ -417,9 +417,9 @@ public class FeatureParser extends DefaultHandler {
 
 			case STATE_REQUIRES :
 				stateStack.pop();
-				if (objectStack.peek() instanceof FeatureModel) {
-					featureModel = (FeatureModel) objectStack.peek();
-					Import[] importModels = featureModel.getImports();
+				if (objectStack.peek() instanceof Feature) {
+					featureModel = (Feature) objectStack.peek();
+					IImport[] importModels = featureModel.getImports();
 					if (importModels.length == 0) {
 						internalError(Policy.bind("DefaultFeatureParser.RequireStateWithoutImportElement"));
 						//$NON-NLS-1$
@@ -427,7 +427,7 @@ public class FeatureParser extends DefaultHandler {
 					} else {
 						boolean patchMode = false;
 						for (int i = 0; i < importModels.length; i++) {
-							Import importModel = importModels[i];
+							IImport importModel = importModels[i];
 							if (importModel.isPatch()) {
 								if (patchMode == false)
 									patchMode = true;
@@ -445,8 +445,8 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof Import) {
 					Import importModel = (Import) objectStack.pop();
-					if (objectStack.peek() instanceof FeatureModel) {
-						featureModel = (FeatureModel) objectStack.peek();
+					if (objectStack.peek() instanceof Feature) {
+						featureModel = (Feature) objectStack.peek();
 						featureModel.addImport(importModel);
 					}
 				}
@@ -456,8 +456,8 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof PluginEntry) {
 					PluginEntry pluginEntry = (PluginEntry) objectStack.pop();
-					if (objectStack.peek() instanceof FeatureModel) {
-						featureModel = (FeatureModel) objectStack.peek();
+					if (objectStack.peek() instanceof Feature) {
+						featureModel = (Feature) objectStack.peek();
 						featureModel.addPluginEntry(pluginEntry);
 					}
 				}
@@ -467,8 +467,8 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof NonPluginEntry) {
 					NonPluginEntry nonPluginEntry = (NonPluginEntry) objectStack.pop();
-					if (objectStack.peek() instanceof FeatureModel) {
-						featureModel = (FeatureModel) objectStack.peek();
+					if (objectStack.peek() instanceof Feature) {
+						featureModel = (Feature) objectStack.peek();
 						featureModel.addNonPluginEntry(nonPluginEntry);
 					}
 				}
@@ -694,7 +694,7 @@ public class FeatureParser extends DefaultHandler {
 			//$NON-NLS-1$
 		} else {
 			// create feature model
-			FeatureModel feature = new FeatureModel();
+			Feature feature = new Feature();
 
 			feature.setFeatureIdentifier(id);
 			feature.setFeatureVersion(ver);
@@ -819,7 +819,7 @@ public class FeatureParser extends DefaultHandler {
 			//$NON-NLS-1$
 		}
 
-		IncludedFeatureReferenceModel includedFeature = new IncludedFeatureReferenceModel();
+		IncludedFeatureReference includedFeature = new IncludedFeatureReference();
 		includedFeature.setFeatureIdentifier(id);
 		includedFeature.setFeatureVersion(ver);
 

@@ -14,7 +14,7 @@ import java.net.URL;
 
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureParser;
-import org.eclipse.update.core.model.FeatureModel;
+import org.eclipse.update.core.model.Feature;
 import org.eclipse.update.core.model.URLEntry;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
@@ -52,7 +52,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
+			Feature remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
 		} catch (SAXParseException e) {
@@ -67,7 +67,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
+			Feature remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
 		} catch (SAXParseException e) {
@@ -82,7 +82,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
+			Feature remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
 		} catch (SAXParseException e) {
@@ -97,7 +97,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
+			Feature remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
 			String copyrightString = remoteFeature.getCopyright().getURL().getFile();
@@ -116,7 +116,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 			FeatureParser parser = new FeatureParser();
 			parser.init(new FeatureExecutableFactory());
 			URL resolvedURL = URLEncoder.encode(remoteURL);
-			FeatureModel remoteFeature = parser.parse(resolvedURL.openStream());
+			Feature remoteFeature = parser.parse(resolvedURL.openStream());
 			remoteFeature.resolve(remoteURL, null);
 
 			URLEntry[] models = remoteFeature.getDiscoverySiteEntries();

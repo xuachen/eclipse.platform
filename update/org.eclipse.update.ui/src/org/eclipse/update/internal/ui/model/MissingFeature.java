@@ -389,7 +389,7 @@ public class MissingFeature implements IFeature {
 	/*
 	 * @see IFeature#getInstallHandlerEntry()
 	 */
-	public IInstallHandlerEntry getInstallHandlerEntry() {
+	public IInstallHandlerEntry getInstallHandler() {
 		return null;
 	}
 	/*

@@ -191,4 +191,94 @@ public class UpdateSite extends Site implements IUpdateSite {
 		return null;
 	}
 
+	/**
+	 * Returns the download size of the feature, if it can be determined.
+	 * 
+	 * @see IUpdateSite#getDownloadSize()
+	 */
+	public long getDownloadSize(IFeature feature) {
+		try {
+			Set allPluginEntries = new HashSet();
+			Set allNonPluginEntries = new HashSet();
+
+			IPluginEntry[] plugins = feature.getPluginEntries(true); // TODO should it be false?
+			allPluginEntries.addAll(Arrays.asList(plugins));
+			INonPluginEntry[] nonPlugins = feature.getNonPluginEntries(true); // TODO should it be false?
+			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
+
+			IFeature[] children = feature.getIncludedFeatures(true);
+			for (int i = 0; i < children.length; i++) {
+				plugins = children[i].getPluginEntries(true);
+				allPluginEntries.addAll(Arrays.asList(plugins));
+				nonPlugins = children[i].getNonPluginEntries(true);
+				allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
+			}
+
+			IPluginEntry[] totalPlugins =
+			new IPluginEntry[allPluginEntries.size()];
+			INonPluginEntry[] totalNonPlugins =
+			new INonPluginEntry[allNonPluginEntries.size()];
+			if (allPluginEntries.size() != 0) {
+				allPluginEntries.toArray(totalPlugins);
+			}
+			if (allNonPluginEntries.size() != 0) {
+				allNonPluginEntries.toArray(totalNonPlugins);
+			}
+
+			return feature.getFeatureContentProvider().getDownloadSizeFor(
+					totalPlugins,
+					totalNonPlugins);
+
+		} catch (CoreException e) {
+			UpdateCore.warn(null, e);
+			return ContentEntry.UNKNOWN_SIZE;
+		}
+	}
+
+	/**
+	 * Returns the install size of the feature, if it can be determined.
+	 * 
+	 * @see IUpdateSite#getInstallSize()
+	 * @since 2.0
+	 */
+	public long getInstallSize(IFeature feature) {
+		try {
+			Set allPluginEntries = new HashSet();
+			Set allNonPluginEntries = new HashSet();
+
+			IPluginEntry[] plugins = feature.getPluginEntries(true);
+			allPluginEntries.addAll(Arrays.asList(plugins));
+			INonPluginEntry[] nonPlugins = feature.getNonPluginEntries(true);
+			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
+
+			IFeature[] children = feature.getIncludedFeatures(true);
+			for (int i = 0; i < children.length; i++) {
+				plugins = children[i].getPluginEntries(true);
+				allPluginEntries.addAll(Arrays.asList(plugins));
+				nonPlugins = children[i].getNonPluginEntries(true);
+				allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
+			}
+
+			IPluginEntry[] totalPlugins =
+			new IPluginEntry[allPluginEntries.size()];
+			INonPluginEntry[] totalNonPlugins =
+			new INonPluginEntry[allNonPluginEntries.size()];
+			if (allPluginEntries.size() != 0) {
+				allPluginEntries.toArray(totalPlugins);
+			}
+			if (allNonPluginEntries.size() != 0) {
+				allNonPluginEntries.toArray(totalNonPlugins);
+			}
+
+			return feature.getFeatureContentProvider().getInstallSizeFor(
+					totalPlugins,
+					totalNonPlugins);
+
+		} catch (CoreException e) {
+			UpdateCore.warn(null, e);
+			return ContentEntry.UNKNOWN_SIZE;
+		}
+	}
+
+	
 }

@@ -74,7 +74,7 @@ public class FeatureExecutableFactory extends BaseFeatureFactory {
 	/*
 	 * @see FeatureModelFactory#createFeatureModel()
 	 */
-	public FeatureModel createFeatureModel() {
+	public Feature createFeatureModel() {
 		return new TargetFeature();
 	}
 

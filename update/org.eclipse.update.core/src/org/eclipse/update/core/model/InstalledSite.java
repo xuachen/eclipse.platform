@@ -77,7 +77,7 @@ public class InstalledSite extends Site implements IInstalledSite {
 			return pluginsToRemove;
 
 		// get the plugins from the feature
-		IPluginEntry[] entries = feature.getPluginEntries();
+		IPluginEntry[] entries = feature.getPluginEntries(false);
 		if (entries != null) {
 			// get all the other plugins from all the other features
 			Set allPluginID = new HashSet();
@@ -91,7 +91,7 @@ public class InstalledSite extends Site implements IInstalledSite {
 						UpdateCore.warn(null, e);
 					}
 					if (!feature.equals(featureToCompare)) {
-						IPluginEntry[] pluginEntries = getFeature(featureRefs[indexFeatures],null).getPluginEntries();
+						IPluginEntry[] pluginEntries = getFeature(featureRefs[indexFeatures],null).getPluginEntries(false);
 						if (pluginEntries != null) {
 							for (int indexEntries = 0; indexEntries < pluginEntries.length; indexEntries++) {
 								allPluginID.add(pluginEntries[indexEntries].getVersionedIdentifier());

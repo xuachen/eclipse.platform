@@ -27,7 +27,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		
 		FeatureModelFactory factory = new FeatureModelFactory();
 		InputStream is = null;
-		FeatureModel feature = null;
+		Feature feature = null;
 		PrintWriter w = new PrintWriter(System.out);
 		
 		w.println("Parsing feature ...");
@@ -49,7 +49,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.close();
 	}
 	
-	private static void writeFeature(PrintWriter w, int level, FeatureModel feature) {
+	private static void writeFeature(PrintWriter w, int level, Feature feature) {
 		if (feature == null) return;
 		
 		String in = getIndent(level);
@@ -102,7 +102,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"</license>");
 	}
 	
-	private static void writeURLs(PrintWriter w, int level, FeatureModel feature) {
+	private static void writeURLs(PrintWriter w, int level, Feature feature) {
 		String in = getIndent(level);
 		String in2 = getIndent(level+1);
 		w.println("");
@@ -125,7 +125,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"</url>");
 	}
 	
-	private static void writePrereqs(PrintWriter w, int level, FeatureModel feature) {
+	private static void writePrereqs(PrintWriter w, int level, Feature feature) {
 		String in = getIndent(level);
 		String in2 = getIndent(level+1);
 		w.println("");
@@ -143,7 +143,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		w.println(in+"</requires>");
 	}
 	
-	private static void writePluginEntries(PrintWriter w, int level, FeatureModel feature) {
+	private static void writePluginEntries(PrintWriter w, int level, Feature feature) {
 		String in = getIndent(level);
 		w.println("");
 		
@@ -162,7 +162,7 @@ public class FeatureMain extends UpdateManagerTestCase {
 		}
 	}
 	
-	private static void writeNonPluginEntries(PrintWriter w, int level, FeatureModel feature) {
+	private static void writeNonPluginEntries(PrintWriter w, int level, Feature feature) {
 		String in = getIndent(level);
 		w.println("");
 		

@@ -33,7 +33,7 @@ public class  extends InstalledSite implements IInstalledSite {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#getCurrentConfiguredSite()
+	 * @see org.eclipse.update.core.IInstalledSite#getCurrentConfiguredSite()
 	 */
 	public IConfiguredSite getCurrentConfiguredSite() {
 		// TODO Auto-generated method stub
@@ -41,23 +41,7 @@ public class  extends InstalledSite implements IInstalledSite {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#getDownloadSizeFor(org.eclipse.update.core.IFeature2)
-	 */
-	public long getDownloadSizeFor(IFeature feature) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#getInstallSizeFor(org.eclipse.update.core.IFeature2)
-	 */
-	public long getInstallSizeFor(IFeature site) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#getPluginEntriesOnlyReferencedBy(org.eclipse.update.core.IFeature2)
+	 * @see org.eclipse.update.core.IInstalledSite#getPluginEntriesOnlyReferencedBy(org.eclipse.update.core.IFeature2)
 	 */
 	/**
 	 * Returns an array of entries corresponding to plug-ins that are
@@ -118,7 +102,7 @@ public class  extends InstalledSite implements IInstalledSite {
 
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#install(org.eclipse.update.core.IFeature2, org.eclipse.update.core.IFeatureReference2[], org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
+	 * @see org.eclipse.update.core.IInstalledSite#install(org.eclipse.update.core.IFeature2, org.eclipse.update.core.IFeatureReference2[], org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public IFeature install(
 		IFeature feature,
@@ -131,7 +115,7 @@ public class  extends InstalledSite implements IInstalledSite {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#install(org.eclipse.update.core.IFeature2, org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
+	 * @see org.eclipse.update.core.IInstalledSite#install(org.eclipse.update.core.IFeature2, org.eclipse.update.core.IVerificationListener, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public IFeature install(
 		IFeature feature,
@@ -143,7 +127,7 @@ public class  extends InstalledSite implements IInstalledSite {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IInstalledSite2#remove(org.eclipse.update.core.IFeature2, org.eclipse.core.runtime.IProgressMonitor)
+	 * @see org.eclipse.update.core.IInstalledSite#remove(org.eclipse.update.core.IFeature2, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void remove(IFeature feature, IProgressMonitor monitor)
 		throws CoreException {

@@ -66,7 +66,7 @@ public class FeatureInstaller {
 			new InstallHandlerProxy(
 				IInstallHandler.HANDLER_ACTION_INSTALL,
 				sourceFeature,
-				sourceFeature.getInstallHandlerEntry(),
+				sourceFeature.getInstallHandler(),
 				(InstallMonitor)monitor);
 		   
 		IFeature targetFeature;
@@ -507,6 +507,46 @@ public class FeatureInstaller {
 			}
 		}
 		return;
+	}
+
+	
+	/*
+	 * re initialize children of the feature, invalidate the cache
+	 * @param result FeatureReference to reinitialize.
+	 */
+	private void reinitializeFeature(IFeatureReference referenceToReinitialize) {
+
+		if (referenceToReinitialize == null)
+			return;
+
+		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION)
+			UpdateCore.debug(
+				"Re initialize feature reference:" + referenceToReinitialize);
+
+		IFeature feature = null;
+		try {
+			feature = referenceToReinitialize.getFeature(null);
+			if (feature != null && feature instanceof Feature) {
+				((Feature) feature).initializeIncludedReferences();
+			}
+			// bug 24981 - recursively go into hierarchy
+			// only if site if file 
+			ISite site = referenceToReinitialize.getSite();
+			if (site == null)
+				return;
+			URL url = site.getURL();
+			if (url == null)
+				return;
+			if ("file".equals(url.getProtocol())) {
+				IFeatureReference[] included =
+					feature.getIncludedFeatures();
+				for (int i = 0; i < included.length; i++) {
+					reinitializeFeature(included[i]);
+				}
+			}
+		} catch (CoreException e) {
+			UpdateCore.warn("", e);
+		}
 	}
 
 }

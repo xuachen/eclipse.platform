@@ -28,25 +28,25 @@ import org.eclipse.update.internal.core.*;
  */
 public class FeatureReference extends ModelObject implements IFeatureReference {
 
-	private URL url;
-	private String urlString;
-	private String featureId;
-	private String featureVersion;
-	private ISite site;
-	private String label;
-	private String localizedLabel;
+	protected URL url;
+	protected String urlString;
+	protected String featureId;
+	protected String featureVersion;
+	protected ISite site;
+	protected String label;
+	protected String localizedLabel;
 	
-	private VersionedIdentifier versionId;
+	protected VersionedIdentifier versionId;
 
 	// performance
-	private URL bundleURL;
-	private URL base;
-	private boolean resolved = false;
-	private String os;
-	private String ws;
-	private String nl;
-	private String arch;
-	private String patch;	
+	protected URL bundleURL;
+	protected URL base;
+	protected boolean resolved = false;
+	protected String os;
+	protected String ws;
+	protected String nl;
+	protected String arch;
+	protected String patch;	
 
 	private IFeature feature;
 	
@@ -211,7 +211,7 @@ public class FeatureReference extends ModelObject implements IFeatureReference {
 		this.bundleURL = bundleURL;
 	}
 
-	private void delayedResolve() {
+	protected void delayedResolve() {
 
 		// PERF: delay resolution
 		if (resolved)

@@ -396,10 +396,10 @@ public abstract class Site extends ModelObject implements ISite{
 	 * @exception SAXException
 	 * @since 2.0
 	 */
-	public FeatureModel parseFeature(InputStream stream)
+	public Feature parseFeature(InputStream stream)
 		throws CoreException, SAXException {
 		parser.init();
-		FeatureModel featureModel = null;
+		Feature featureModel = null;
 		try {
 			featureModel = parser.parse(stream);
 			if (parser.getStatus()!=null) {

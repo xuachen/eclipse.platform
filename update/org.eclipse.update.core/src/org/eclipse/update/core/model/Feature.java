@@ -8,1047 +8,860 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.update.core.model;
+
 
 import java.net.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.operations.*;
 
 /**
- * Convenience implementation of a feature.
+ * Feature model object.
  * <p>
- * This class may be instantiated or subclassed by clients.
- * </p> 
- * @see org.eclipse.update.core.IFeature
- * @see org.eclipse.update.core.model.FeatureModel
+ * This class may be instantiated or subclassed by clients. However, in most 
+ * cases clients should instead instantiate or subclass the provided 
+ * concrete implementation of this model.
+ * </p>
+ * @see org.eclipse.update.core.Feature
  * @since 2.0
  */
-public class Feature extends FeatureModel implements IFeature {
+public class Feature extends FeatureReference implements IFeature{
+
+	private String localizedLabel;
+	private String provider;
+	private String localizedProvider;
+	private String imageURLString;
+	private URL imageURL;
+	private String os;
+	private String ws;
+	private String nl;
+	private String arch;
+	private boolean primary = false;
+	private boolean exclusive=false;
+	private String primaryPluginID;
+	private String application;
+	private String affinity;
+	private InstallHandlerEntry installHandler;
+	private URLEntry description;
+	private URLEntry copyright;
+	private URLEntry license;
+	private URLEntry updateSiteInfo;
+	private List /*of URLEntry*/	discoverySiteInfo;
+	private List /*of Import */	imports;
+	private List /*of PluginEntry*/pluginEntries;
+	private List /*of IncludedFeatureReference */	featureIncludes;
+	private List /*of NonPluginEntry*/	nonPluginEntries;
+
+	// performance
+	private URL bundleURL;
+	private URL base;
+	private boolean resolved = false;
 
 	/**
-	 * Simple file name of the default feature manifest file
-	 * @since 2.0
-	 */
-	public static final String FEATURE_FILE = "feature"; //$NON-NLS-1$
-
-	/**
-	 * File extension of the default feature manifest file
-	 * @since 2.0
-	 */
-	public static final String FEATURE_XML = FEATURE_FILE + ".xml"; //$NON-NLS-1$
-
-	private ISite site; // feature site
-	private IFeatureContentProvider featureContentProvider; // content provider
-	private List /*of IFeatureReference*/
-	includedFeatureReferences;
-
-	//PERF: new instance variable
-	private VersionedIdentifier versionId;
-
-	private InstallAbortedException abortedException = null;
-
-	/**
-	 * Feature default constructor
+	 * Creates an uninitialized feature object.
 	 * 
 	 * @since 2.0
 	 */
 	public Feature() {
+		super();
 	}
 
 	/**
-	 * Compares two features for equality
-	 * 
-	 * @param object feature object to compare with
-	 * @return <code>true</code> if the two features are equal, 
+	 * Compares 2 feature models for equality
+	 *  
+	 * @param obj feature model to compare with
+	 * @return <code>true</code> if the two models are equal, 
 	 * <code>false</code> otherwise
 	 * @since 2.0
 	 */
-	public boolean equals(Object object) {
-		if (!(object instanceof IFeature))
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Feature))
 			return false;
-		IFeature f = (IFeature) object;
-		return getVersionedIdentifier().equals(f.getVersionedIdentifier());
+		Feature model = (Feature) obj;
+
+		return (getVersionedIdentifier().equals(model.getVersionedIdentifier()));
 	}
 
-	/**
-	 * Returns the feature identifier.
-	 * 
-	 * @see IFeature#getVersionedIdentifier()
-	 * @since 2.0
-	 */
-	public VersionedIdentifier getVersionedIdentifier() {
-		if (versionId != null)
-			return versionId;
-
-		String id = getFeatureIdentifier();
-		String ver = getFeatureVersion();
-		if (id != null && ver != null) {
-			try {
-				versionId = new VersionedIdentifier(id, ver);
-				return versionId;
-			} catch (Exception e) {
-				UpdateCore.warn(
-					"Unable to create versioned identifier:" + id + ":" + ver);
-			}
-		}
-
-		versionId = new VersionedIdentifier(getURL().toExternalForm(), null);
-		return versionId;
-	}
 
 	/**
-	 * Returns the site this feature is associated with.
+	 * Retrieve the displayable label for the feature provider. If the model
+	 * object has been resolved, the label is localized.
 	 * 
-	 * @see IFeature#getSite()
+	 * @return displayable label, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public ISite getSite() {
-		return site;
-	}
-
-	/**
-	 * Returns the feature URL.
-	 * 
-	 * @see IFeature#getURL()
-	 * @since 2.0
-	 */
-	public URL getURL() {
-		IFeatureContentProvider contentProvider = null;
-		try {
-			contentProvider = getFeatureContentProvider();
-		} catch (CoreException e) {
-			UpdateCore.warn("No content Provider", e);
-		}
-		return (contentProvider != null) ? contentProvider.getURL() : null;
-	}
-
-	/**
-	 * Returns an information entry referencing the location of the
-	 * feature update site. 
-	 * 
-	 * @see IFeature#getUpdateSiteEntry()
-	 * @since 2.0
-	 */
-	public IURLEntry getUpdateSiteEntry() {
-		return (IURLEntry) getUpdateSiteEntry();
-	}
-
-	/**
-	 * Return an array of information entries referencing locations of other
-	 * update sites.
-	 * 
-	 * @see IFeature#getDiscoverySiteEntries()
-	 * @since 2.0
-	 */
-	public IURLEntry[] getDiscoverySiteEntries() {
-		URLEntry[] result = getDiscoverySiteEntries();
-		if (result.length == 0)
-			return new IURLEntry[0];
+	public String getProvider() {
+		delayedResolve();
+		if (localizedProvider != null)
+			return localizedProvider;
 		else
-			return (IURLEntry[]) result;
+			return provider;
+	}
+
+	/**
+	 * Retrieve the non-localized displayable label for the feature provider.
+	 * 
+	 * @return non-localized displayable label, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getProviderNonLocalized() {
+		return provider;
+	}
+
+	/**
+	 * Returns the unresolved URL string for the feature image.
+	 *
+	 * @return url string, or <code>null</code>
+	 * @since 2.0
+	 */
+	public String getImageURLString() {
+		delayedResolve();
+		return imageURLString;
+	}
+
+	/**
+	 * Returns the resolved URL for the image.
+	 * 
+	 * @return url, or <code>null</code>
+	 * @since 2.0
+	 */
+	public URL getImageURL() {
+		delayedResolve();
+		return imageURL;
+	}
+
+	/**
+	 * Get optional operating system specification as a comma-separated string.
+	 * 
+	 * @see org.eclipse.core.boot.BootLoader 
+	 * @return the operating system specification string, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getOS() {
+		return os;
+	}
+
+	/**
+	 * Get optional windowing system specification as a comma-separated string.
+	 * 
+	 * @see org.eclipse.core.boot.BootLoader 
+	 * @return the windowing system specification string, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getWS() {
+		return ws;
+	}
+
+	/**
+	 * Get optional system architecture specification as a comma-separated string.
+	 * 
+	 * @see org.eclipse.core.boot.BootLoader 
+	 * @return the system architecture specification string, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getOSArch() {
+		return arch;
+	}
+
+	/**
+	 * Get optional locale specification as a comma-separated string.
+	 * 
+	 * @return the locale specification string, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getNL() {
+		return nl;
+	}
+
+	/**
+	 * Indicates whether the feature can be used as a primary feature.
+	 * 
+	 * @return <code>true</code> if this is a primary feature, 
+	 * otherwise <code>false</code>
+	 * @since 2.0
+	 */
+	public boolean isPrimary() {
+		return primary;
+	}
+	
+	/**
+	 * Indicates whether the feature must be processed alone
+	 * during installation and configuration. Features that
+	 * are not exclusive can be installed in a batch.
+	 * 
+	 * @return <code>true</code> if feature requires
+	 * exclusive processing, <code>false</code> otherwise.
+	 * @since 2.1
+	 */
+	public boolean isExclusive() {
+		return exclusive;
+	}
+
+	/**
+	 * Returns an optional identifier for the feature application
+	 * 
+	 * @return application identifier, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getApplication() {
+		return application;
+	}
+
+	/**
+	 * Returns an optional identifier for the colocation affinity feature
+	 * 
+	 * @return feature identifier, or <code>null</code>.
+	 * @since 2.0
+	 */
+	public String getAffinityFeature() {
+		return affinity;
 	}
 
 	/**
 	 * Returns and optional custom install handler entry.
 	 * 
-	 * @see IFeature#getInstallHandlerEntry()
+	 * @return install handler entry, or <code>null</code> if
+	 * none was specified
 	 * @since 2.0
 	 */
-	public IInstallHandlerEntry getInstallHandlerEntry() {
-		return (IInstallHandlerEntry) getInstallHandlerModel();
+	public IInstallHandlerEntry getInstallHandler() {
+		//delayedResolve(); no delay
+		return installHandler;
 	}
 
 	/**
 	 * Returns the feature description.
 	 * 
-	 * @see IFeature#getDescription()
+	 * @return feature rescription, or <code>null</code>.
 	 * @since 2.0
 	 */
 	public IURLEntry getDescription() {
-		return (IURLEntry) getDescription();
+		//delayedResolve(); no delay
+		return description;
 	}
 
 	/**
 	 * Returns the copyright information for the feature.
 	 * 
-	 * @see IFeature#getCopyright()
+	 * @return copyright information, or <code>null</code>.
 	 * @since 2.0
 	 */
 	public IURLEntry getCopyright() {
-		return (IURLEntry) getCopyright();
+		//delayedResolve(); no delay
+		return copyright;
 	}
 
 	/**
 	 * Returns the license information for the feature.
 	 * 
-	 * @see IFeature#getLicense()
+	 * @return feature license, or <code>null</code>.
 	 * @since 2.0
 	 */
 	public IURLEntry getLicense() {
-		return (IURLEntry) getLicense();
+		//delayedResolve(); no delay;
+		return license;
 	}
 
 	/**
-	 * Return optional image for the feature.
+	 * Returns an information entry referencing the location of the
+	 * feature update site.
 	 * 
-	 * @see IFeature#getImage()
+	 * @return update site entry, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URL getImageURL() {
-		return getImageURL();
+	public IURLEntry getUpdateSiteEntry() {
+		//delayedResolve(); no delay;
+		// if update site is null, we could have it set to the site the feature
+		// was downloaded from
+		return updateSiteInfo;
+	}
+
+	/**
+	 * Return an array of information entries referencing locations of other
+	 * update sites. 
+	 * 
+	 * @return an array of site entries, or an empty array.
+	 * @since 2.0 
+	 * @since 2.0
+	 */
+	public IURLEntry[] getDiscoverySiteEntries() {
+		//delayedResolve(); no delay;
+		if (discoverySiteInfo == null)
+			return new URLEntry[0];
+
+		return (URLEntry[]) discoverySiteInfo.toArray(arrayTypeFor(discoverySiteInfo));
 	}
 
 	/**
 	 * Return a list of plug-in dependencies for this feature.
 	 * 
-	 * @see IFeature#getRawImports()
+	 * @return the list of required plug-in dependencies, or an empty array.
 	 * @since 2.0
 	 */
-	public IImport[] getRawImports() {
-		Import[] result = getImports();
-		if (result.length == 0)
-			return new IImport[0];
+	public IImport[] getImports(boolean environmentFilter) {
+		//delayedResolve(); no delay;
+		if (imports == null)
+			return new Import[0];
+
+		IImport[] entries = (Import[]) imports.toArray(arrayTypeFor(imports));
+		if (environmentFilter)
+			return filterImports(entries);
 		else
-			return (IImport[]) result;
-	}
-
-	/**
-	 * Install the contents of this feature into the specified target feature.
-	 * This method is a reference implementation of the feature installation
-	 * protocol. Other concrete feature implementation that override this
-	 * method need to implement this protocol.
-	 * 
-	 * @see IFeature#install(IFeature, IVerificationListener, IProgressMonitor)
-	 * @since 2.0
-	 */
-	public IFeatureReference install(
-		IFeature targetFeature,
-		IVerificationListener verificationListener,
-		IProgressMonitor progress)
-		throws InstallAbortedException, CoreException {
-		// call other API with all optional features, or setup variable meaning install all
-		return install(targetFeature, null, verificationListener, progress);
-	}
-
-	/**
-	 * Install the contents of this feature into the specified target feature.
-	 * This method is a reference implementation of the feature installation
-	 * protocol. Other concrete feature implementation that override this
-	 * method need to implement this protocol.
-	 * 
-	 * @see IFeature#install(IFeature, IVerificationListener, IProgressMonitor)
-	 * @since 2.0
-	 */
-	public IFeatureReference install(
-		IFeature targetFeature,
-		IFeatureReference[] optionalfeatures,
-		final IVerificationListener verificationListener,
-		IProgressMonitor progress)
-		throws InstallAbortedException, CoreException {
-
-		//DEBUG
-		debug("Installing...:" + getURL().toExternalForm());
-		ErrorRecoveryLog recoveryLog = ErrorRecoveryLog.getLog();
-
-		// make sure we have an InstallMonitor		
-		final InstallMonitor monitor;
-		if (progress == null)
-			monitor = new InstallMonitor(new NullProgressMonitor());
-		else if (progress instanceof InstallMonitor)
-			monitor = (InstallMonitor) progress;
-		else
-			monitor = new InstallMonitor(progress);
-
-		// Setup optional install handler
-		InstallHandlerProxy handler =
-			new InstallHandlerProxy(
-				IInstallHandler.HANDLER_ACTION_INSTALL,
-				this,
-				this.getInstallHandlerEntry(),
-				monitor);
-		boolean success = false;
-		Throwable originalException = null;
-		abortedException = null;
-
-		// Get source feature provider and verifier.
-		// Initialize target variables.
-		final IFeatureContentProvider provider = getFeatureContentProvider();
-		final IVerifier verifier = provider.getVerifier();
-		IFeatureReference result = null;
-		IFeatureReference alreadyInstalledFeature = null;
-		IFeatureContentConsumer consumer = null;
-		IPluginEntry[] targetSitePluginEntries = null;
-
-		try {
-			// determine list of plugins to install
-			// find the intersection between the plugin entries already contained
-			// on the target site, and plugin entries packaged in source feature
-			IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
-			ISite targetSite = targetFeature.getSite();
-			if (targetSite == null) {
-				debug("The site to install in is null");
-				targetSitePluginEntries = new IPluginEntry[0];
-			} else {
-				targetSitePluginEntries = targetSite.getPluginEntries();
-			}
-			IPluginEntry[] pluginsToInstall =
-				UpdateManagerUtils.diff(
-					sourceFeaturePluginEntries,
-					targetSitePluginEntries);
-			INonPluginEntry[] nonPluginsToInstall = getNonPluginEntries();
-
-			IFeatureReference[] children = getIncludedFeatures();
-			if (optionalfeatures != null) {
-				children =
-					UpdateManagerUtils.optionalChildrenToInstall(
-						children,
-						optionalfeatures);
-			}
-
-			// determine number of monitor tasks
-			//   2 tasks for the feature jar (download/verify + install)
-			// + 2*n tasks for plugin entries (download/verify + install for each)
-			// + 1*m tasks per non-plugin data entry (download for each)
-			// + 1 task for custom non-plugin entry handling (1 for all combined)
-			// + 5*x tasks for children features (5 subtasks per install)
-			int taskCount =
-				2
-					+ 2 * pluginsToInstall.length
-					+ nonPluginsToInstall.length
-					+ 1
-					+ 5 * children.length;
-			monitor.beginTask("", taskCount);
-			SubProgressMonitor subMonitor = null;
-
-			// start log
-			recoveryLog.open(ErrorRecoveryLog.START_INSTALL_LOG);
-
-			// Start the installation tasks			
-			handler.installInitiated();
-
-			// Download and verify feature archive(s)
-			ContentReference[] references =
-				provider.getFeatureEntryArchiveReferences(monitor);
-			verifyReferences(
-				verifier,
-				references,
-				monitor,
-				verificationListener,
-				true);
-			monitorWork(monitor, 1);
-
-			final MultiDownloadMonitor distributedMonitor =
-				new MultiDownloadMonitor(monitor, targetFeature);
-
-			final ThreadGroup tgroup =
-				new ThreadGroup("Feature " + getURL() + " download");
-			// Download and verify plugin archives
-			for (int i = 0; i < pluginsToInstall.length; i++) {
-				final IPluginEntry pluginToInstall = pluginsToInstall[i];
-				Runnable r = new Runnable() {
-					public void run() {
-						try {
-							final ContentReference[] plugin_references =
-								provider.getPluginEntryArchiveReferences(
-									pluginToInstall,
-									distributedMonitor);
-							verifyReferences(
-								verifier,
-								plugin_references,
-								distributedMonitor,
-								verificationListener,
-								false);
-							monitorWork(monitor, 1);
-						} catch (InstallAbortedException e) {
-							abortedException = e;
-							MultiDownloadManager.stopThreads(tgroup);
-						} catch (CoreException e) {
-							UpdateUtils.logException(e);
-						} finally {
-							MultiDownloadManager.releaseThread(
-								Thread.currentThread());
-						}
-					}
-				};
-				Thread downloadThread =
-					MultiDownloadManager.getThread(
-						r,
-						"download " + pluginToInstall.toString(),
-						tgroup);
-				downloadThread.start();
-			}
-
-			MultiDownloadManager.waitForThreads(tgroup);
-
-			handler.pluginsDownloaded(pluginsToInstall);
-
-			// Download non-plugin archives. Verification handled by optional install handler
-			for (int i = 0; i < nonPluginsToInstall.length; i++) {
-				references =
-					provider.getNonPluginEntryArchiveReferences(
-						nonPluginsToInstall[i],
-						monitor);
-				monitorWork(monitor, 1);
-			}
-			handler.nonPluginDataDownloaded(
-				nonPluginsToInstall,
-				verificationListener);
-
-			// All archives are downloaded and verified. Get ready to install
-			consumer = targetFeature.getFeatureContentConsumer();
-
-			// install the children feature
-			// check if they are optional, and if they should be installed [2.0.1]
-			for (int i = 0; i < children.length; i++) {
-				IFeature childFeature = null;
-				try {
-					childFeature = children[i].getFeature(null);
-				} catch (CoreException e) {
-					UpdateCore.warn(null, e);
-				}
-				if (childFeature != null) {
-					subMonitor = new SubProgressMonitor(monitor, 5);
-					((Site) targetSite).install(// need to cast
-					childFeature,
-						optionalfeatures,
-						consumer,
-						verifier,
-						verificationListener,
-						subMonitor);
-				}
-			}
-
-			// Install plugin files
-			for (int i = 0; i < pluginsToInstall.length; i++) {
-				// if another feature has already installed this plugin, skip it
-				if (InstallRegistry.getInstance().isPluginJustInstalled(pluginsToInstall[i])) {
-					monitor.worked(1);
-					continue;
-				}
-				references =
-					provider.getPluginEntryContentReferences(
-						pluginsToInstall[i],
-						monitor);
-				IContentConsumer pluginConsumer =
-					consumer.open(pluginsToInstall[i]);
-
-				String msg = "";
-				subMonitor = new SubProgressMonitor(monitor, 1);
-				VersionedIdentifier pluginVerId =
-					pluginsToInstall[i].getVersionedIdentifier();
-				String pluginID =
-					(pluginVerId == null) ? "" : pluginVerId.getIdentifier();
-				msg = Policy.bind("Feature.TaskInstallPluginFiles", pluginID); //$NON-NLS-1$
-
-				for (int j = 0; j < references.length; j++) {
-					setMonitorTaskName(
-						subMonitor,
-						msg + references[j].getIdentifier());
-					pluginConsumer.store(references[j], subMonitor);
-				}
-
-				InstallRegistry.registerPlugin(pluginsToInstall[i]);
-				if (monitor.isCanceled())
-					abort();
-			}
-
-			// check if we need to install feature files [16718]	
-			// store will throw CoreException if another feature is already
-			// installed in the same place
-			alreadyInstalledFeature = featureAlreadyInstalled(targetSite);
-			// 18867
-			if (alreadyInstalledFeature == null) {
-				//Install feature files
-				references = provider.getFeatureEntryContentReferences(monitor);
-
-				String msg = "";
-				subMonitor = new SubProgressMonitor(monitor, 1);
-				msg = Policy.bind("Feature.TaskInstallFeatureFiles"); //$NON-NLS-1$
-
-				for (int i = 0; i < references.length; i++) {
-					setMonitorTaskName(
-						subMonitor,
-						msg + " " + references[i].getIdentifier());
-					consumer.store(references[i], subMonitor);
-				}
-				InstallRegistry.registerFeature(this);
-			} else {
-				monitor.worked(1);
-			}
-
-			if (monitor.isCanceled())
-				abort();
-
-			// call handler to complete installation (eg. handle non-plugin entries)
-			handler.completeInstall(consumer);
-			monitorWork(monitor, 1);
-
-			// indicate install success
-			success = true;
-
-		} catch (InstallAbortedException e) {
-			abortedException = e;
-		} catch (CoreException e) {
-			originalException = e;
-		} finally {
-			Exception newException = null;
-			try {
-				if (consumer != null) {
-					if (success) {
-						result = consumer.close();
-						if (result == null) {
-							result = alreadyInstalledFeature; // 18867
-							if (result != null
-								&& optionalfeatures != null
-								&& optionalfeatures.length > 0) {
-								// reinitialize as new optional children may have been installed
-								reinitializeFeature(result);
-							}
-						}
-						// close the log
-						recoveryLog.close(ErrorRecoveryLog.END_INSTALL_LOG);
-					} else {
-						consumer.abort();
-					}
-				}
-				handler.installCompleted(success);
-				// if abort is done, no need for the log to stay
-				recoveryLog.delete();
-			} catch (CoreException e) {
-				newException = e;
-			}
-
-			// original exception wins unless it is InstallAbortedException
-			// and an error occured during abort
-			if (originalException != null) {
-				throw Utilities.newCoreException(
-					Policy.bind("InstallHandler.error", this.getName()),
-					originalException);
-			}
-
-			if (newException != null)
-				throw Utilities.newCoreException(
-					Policy.bind("InstallHandler.error", this.getName()),
-					newException);
-
-			if (abortedException != null) {
-				throw abortedException;
-			}
-
-		}
-		return result;
+			return entries;
 	}
 
 	/**
 	 * Returns an array of plug-in entries referenced by this feature
 	 * 
-	 * @see IFeature#getPluginEntries()
+	 * @return an erray of plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public IPluginEntry[] getRawPluginEntries() {
-		PluginEntry[] result = getPluginEntries();
-		if (result.length == 0)
-			return new IPluginEntry[0];
+	public IPluginEntry[] getPluginEntries(boolean environmentFilter) {
+		if (pluginEntries == null)
+			return new PluginEntry[0];
+		
+		IPluginEntry[] entries = (PluginEntry[]) pluginEntries.toArray(arrayTypeFor(pluginEntries));
+		if (environmentFilter)
+			return filterPluginEntry(entries);
 		else
-			return (IPluginEntry[]) result;
+			return entries;
 	}
 
-	/*
-	 * Method filter.
-	 * @param result
-	 * @return IPluginEntry[]
-	 */
-	private IPluginEntry[] filterPluginEntry(IPluginEntry[] all) {
-		List list = new ArrayList();
-		if (all != null) {
-			for (int i = 0; i < all.length; i++) {
-				if (UpdateManagerUtils.isValidEnvironment(all[i]))
-					list.add(all[i]);
-			}
-		}
-
-		IPluginEntry[] result = new IPluginEntry[list.size()];
-		if (!list.isEmpty()) {
-			list.toArray(result);
-		}
-
-		return result;
-	}
 
 	/**
-	 * Returns the count of referenced plug-in entries.
+	 * Returns an array of features  included by this feature
+	 * filtered by the operating system, windowing system and architecture system
+	 * set in <code>Sitemanager</code>
 	 * 
-	 * @see IFeature#getPluginEntryCount()
+	 * @param environmentFilter if true, return the entries valid in the current environment only
+	 * @return an erray of feature references, or an empty array.
 	 * @since 2.0
 	 */
-	public int getPluginEntryCount() {
-		return getPluginEntries().length;
+	public IFeature[] getIncludedFeatures(boolean environmentFilter) throws CoreException {
+		if (featureIncludes == null)
+			return new IFeature[0];
+				
+			IIncludedFeatureReference[] entries = (IIncludedFeatureReference[]) featureIncludes.toArray(
+			arrayTypeFor(featureIncludes));
+			
+		if (environmentFilter)
+			entries = filterFeatures(entries);
+
+		// obtain features now
+		ArrayList features = new ArrayList(entries.length);
+		for (int i=0; i<entries.length; i++) {
+			IFeature f = getSite().getFeature(entries[i], null);
+			// TODO create missing feature
+			//if (f == null)
+			//	f = new missingFeature(0....)
+			if (f != null)
+				features.add(getSite().getFeature(entries[i], null));
+		}
+		
+		return (IFeature[])features.toArray(new IFeature[features.size()]);
 	}
+	
 
 	/**
 	 * Returns an array of non-plug-in entries referenced by this feature
 	 * 
-	 * @see IFeature#getNonPluginEntries()
+	 * @return an erray of non-plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public INonPluginEntry[] getRawNonPluginEntries() {
-		NonPluginEntry[] result = getNonPluginEntries();
-		if (result.length == 0)
-			return new INonPluginEntry[0];
+	public INonPluginEntry[] getNonPluginEntries(boolean environmentFilter) {
+		if (nonPluginEntries == null)
+			return new NonPluginEntry[0];
+
+		INonPluginEntry[] entries = (NonPluginEntry[]) nonPluginEntries.toArray(arrayTypeFor(nonPluginEntries));
+		if (environmentFilter)
+			return filterNonPluginEntry(entries);
 		else
-			return (INonPluginEntry[]) result;
+			return entries;
 	}
 
 	/**
-	 * Returns the count of referenced non-plug-in entries.
+	 * Sets the feature provider displayable label.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @see IFeature#getNonPluginEntryCount()
+	 * @param provider provider displayable label
 	 * @since 2.0
 	 */
-	public int getNonPluginEntryCount() {
-		return getNonPluginEntries().length;
+	void setProvider(String provider) {
+		assertIsWriteable();
+		this.provider = provider;
+		this.localizedProvider = null;
 	}
 
 	/**
-	 * Returns an array of feature references included by this feature
+	 * Sets the unresolved URL for the feature image.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @return an erray of feature references, or an empty array.
+	 * @param imageURLString unresolved URL string
 	 * @since 2.0
 	 */
-	public IIncludedFeatureReference[] getRawIncludedFeatureReferences()
-		throws CoreException {
-		if (includedFeatureReferences == null)
-			initializeIncludedReferences();
-
-		if (includedFeatureReferences.size() == 0)
-			return new IncludedFeatureReference[0];
-
-		return (IIncludedFeatureReference[]) includedFeatureReferences.toArray(
-			arrayTypeFor(includedFeatureReferences));
-	}
-	/**
-	 * Returns the download size of the feature, if it can be determined.
-	 * 
-	 * @see IFeature#getDownloadSize()
-	 * @since 2.0
-	 */
-	public long getDownloadSize() {
-		try {
-			Set allPluginEntries = new HashSet();
-			Set allNonPluginEntries = new HashSet();
-
-			IPluginEntry[] plugins = getPluginEntries();
-			allPluginEntries.addAll(Arrays.asList(plugins));
-			INonPluginEntry[] nonPlugins = getNonPluginEntries();
-			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
-
-			IFeatureReference[] children = getIncludedFeatures();
-			for (int i = 0; i < children.length; i++) {
-				plugins = children[i].getFeature(null).getPluginEntries();
-				allPluginEntries.addAll(Arrays.asList(plugins));
-				nonPlugins = children[i].getFeature(null).getNonPluginEntries();
-				allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
-			}
-
-			IPluginEntry[] totalPlugins =
-				new IPluginEntry[allPluginEntries.size()];
-			INonPluginEntry[] totalNonPlugins =
-				new INonPluginEntry[allNonPluginEntries.size()];
-			if (allPluginEntries.size() != 0) {
-				allPluginEntries.toArray(totalPlugins);
-			}
-			if (allNonPluginEntries.size() != 0) {
-				allNonPluginEntries.toArray(totalNonPlugins);
-			}
-
-			return getFeatureContentProvider().getDownloadSizeFor(
-				totalPlugins,
-				totalNonPlugins);
-
-		} catch (CoreException e) {
-			UpdateCore.warn(null, e);
-			return ContentEntry.UNKNOWN_SIZE;
-		}
+	void setImageURLString(String imageURLString) {
+		assertIsWriteable();
+		this.imageURLString = imageURLString;
+		this.imageURL = null;
 	}
 
 	/**
-	 * Returns the install size of the feature, if it can be determined.
+	 * Sets the operating system specification.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @see IFeature#getInstallSize()
+	 * @see org.eclipse.core.boot.BootLoader
+	 * @param os operating system specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public long getInstallSize() {
-		try {
-			Set allPluginEntries = new HashSet();
-			Set allNonPluginEntries = new HashSet();
-
-			IPluginEntry[] plugins = getPluginEntries();
-			allPluginEntries.addAll(Arrays.asList(plugins));
-			INonPluginEntry[] nonPlugins = getNonPluginEntries();
-			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
-
-			IFeatureReference[] children = getIncludedFeatures();
-			for (int i = 0; i < children.length; i++) {
-				plugins = children[i].getFeature(null).getPluginEntries();
-				allPluginEntries.addAll(Arrays.asList(plugins));
-				nonPlugins = children[i].getFeature(null).getNonPluginEntries();
-				allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
-			}
-
-			IPluginEntry[] totalPlugins =
-				new IPluginEntry[allPluginEntries.size()];
-			INonPluginEntry[] totalNonPlugins =
-				new INonPluginEntry[allNonPluginEntries.size()];
-			if (allPluginEntries.size() != 0) {
-				allPluginEntries.toArray(totalPlugins);
-			}
-			if (allNonPluginEntries.size() != 0) {
-				allNonPluginEntries.toArray(totalNonPlugins);
-			}
-
-			return getFeatureContentProvider().getInstallSizeFor(
-				totalPlugins,
-				totalNonPlugins);
-
-		} catch (CoreException e) {
-			UpdateCore.warn(null, e);
-			return ContentEntry.UNKNOWN_SIZE;
-		}
+	void setOS(String os) {
+		assertIsWriteable();
+		this.os = os;
 	}
 
 	/**
-	 * Returns the content provider for this feature.
+	 * Sets the windowing system specification.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @see IFeature#getFeatureContentProvider()
+	 * @see org.eclipse.core.boot.BootLoader
+	 * @param ws windowing system specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public IFeatureContentProvider getFeatureContentProvider()
-		throws CoreException {
-		if (featureContentProvider == null) {
-			throw Utilities.newCoreException(
-				Policy.bind(
-					"Feature.NoContentProvider",
-					getVersionedIdentifier().toString()),
-				null);
-			//$NON-NLS-1$
-		}
-		return this.featureContentProvider;
+	void setWS(String ws) {
+		assertIsWriteable();
+		this.ws = ws;
 	}
 
 	/**
-	 * Returns the content consumer for this feature.
+	 * Sets the locale specification.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @see IFeature#getFeatureContentConsumer()
+	 * @param nl locale specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public IFeatureContentConsumer getFeatureContentConsumer()
-		throws CoreException {
-		throw new UnsupportedOperationException();
+	void setNL(String nl) {
+		assertIsWriteable();
+		this.nl = nl;
 	}
 
 	/**
-	 * Sets the site for this feature.
+	 * Sets the system architecture specification.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @see IFeature#setSite(ISite)
+	 * @see org.eclipse.core.boot.BootLoader
+	 * @param arch system architecture specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public void setSite(ISite site) throws CoreException {
-		if (this.site != null) {
-			String featureURLString =
-				(getURL() != null) ? getURL().toExternalForm() : "";
-			throw Utilities.newCoreException(
-				Policy.bind("Feature.SiteAlreadySet", featureURLString),
-				null);
-			//$NON-NLS-1$
-		}
-		this.site = site;
+	void setArch(String arch) {
+		assertIsWriteable();
+		this.arch = arch;
 	}
 
 	/**
-	 * Sets the content provider for this feature.
+	 * Indicates whether this feature can act as a primary feature.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @see IFeature#setFeatureContentProvider(IFeatureContentProvider)
+	 * @param primary <code>true</code> if this feature can act as primary,
+	 * <code>false</code> otherwise
+	 * 
 	 * @since 2.0
 	 */
-	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider) {
-		this.featureContentProvider = featureContentProvider;
-		featureContentProvider.setFeature(this);
+	void setPrimary(boolean primary) {
+		assertIsWriteable();
+		this.primary = primary;
+	}
+	
+	/**
+	 * Indicates whether this feature can act as a primary feature.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param exclusive <code>true</code> if this feature must be
+	 * processed independently from other features, <code>false</code> 
+	 * if feature can be processed in a batch with other features.
+	 * 
+	 * @since 2.1
+	 */
+	void setExclusive(boolean exclusive) {
+		assertIsWriteable();
+		this.exclusive = exclusive;
 	}
 
 	/**
-	 * Return the string representation of this fetaure
+	 * Sets the feature application identifier.
+	 * Throws a runtime exception if this object is marked read-only.
 	 * 
-	 * @return feature as string
+	 * @param application feature application identifier
 	 * @since 2.0
 	 */
-	public String toString() {
-		String URLString =
-			(getURL() == null)
-				? Policy.bind("Feature.NoURL")
-				: getURL().toExternalForm();
-		//$NON-NLS-1$
-		String verString =
-			Policy.bind(
-				"Feature.FeatureVersionToString",
-				URLString,
-				getVersionedIdentifier().toString());
-		//$NON-NLS-1$
-		String label = getName() == null ? "" : getName();
-		return verString + " [" + label + "]";
+	void setApplication(String application) {
+		assertIsWriteable();
+		this.application = application;
 	}
 
-	/*
-	 * Installation has been cancelled, abort and revert
+	/**
+	 * Sets the identifier of the Feature this feature should be
+	 * installed with.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param affinity the identifier of the Feature
+	 * @since 2.0
 	 */
-	private void abort() throws CoreException {
-		String msg = Policy.bind("Feature.InstallationCancelled"); //$NON-NLS-1$
-		throw new InstallAbortedException(msg, null);
+	void setAffinityFeature(String affinity) {
+		assertIsWriteable();
+		this.affinity = affinity;
 	}
 
-	/*
-	 * Initializes includes feature references
-	 * If the included feature reference is found on the site, add it to the List
-	 * Otherwise attempt to instanciate it using the same type as this feature and
-	 * using the default location on the site.
+	/**
+	 * Sets the custom install handler for the feature.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param installHandler install handler entry
+	 * @since 2.0
 	 */
-	private void initializeIncludedReferences() throws CoreException {
-		includedFeatureReferences = new ArrayList();
+	void setInstallHandler(InstallHandlerEntry installHandler) {
+		assertIsWriteable();
+		this.installHandler = installHandler;
+	}
 
-		IIncludedFeatureReference[] nestedFeatures = getFeatureIncluded();
-		if (nestedFeatures.length == 0)
+	/**
+	 * Sets the feature description information.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param description feature description information
+	 * @since 2.0
+	 */
+	void setDescription(URLEntry description) {
+		assertIsWriteable();
+		this.description = description;
+	}
+
+	/**
+	 * Sets the feature copyright information.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param copyright feature copyright information
+	 * @since 2.0
+	 */
+	void setCopyright(URLEntry copyright) {
+		assertIsWriteable();
+		this.copyright = copyright;
+	}
+
+	/**
+	 * Sets the feature license information.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param license feature license information
+	 * @since 2.0
+	 */
+	void setLicense(URLEntry license) {
+		assertIsWriteable();
+		this.license = license;
+	}
+
+	/**
+	 * Sets the feature update site reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param updateSiteInfo feature update site reference
+	 * @since 2.0
+	 */
+	void setUpdateSiteEntry(URLEntry updateSiteInfo) {
+		assertIsWriteable();
+		this.updateSiteInfo = updateSiteInfo;
+	}
+
+	/**
+	 * Sets additional update site references.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param discoverySiteInfo additional update site references
+	 * @since 2.0
+	 */
+	void setDiscoverySiteEntries(URLEntry[] discoverySiteInfo) {
+		assertIsWriteable();
+		if (discoverySiteInfo == null)
+			this.discoverySiteInfo = null;
+		else
+			this.discoverySiteInfo = new ArrayList(Arrays.asList(discoverySiteInfo));
+	}
+
+	/**
+	 * Sets the feature plug-in dependency information.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param imports feature plug-in dependency information
+	 * @since 2.0
+	 */
+	void setImports(Import[] imports) {
+		assertIsWriteable();
+		if (imports == null)
+			this.imports = null;
+		else
+			this.imports = new ArrayList(Arrays.asList(imports));
+	}
+
+	/**
+	 * Sets the feature plug-in references.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param pluginEntries feature plug-in references
+	 * @since 2.0
+	 */
+	void setPluginEntries(PluginEntry[] pluginEntries) {
+		assertIsWriteable();
+		if (pluginEntries == null)
+			this.pluginEntries = null;
+		else
+			this.pluginEntries = new ArrayList(Arrays.asList(pluginEntries));
+	}
+
+	/**
+	 * Sets the feature non-plug-in data references.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param nonPluginEntries feature non-plug-in data references
+	 * @since 2.0
+	 */
+	void setNonPluginEntries(NonPluginEntry[] nonPluginEntries) {
+		assertIsWriteable();
+		if (nonPluginEntries == null)
+			this.nonPluginEntries = null;
+		else
+			this.nonPluginEntries = new ArrayList(Arrays.asList(nonPluginEntries));
+	}
+
+	/**
+	 * Adds an additional update site reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param discoverySiteInfo update site reference
+	 * @since 2.0
+	 */
+	void addDiscoverySiteEntry(URLEntry discoverySiteInfo) {
+		assertIsWriteable();
+		if (this.discoverySiteInfo == null)
+			this.discoverySiteInfo = new ArrayList();
+		if (!this.discoverySiteInfo.contains(discoverySiteInfo))
+			this.discoverySiteInfo.add(discoverySiteInfo);
+	}
+
+	/**
+	 * Adds a plug-in dependency entry.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param importEntry plug-in dependency entry
+	 * @since 2.0
+	 */
+	void addImport(Import importEntry) {
+		assertIsWriteable();
+		if (this.imports == null)
+			this.imports = new ArrayList();
+		if (!this.imports.contains(importEntry))
+			this.imports.add(importEntry);
+	}
+
+	/**
+	 * Adds a plug-in reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param pluginEntry plug-in reference
+	 * @since 2.0
+	 */
+	void addPluginEntry(PluginEntry pluginEntry) {
+		assertIsWriteable();
+		if (this.pluginEntries == null)
+			this.pluginEntries = new ArrayList();
+		//PERF: no ListContains()
+		//if (!this.pluginEntries.contains(pluginEntry))
+		this.pluginEntries.add(pluginEntry);
+	}
+
+	/**
+	 * Adds a feature identifier.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param identifier feature identifer
+	 * @param options the options associated with the nested feature
+	 * @since 2.1
+	 */
+	void addIncludedFeatureReference(IncludedFeatureReference include) {
+		assertIsWriteable();
+		if (this.featureIncludes == null)
+			this.featureIncludes = new ArrayList();
+		//PERF: no ListContains()
+		//if (!this.featureIncludes.contains(include))
+		this.featureIncludes.add(include);
+	}
+
+	/**
+	 * Adds a non-plug-in data reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param nonPluginEntry non-plug-in data reference
+	 * @since 2.0
+	 */
+	void addNonPluginEntry(NonPluginEntry nonPluginEntry) {
+		assertIsWriteable();
+		if (this.nonPluginEntries == null)
+			this.nonPluginEntries = new ArrayList();
+		//PERF: no ListContains()
+		//if (!this.nonPluginEntries.contains(nonPluginEntry))
+		this.nonPluginEntries.add(nonPluginEntry);
+	}
+
+	/**
+	 * Removes an update site reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param discoverySiteInfo update site reference
+	 * @since 2.0
+	 */
+	void removeDiscoverySiteEntry(URLEntry discoverySiteInfo) {
+		assertIsWriteable();
+		if (this.discoverySiteInfo != null)
+			this.discoverySiteInfo.remove(discoverySiteInfo);
+	}
+
+	/**
+	 * Removes a plug-in dependency entry.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param importEntry plug-in dependency entry
+	 * @since 2.0
+	 */
+	void removeImport(Import importEntry) {
+		assertIsWriteable();
+		if (this.imports != null)
+			this.imports.remove(importEntry);
+	}
+
+	/**
+	 * Removes a plug-in reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param pluginEntry plug-in reference
+	 * @since 2.0
+	 */
+	void removePluginEntry(PluginEntry pluginEntry) {
+		assertIsWriteable();
+		if (this.pluginEntries != null)
+			this.pluginEntries.remove(pluginEntry);
+	}
+
+	/**
+	 * Removes a non-plug-in data reference.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param nonPluginEntry non-plug-in data reference
+	 * @since 2.0
+	 */
+	void removeNonPluginEntry(NonPluginEntry nonPluginEntry) {
+		assertIsWriteable();
+		if (this.nonPluginEntries != null)
+			this.nonPluginEntries.remove(nonPluginEntry);
+	}
+
+	/**
+	 * Marks the model object as read-only.
+	 * 
+	 * @since 2.0
+	 */
+	public void markReadOnly() {
+		super.markReadOnly();
+		markReferenceReadOnly((URLEntry)getDescription());
+		markReferenceReadOnly((URLEntry)getCopyright());
+		markReferenceReadOnly((URLEntry)getLicense());
+		markReferenceReadOnly((URLEntry)getUpdateSiteEntry());
+		markListReferenceReadOnly((URLEntry[])getDiscoverySiteEntries());
+		markListReferenceReadOnly((Import[])getImports(false));
+		markListReferenceReadOnly((URLEntry[])getPluginEntries(false));
+		markListReferenceReadOnly((URLEntry[])getNonPluginEntries(false));
+	}
+
+	/**
+	 * Resolve the model object.
+	 * Any URL strings in the model are resolved relative to the 
+	 * base URL argument. Any translatable strings in the model that are
+	 * specified as translation keys are localized using the supplied 
+	 * resource bundle.
+	 * 
+	 * @param base URL
+	 * @param bundle resource bundle
+	 * @exception MalformedURLException
+	 * @since 2.0
+	 */
+	public void resolve(URL base,URL bundleURL) throws MalformedURLException {
+		this.bundleURL = bundleURL;
+		this.base = base;
+
+		// plugin entry and nonpluginentry are optimized too
+		resolveListReference((URLEntry[])getPluginEntries(false), base, bundleURL);
+		resolveListReference((URLEntry[])getNonPluginEntries(false), base, bundleURL);
+		
+		//URLSiteModel are optimized
+		resolveReference((URLEntry)getDescription(),base, bundleURL);
+		resolveReference((URLEntry)getCopyright(),base, bundleURL);
+		resolveReference((URLEntry)getLicense(),base, bundleURL);
+		resolveReference((URLEntry)getUpdateSiteEntry(),base, bundleURL);
+		resolveListReference((URLEntry[])getDiscoverySiteEntries(),base, bundleURL);
+		
+		// Import Models are optimized
+		resolveListReference((Import[])getImports(false),base, bundleURL);
+	}
+
+	protected void delayedResolve() {
+
+		// PERF: delay resolution
+		if (resolved)
 			return;
 
-		ISite site = getSite();
-		if (site == null)
-			return;
-
-		for (int i = 0; i < nestedFeatures.length; i++) {
-			IIncludedFeatureReference include = nestedFeatures[i];
-			IIncludedFeatureReference newRef =
-				getPerfectIncludeFeature(site, include);
-			includedFeatureReferences.add(newRef);
-		}
-	}
-
-	/*
-	 * 
-	 */
-	private IIncludedFeatureReference getPerfectIncludeFeature(
-		ISite site,
-		IIncludedFeatureReference include)
-		throws CoreException {
-
-		// [20367] no site, cannot initialize nested references
-		ISiteFeatureReference[] refs = site.getFeatureReferences();
-		VersionedIdentifier identifier = include.getVersionedIdentifier();
-
-		// too long to compute if not a file system
-		// other solution would be to parse feature.xml
-		// when parsing file system to create archive features/FeatureId_Ver.jar
-		if ("file".equals(site.getURL().getProtocol())) {
-			// check if declared on the Site
-			if (refs != null) {
-				for (int ref = 0; ref < refs.length; ref++) {
-					if (refs[ref] != null) {
-						VersionedIdentifier id =
-							refs[ref].getVersionedIdentifier();
-						if (identifier.equals(id)) {
-							// found a ISiteFeatureReference that matches our IIncludedFeatureReference
-							IncludedFeatureReference newRef =
-								new IncludedFeatureReference(refs[ref]);
-							newRef.isOptional(include.isOptional());
-							if (include instanceof FeatureReference)
-								newRef.setLabel(
-									((FeatureReference) include)
-										.getLabel());
-							newRef.setMatchingRule(include.getMatch());
-							newRef.setSearchLocation(
-								include.getSearchLocation());
-							return newRef;
-						}
-					}
-				}
-			}
-		}
-
-		// instanciate by mapping it based on the site.xml
-		// in future we may ask for a factory to create the feature ref
-		IncludedFeatureReference newRef = new IncludedFeatureReference(include);
-		newRef.setSite(getSite());
-		IFeatureReference parentRef = getSite().getFeatureReference(this);
-		if (parentRef instanceof FeatureReference) {
-			newRef.setType(((FeatureReference) parentRef).getType());
-		}
-		String featureID =
-			Site.DEFAULT_FEATURE_PATH + identifier.toString() + ".jar";
-		URL featureURL =
-			getSite().getSiteContentProvider().getArchiveReference(featureID);
-		newRef.setURL(featureURL);
-		newRef.setFeatureIdentifier(identifier.getIdentifier());
-		newRef.setFeatureVersion(identifier.getVersion().toString());
+		resolved = true;
+		super.delayedResolve();
+		localizedProvider = resolveNLString(bundleURL, provider);
 		try {
-			newRef.resolve(getSite().getURL(), null);
-			// no need to get the bundle
-			return newRef;
-		} catch (Exception e) {
-			throw Utilities.newCoreException(
-				Policy.bind(
-					"Feature.UnableToInitializeFeatureReference",
-					identifier.toString()),
-				e);
-		}
-	}
-
-	/*
-	 * 
-	 */
-	private void debug(String trace) {
-		//DEBUG
-		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_INSTALL) {
-			UpdateCore.debug(trace);
-		}
-	}
-
-	/*
-	 * 
-	 */
-	private void setMonitorTaskName(
-		IProgressMonitor monitor,
-		String taskName) {
-		if (monitor != null)
-			monitor.setTaskName(taskName);
-	}
-
-	/*
-	 *
-	 */
-	private void monitorWork(IProgressMonitor monitor, int tick)
-		throws CoreException {
-		if (monitor != null) {
-			monitor.worked(tick);
-			if (monitor.isCanceled()) {
-				abort();
-			}
-		}
-	}
-
-	/*
-	 * 
-	 */
-	private void verifyReferences(
-		IVerifier verifier,
-		ContentReference[] references,
-		InstallMonitor monitor,
-		IVerificationListener verificationListener,
-		boolean isFeature)
-		throws CoreException {
-		IVerificationResult vr = null;
-		if (verifier != null) {
-			for (int j = 0; j < references.length; j++) {
-				vr = verifier.verify(this, references[j], isFeature, monitor);
-				if (vr != null) {
-					if (verificationListener == null)
-						return;
-
-					int result = verificationListener.prompt(vr);
-
-					if (result == IVerificationListener.CHOICE_ABORT) {
-						String msg = Policy.bind("JarVerificationService.CancelInstall"); //$NON-NLS-1$
-						Exception e = vr.getVerificationException();
-						throw new InstallAbortedException(msg, e);
-					}
-					if (result == IVerificationListener.CHOICE_ERROR) {
-						throw Utilities
-							.newCoreException(
-								Policy.bind(
-									"JarVerificationService.UnsucessfulVerification"),
-						//$NON-NLS-1$
-						vr.getVerificationException());
-					}
-				}
-			}
-		}
-	}
-
-	/*
-	 * returns reference if the same feature is installed on the site
-	 * [18867]
-	 */
-	private IFeatureReference featureAlreadyInstalled(ISite targetSite) {
-
-		ISiteFeatureReference[] references = targetSite.getFeatureReferences();
-		IFeatureReference currentReference = null;
-		for (int i = 0; i < references.length; i++) {
-			currentReference = references[i];
-			// do not compare URL
-			try {
-				if (this.equals(currentReference.getFeature(null)))
-					return currentReference; // 18867
-			} catch (CoreException e) {
-				UpdateCore.warn(null, e);
-			}
-		}
-
-		UpdateCore.warn(
-			"ValidateAlreadyInstalled:Feature "
-				+ this
-				+ " not found on site:"
-				+ this.getURL());
-		return null;
-	}
-
-	/*
-	 * re initialize children of the feature, invalidate the cache
-	 * @param result FeatureReference to reinitialize.
-	 */
-	private void reinitializeFeature(IFeatureReference referenceToReinitialize) {
-
-		if (referenceToReinitialize == null)
-			return;
-
-		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION)
-			UpdateCore.debug(
-				"Re initialize feature reference:" + referenceToReinitialize);
-
-		IFeature feature = null;
-		try {
-			feature = referenceToReinitialize.getFeature(null);
-			if (feature != null && feature instanceof Feature) {
-				((Feature) feature).initializeIncludedReferences();
-			}
-			// bug 24981 - recursively go into hierarchy
-			// only if site if file 
-			ISite site = referenceToReinitialize.getSite();
-			if (site == null)
-				return;
-			URL url = site.getURL();
-			if (url == null)
-				return;
-			if ("file".equals(url.getProtocol())) {
-				IFeatureReference[] included =
-					feature.getIncludedFeatures();
-				for (int i = 0; i < included.length; i++) {
-					reinitializeFeature(included[i]);
-				}
-			}
-		} catch (CoreException e) {
-			UpdateCore.warn("", e);
+			imageURL = resolveURL(base,bundleURL, imageURLString);
+		} catch (MalformedURLException e){
+			UpdateCore.warn("",e);
 		}
 	}
 
 	/**
-	 * @see org.eclipse.update.core.IFeature#getRawIncludedFeatureReferences()
+	 * Method setPrimaryPlugin.
+	 * @param plugin
 	 */
-	public IIncludedFeatureReference[] getIncludedFeatures()
-		throws CoreException {
-		return filterFeatures(getRawIncludedFeatureReferences());
+	void setPrimaryPluginID(String plugin) {
+		if (primary && primaryPluginID == null) {
+			primaryPluginID = getFeatureIdentifier();
+		}
+		primaryPluginID = plugin;
+	}
+	/**
+	 * Returns the primaryPluginID.
+	 * @return String
+	 */
+	public String getPrimaryPluginID() {
+		return primaryPluginID;
 	}
 
+	/**
+	 * Returns <code>true</code> if this feature is patching another feature,
+	 * <code>false</code> otherwise
+	 * @return boolean
+	 */
+	public boolean isPatch() {
+		IImport[] imports = getImports(false);
+
+		for (int i = 0; i < imports.length; i++) {
+			if (imports[i].isPatch())
+				return true;
+		}
+		return false;
+	}
+	
 	/*
 	 * Method filterFeatures.
 	 * Also implemented in Site
@@ -1080,14 +893,29 @@ public class Feature extends FeatureModel implements IFeature {
 
 		return result;
 	}
-
+	
 	/**
-	 * @see org.eclipse.update.core.IFeature#getRawNonPluginEntries()
+	 * Method filterImports.
+	 * @param iImports
+	 * @return IImport[]
 	 */
-	public INonPluginEntry[] getNonPluginEntries() {
-		return filterNonPluginEntry(getRawNonPluginEntries());
-	}
+	private IImport[] filterImports(IImport[] all) {
+		List list = new ArrayList();
+		if (all != null) {
+			for (int i = 0; i < all.length; i++) {
+				if (UpdateManagerUtils.isValidEnvironment(all[i]))
+					list.add(all[i]);
+			}
+		}
 
+		IImport[] result = new IImport[list.size()];
+		if (!list.isEmpty()) {
+			list.toArray(result);
+		}
+
+		return result;
+	}
+	
 	/**
 	 * Method filterPluginEntry.
 	 * @param iNonPluginEntrys
@@ -1109,27 +937,13 @@ public class Feature extends FeatureModel implements IFeature {
 
 		return result;
 	}
-
-	/**
-	 * @see org.eclipse.update.core.IFeature#getRawPluginEntries()
+	
+	/*
+	 * Method filter.
+	 * @param result
+	 * @return IPluginEntry[]
 	 */
-	public IPluginEntry[] getPluginEntries() {
-		return filterPluginEntry(getRawPluginEntries());
-	}
-
-	/**
-	 * @see org.eclipse.update.core.IFeature#getImports()
-	 */
-	public IImport[] getImports() {
-		return filterImports(getRawImports());
-	}
-
-	/**
-	 * Method filterImports.
-	 * @param iImports
-	 * @return IImport[]
-	 */
-	private IImport[] filterImports(IImport[] all) {
+	private IPluginEntry[] filterPluginEntry(IPluginEntry[] all) {
 		List list = new ArrayList();
 		if (all != null) {
 			for (int i = 0; i < all.length; i++) {
@@ -1138,12 +952,103 @@ public class Feature extends FeatureModel implements IFeature {
 			}
 		}
 
-		IImport[] result = new IImport[list.size()];
+		IPluginEntry[] result = new IPluginEntry[list.size()];
 		if (!list.isEmpty()) {
 			list.toArray(result);
 		}
 
 		return result;
+	}
+
+//	/**
+//	 * Returns an array of feature references included by this feature
+//	 * 
+//	 * @return an erray of feature references, or an empty array.
+//	 * @since 2.0
+//	 */
+//	public IIncludedFeatureReference[] getRawIncludedFeatureReferences() {
+//		if (featureIncludes == null)
+//			return new IncludedFeatureReference[0];
+//	
+//		return (IIncludedFeatureReference[]) featureIncludes.toArray(
+//			arrayTypeFor(featureIncludes));
+//	}
+//
+//	
+//	private IIncludedFeatureReference getPerfectIncludeFeature(
+//		ISite site,
+//		IIncludedFeatureReference include)
+//		throws CoreException {
+//
+//		// [20367] no site, cannot initialize nested references
+//		IFeatureReference[] refs = site.getFeatureReferences();
+//		VersionedIdentifier identifier = include.getVersionedIdentifier();
+//
+//		// too long to compute if not a file system
+//		// other solution would be to parse feature.xml
+//		// when parsing file system to create archive features/FeatureId_Ver.jar
+//		if ("file".equals(site.getURL().getProtocol())) {
+//			// check if declared on the Site
+//			if (refs != null) {
+//				for (int ref = 0; ref < refs.length; ref++) {
+//					if (refs[ref] != null) {
+//						VersionedIdentifier id =
+//							refs[ref].getVersionedIdentifier();
+//						if (identifier.equals(id)) {
+//							// found a ISiteFeatureReference that matches our IIncludedFeatureReference
+//							IncludedFeatureReference newRef =
+//								new IncludedFeatureReference(refs[ref]);
+//							newRef.isOptional(include.isOptional());
+//							if (include instanceof FeatureReference)
+//								newRef.setLabel(
+//									((FeatureReference) include)
+//										.getLabel());
+//							newRef.setMatchingRule(include.getMatch());
+//							newRef.setSearchLocation(
+//								include.getSearchLocation());
+//							return newRef;
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		// instanciate by mapping it based on the site.xml
+//		// in future we may ask for a factory to create the feature ref
+//		IncludedFeatureReference newRef = new IncludedFeatureReference(include);
+//		newRef.setSite(getSite());
+//		IFeatureReference parentRef = getSite().getFeatureReference(this);
+//		if (parentRef instanceof FeatureReference) {
+//			newRef.setType(((FeatureReference) parentRef).getType());
+//		}
+//		String featureID =
+//			Site.DEFAULT_FEATURE_PATH + identifier.toString() + ".jar";
+//		URL featureURL =
+//			getSite().getSiteContentProvider().getArchiveReference(featureID);
+//		newRef.setURL(featureURL);
+//		newRef.setFeatureIdentifier(identifier.getIdentifier());
+//		newRef.setFeatureVersion(identifier.getVersion().toString());
+//		try {
+//			newRef.resolve(getSite().getURL(), null);
+//			// no need to get the bundle
+//			return newRef;
+//		} catch (Exception e) {
+//			throw Utilities.newCoreException(
+//				Policy.bind(
+//					"Feature.UnableToInitializeFeatureReference",
+//					identifier.toString()),
+//				e);
+//		}
+//	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.IFeature#getFeatureContentProvider()
+	 */
+	public IFeatureContentProvider getFeatureContentProvider()
+		throws CoreException {
+		if (getSite() instanceof IInstalledSite)
+			return new FeatureExecutableContentProvider(url);
+		else 
+			return new FeaturePackagedContentProvider(url);
 	}
 
 }

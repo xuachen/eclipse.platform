@@ -110,8 +110,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 		// Setup optional install handler
 		InstallHandlerProxy handler = null;
-		if (callInstallHandler && feature.getInstallHandlerEntry() != null)
-			handler = new InstallHandlerProxy(IInstallHandler.HANDLER_ACTION_CONFIGURE, feature, feature.getInstallHandlerEntry(), null);
+		if (callInstallHandler && feature.getInstallHandler() != null)
+			handler = new InstallHandlerProxy(IInstallHandler.HANDLER_ACTION_CONFIGURE, feature, feature.getInstallHandler(), null);
 		boolean success = false;
 		Throwable originalException = null;
 
@@ -194,8 +194,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 		// Setup optional install handler
 		InstallHandlerProxy handler = null;
-		if (callInstallHandler && feature.getInstallHandlerEntry() != null) {
-			handler = new InstallHandlerProxy(IInstallHandler.HANDLER_ACTION_UNCONFIGURE, feature, feature.getInstallHandlerEntry(), null);
+		if (callInstallHandler && feature.getInstallHandler() != null) {
+			handler = new InstallHandlerProxy(IInstallHandler.HANDLER_ACTION_UNCONFIGURE, feature, feature.getInstallHandler(), null);
 		}
 
 		boolean success = false;

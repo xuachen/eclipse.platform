@@ -11,11 +11,6 @@
 package org.eclipse.update.core;
 
 
-import java.net.*;
-
-import org.eclipse.core.runtime.*;
-
-
 /**
  * Site represents an update location containing some number of features (packaged
  * or installed). Sites are treated purely as an installation and packaging
@@ -89,4 +84,24 @@ public interface IUpdateSite extends ISite {
 	 * @since 2.0
 	 */
 	public IFeatureReference getFeatureReference(IFeature feature);
+	
+	/**
+	 * Returns the download size of the feature, if it can be determined.
+	 * 
+	 * @see org.eclipse.update.core.model.ContentEntryModel#UNKNOWN_SIZE
+	 * @return download size of the feature in KiloBytes, or an indication 
+	 * the size could not be determined
+	 * @since 2.0 
+	 */
+	public long getDownloadSize(IFeature feature);
+
+	/**
+	 * Returns the install size of the feature, if it can be determined.
+	 * 
+	 * @see org.eclipse.update.core.model.ContentEntryModel#UNKNOWN_SIZE
+	 * @return install size of the feature in KiloBytes, or an indication 
+	 * the size could not be determined
+	 * @since 2.0 
+	 */
+	public long getInstallSize(IFeature feature);
 }
