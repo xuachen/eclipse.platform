@@ -83,6 +83,11 @@ public class FeaturePackaged extends Feature {
 	 */
 	public FeaturePackaged(URL url, ISite targetSite)  throws CoreException {
 		super(url, targetSite);
+		// VK: this is really confusing!!!!
+		// VK: call super(URL, ISite), which calls initializeFeature(), which attempts to
+		// VK: open stream on feature.xml, calls getInputStreamFor("freature.xnml") which
+		// VK: is overidden here. Since we are given the URL why not just create the
+		// VK: feature here ??????
 	}
 
 	/**

@@ -261,6 +261,7 @@ public interface IFeature extends IPluginContainer {
 	 * @deprecated seems nobody uses it
 	 * @since 2.0 
 	 */
+	// VK: deprecated ???
 	// FIXME: javadoc	
 	String[] getArchives();
 	

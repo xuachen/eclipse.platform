@@ -15,6 +15,8 @@ import org.eclipse.update.core.ISiteFactory;
  * 
  */
 public final class SiteTypeFactory {
+	// VK: SiteFactoryManager ???
+	// VK: change to all statics ... is singleton
 
 	private static SiteTypeFactory inst;
 	

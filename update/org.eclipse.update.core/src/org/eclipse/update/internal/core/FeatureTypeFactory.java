@@ -15,6 +15,8 @@ import org.eclipse.update.core.IFeatureFactory;
  * 
  */
 public final class FeatureTypeFactory {
+	// VK: FeatureFactoryManager ???
+	// VK: change to all statics ... is singleton
 
 	private static FeatureTypeFactory inst;
 	

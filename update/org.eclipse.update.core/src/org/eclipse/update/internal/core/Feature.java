@@ -564,6 +564,8 @@ public abstract class Feature implements IFeature {
 		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
 		IPluginEntry[] targetSitePluginEntries = targetFeature.getSite().getPluginEntries();
 		Site tempSite = (Site) SiteManager.getTempSite();
+		// VK: why are we creating a temp site (vs. simple temp directory)
+		// VK: why are we handling feature jar, plugin jar and data files differently wrt download
 
 		// determine list of plugins to install
 		// find the intersection between the two arrays of IPluginEntry...
@@ -747,6 +749,8 @@ public abstract class Feature implements IFeature {
 			InputStream featureStream = null;
 			try {
 				featureStream = getInputStreamFor(FEATURE_XML);
+				// VK: this forces everyone to implement feature.xml handling
+				// VK: regardless of the packaging scheme used for the feature. WHY ???
 				new FeatureParser(featureStream, this);
 			} catch (IOException e) {
 				// if we cannot find the feature and or the feature.xml...

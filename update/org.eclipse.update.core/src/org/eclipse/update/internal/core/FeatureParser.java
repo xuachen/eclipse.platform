@@ -427,6 +427,7 @@ public class FeatureParser extends DefaultHandler {
 	/**
 	 * @see DefaultHandler#characters(char[], int, int)
 	 */
+	// VK: what happens if we are parsing UTF-8 stream ???
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		text = new String(ch,start,length).trim();
 	}
