@@ -16,9 +16,9 @@
      </library>
    </runtime>
 
-   <extension-point id="objects" name="%objectsName"/>
-   <extension-point id="tasks" name="%tasksName"/>
-   <extension-point id="types" name="%typesName"/>
+   <extension-point id="antObjects" name="%objectsName"/>
+   <extension-point id="antTasks" name="%tasksName"/>
+   <extension-point id="antTypes" name="%typesName"/>
 
    <!-- Applications -->
    <extension
@@ -32,20 +32,20 @@
    </extension>
    
    <!-- Objects -->
-   <extension point="org.eclipse.ant.core.objects">
-      <object
+   <extension point="org.eclipse.ant.core.antObjects">
+      <antObject
          name="org.eclipse.ant.internal.core.ant.InternalAntRunner"
          class="org.eclipse.ant.internal.core.ant.InternalAntRunner"
-         library="lib/antcoreext.jar">
-      </object>
+         library="lib/antsupportlib.jar">
+      </antObject>
    </extension>
 
    <!-- Types -->
-   <extension point="org.eclipse.ant.core.types">
-      <type
+   <extension point="org.eclipse.ant.core.antTypes">
+      <antType
          name="commapatternset"
          class="org.eclipse.ant.internal.core.ant.CommaPatternSet"
-         library="lib/antcoreext.jar">
-      </type>
+         library="lib/antsupportlib.jar">
+      </antType>
    </extension>
 </plugin>
