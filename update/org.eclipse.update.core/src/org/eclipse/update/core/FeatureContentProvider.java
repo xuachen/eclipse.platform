@@ -46,59 +46,13 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		this.feature = null;
 	}
 	
+	/*
+	 * @see IFeatureContentProvider#setFeature(IFeature)
+	 */
 	public void setFeature(IFeature feature) {
 		this.feature = feature;
 	}
 	
-	/**
-	 * @since 2.0
-	 */	
-	public abstract URL getFeatureManifest();
-	
-	/**
-	 * Returns references to all physical archives
-	 * containing content entries that define this
-	 * feature (eg. feature manifest, etc).
-	 * 
-	 * @since 2.0
-	 */	
-	
-	public abstract ContentRef[] getArchiveReferences();
-	
-	/**
-	 * Returns references for all physical archives
-	 * containing content entries for the specified 
-	 * plug-in feature entry
-	 * 
-	 * @since 2.0
-	 */	
-	public abstract ContentRef[] getArchiveReferences(IPluginEntry pluginEntry);
-	
-	/**
-	 * Returns references for all physical archives
-	 * containing content entries for the specified 
-	 * non-plug-in feature entry
-	 * 
-	 * @since 2.0
-	 */	
-	public abstract ContentRef[] getArchiveReferences(INonPluginEntry dataEntry);
-	
-	/**
-	 * Returns references for all feature definition
-	 * content entries
-	 * 
-	 * @since 2.0
-	 */	
-	public abstract ContentRef[] getArchiveContentReferences();
-	
-	/**
-	 * Returns references for all content entries for
-	 * the specified plug-in entry
-	 * 
-	 * @since 2.0
-	 */	
-	public abstract ContentRef[] getArchiveContentReferences(IPluginEntry pluginEntry);
-				
 	/**
 	 * Returns the specified reference as a local file system reference.
 	 * If required, the file represented by the specified content
@@ -106,7 +60,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	public ContentRef asLocalReference(ContentRef ref, BaseFeature.ProgressMonitor monitor) throws IOException {
+	public ContentReference asLocalReference(ContentReference ref, BaseFeature.ProgressMonitor monitor) throws IOException {
 		
 		// check to see if this is already a local reference
 		if (ref.isLocalReference())
@@ -116,7 +70,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		String key = toString();
 		File localFile = lookupLocalFile(key);
 		if (localFile != null)
-			return new ContentRef(ref.getIdentifier(), localFile);
+			return new ContentReference(ref.getIdentifier(), localFile);
 			
 		// download the referenced file into local temporary area
 		localFile = createLocalFile(key);
@@ -132,7 +86,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 			if (is != null) try { is.close(); } catch(IOException e) {}
 			if (os != null) try { os.close(); } catch(IOException e) {}
 		}
-		return new ContentRef(ref.getIdentifier(), localFile);
+		return new ContentReference(ref.getIdentifier(), localFile);
 	}
 		
 	/**
@@ -142,12 +96,12 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	public File asLocalFile(ContentRef ref, BaseFeature.ProgressMonitor monitor) throws IOException {
+	public File asLocalFile(ContentReference ref, BaseFeature.ProgressMonitor monitor) throws IOException {
 		File file = ref.asFile();
 		if (file != null)
 			return file;
 		
-		ContentRef localRef = asLocalReference(ref, monitor);
+		ContentReference localRef = asLocalReference(ref, monitor);
 		file = asLocalFile(localRef, monitor);
 		return file;
 	}
@@ -255,4 +209,5 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 			bufferPool = new Stack();
 		bufferPool.push(buf);
 	}
+
 }

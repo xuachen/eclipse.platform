@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.omg.CORBA.UNKNOWN;
 
 /**
  * Default content reference. 
@@ -17,7 +20,7 @@ import java.net.URL;
  * </p>
  * @since 2.0
  */
-public class ContentRef {
+public class ContentReference {
 	
 	private String id;
 	private URL url;	// reference is either URL reference *OR*
@@ -28,7 +31,7 @@ public class ContentRef {
 	/**
 	 * Constructor for ContentRef.
 	 */
-	public ContentRef(String id, URL url) {
+	public ContentReference(String id, URL url) {
 		this.id = id;
 		this.url = url;
 		this.file = null;
@@ -37,7 +40,7 @@ public class ContentRef {
 	/**
 	 * Constructor for ContentRef.
 	 */
-	public ContentRef(String id, File file) {
+	public ContentReference(String id, File file) {
 		this.id = id;
 		this.file = file;
 		this.url = null;
@@ -94,6 +97,24 @@ public class ContentRef {
 			return new File(url.getFile());
 			
 		return null;
+	}
+		
+	/**
+	 * Returns a URL for the content reference.
+	 * Returns <code>null</code> if content reference cannot
+	 * be returned as a URL.
+	 * 
+	 * @since 2.0
+	 */
+	public URL asURL() {
+		if (url != null)
+			return url;
+			
+		try {
+			return new URL("file:"+file.getAbsolutePath());
+		} catch(MalformedURLException e) {
+			return null;
+		}
 	}
 			
 	/**

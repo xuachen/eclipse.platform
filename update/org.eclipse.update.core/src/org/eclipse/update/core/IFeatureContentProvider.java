@@ -5,8 +5,6 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
  
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
  
  /**
@@ -23,7 +21,7 @@ public interface IFeatureContentProvider {
 	 * @return the feature manifest
 	 * @since 2.0
 	 */
-	URL getFeatureManifest() throws MalformedURLException;
+	ContentReference getFeatureManifest() throws CoreException;
 
 	/**
 	 * Returns an array of content references for the whole Feature
@@ -33,7 +31,7 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	IContentReference[] getArchivesReferences() throws CoreException;
+	ContentReference[] getArchivesReferences() throws CoreException;
 
 	/**
 	 * Returns an array of content references for the IPluginEntry
@@ -43,7 +41,17 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	IContentReference[] getArchivesReferences(IPluginEntry pluginEntry) throws CoreException;
+	ContentReference[] getFeatureEntryArchivesReferences() throws CoreException;
+
+	/**
+	 * Returns an array of content references for the IPluginEntry
+	 * 
+	 * @return an array of ContentReference or an empty array if no references are found
+	 * @throws CoreException when an error occurs 
+	 * @since 2.0 
+	 */
+
+	ContentReference[] getPluginEntryArchivesReferences(IPluginEntry pluginEntry) throws CoreException;
 
 	/**
 	 * Returns an array of content references for the INONPluginEntry
@@ -53,7 +61,16 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	IContentReference[] getArchivesReferences(INonPluginEntry nonPluginEntry) throws CoreException;
+	ContentReference[] getNonPluginEntryArchivesReferences(INonPluginEntry nonPluginEntry) throws CoreException;
+	/**
+	 * Returns an array of content references composing the IPluginEntry
+	 * 
+	 * @return an array of ContentReference or an empty array if no references are found
+	 * @throws CoreException when an error occurs
+	 * @since 2.0 
+	 */
+
+	ContentReference[] getFeatureEntryContentReferences() throws CoreException;
 
 	/**
 	 * Returns an array of content references composing the IPluginEntry
@@ -63,7 +80,7 @@ public interface IFeatureContentProvider {
 	 * @since 2.0 
 	 */
 
-	IContentReference[] getArchivesContentReferences(IPluginEntry pluginEntry) throws CoreException;
+	ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry) throws CoreException;
 	
 	/**
 	 * sets the feature for this content provider
