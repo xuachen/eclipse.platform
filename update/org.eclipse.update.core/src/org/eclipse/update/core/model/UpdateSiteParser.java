@@ -583,6 +583,11 @@ public class UpdateSiteParser extends DefaultHandler {
 		String category = attributes.getValue("name"); //$NON-NLS-1$
 		FeatureReference feature = (FeatureReference) objectStack.peek();
 		Category categoryObject = (Category)site.getCategory(category);
+		if (categoryObject == null) {
+			categoryObject = new Category();
+			categoryObject.setName(category);
+			site.addCategory(categoryObject);
+		}
 		categoryObject.addFeatureReference(feature);
 
 		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_PARSING)
@@ -593,13 +598,16 @@ public class UpdateSiteParser extends DefaultHandler {
 	 * process category def info
 	 */
 	private void processCategoryDef(Attributes attributes) {
-		Category category = new Category();
 		String name = attributes.getValue("name"); //$NON-NLS-1$
 		String label = attributes.getValue("label"); //$NON-NLS-1$
+		Category category = (Category)site.getCategory(name);
+		if (category == null)
+			category = new Category();
+
 		category.setName(name);
 		category.setLabel(label);
 
-		UpdateSite site = (UpdateSite) objectStack.peek();
+		//UpdateSite site = (UpdateSite) objectStack.peek();
 		site.addCategory(category);
 		objectStack.push(category);
 

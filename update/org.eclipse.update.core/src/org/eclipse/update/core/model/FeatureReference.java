@@ -91,6 +91,8 @@ public class FeatureReference extends ModelObject implements IFeatureReference {
 
 		if (object == null)
 			return false;
+		if (this == object)
+			return true;
 		if (getURL() == null)
 			return false;
 

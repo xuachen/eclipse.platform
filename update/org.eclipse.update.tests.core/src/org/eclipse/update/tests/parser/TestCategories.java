@@ -25,12 +25,12 @@ public class TestCategories extends UpdateManagerTestCase {
 	public void testCategories() throws Exception {
 
 		URL remoteUrl = new URL(SOURCE_FILE_SITE + "xmls/site1/");
-		ISite remoteSite = SiteManager.getSite(remoteUrl);
+		IUpdateSite remoteSite = SiteManager.getUpdateSite(remoteUrl,null);
 
-		ISiteFeatureReference[] feature = remoteSite.getFeatureReferences();
+		IFeatureReference[] refs = remoteSite.getFeatureReferences();
 		//ICategory[] categories = remoteSite.getCategories();
 
-		ICategory featureCategory = feature[0].getCategories()[0];
+		ICategory featureCategory = remoteSite.getCategories(refs[0])[0];
 
 		assertEquals("UML tools", featureCategory.getLabel());
 
@@ -39,7 +39,7 @@ public class TestCategories extends UpdateManagerTestCase {
 	public void testOrderedCategories() throws Exception {
 
 		URL remoteUrl = new URL(SOURCE_FILE_SITE + "xmls/site1/");
-		ISite remoteSite = SiteManager.getSite(remoteUrl);
+		IUpdateSite remoteSite = SiteManager.getUpdateSite(remoteUrl,null);
 
 		ICategory[] categories = remoteSite.getCategories();
 		for (int i = 0; i < categories.length; i++) {
@@ -52,7 +52,7 @@ public class TestCategories extends UpdateManagerTestCase {
 
 	public void testTranslatedCategories() throws Exception {
 
-		ISite remoteSite = SiteManager.getSite(SOURCE_HTTP_SITE);
+		IUpdateSite remoteSite = SiteManager.getUpdateSite(SOURCE_HTTP_SITE,null);
 
 		ICategory[] categories = remoteSite.getCategories();
 

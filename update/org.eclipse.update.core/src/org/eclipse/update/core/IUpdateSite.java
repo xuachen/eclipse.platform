@@ -62,6 +62,16 @@ public interface IUpdateSite extends ISite {
 	 * @since 2.0 
 	 */
 	public ICategory[] getCategories();
+	
+	/**
+	 * Returns an array of categories containing specified feature.
+	 * 
+	 * @param featureReference feature to query for categories
+	 * @return array of site categories, or an empty array.
+	 * @since 2.0 
+	 */
+	public ICategory[] getCategories(IFeatureReference featureReference);
+	
 
 	/**
 	 * Returns the named site category.

@@ -15,7 +15,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import org.eclipse.core.boot.*;
+
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.model.*;
@@ -243,7 +243,7 @@ public class SiteManager {
 		}
 		
 	private static IInstalledSite createInstalledSite(URL url, IProgressMonitor monitor) throws CoreException {
-		IInstalledSite site = null;
+		InstalledSite site = null;
 
 		if (monitor != null)
 			monitor.worked(1);
@@ -254,7 +254,7 @@ public class SiteManager {
 				installedSiteParser.createSite(url) ;
 			}
 		}
-		
+
 		return site;
 	}
 
@@ -403,6 +403,12 @@ public class SiteManager {
 				IStatus status = updateSiteParser.getStatus();
 				throw new CoreException(status);
 			}
+			// set the content provider
+			SiteContentProvider contentProvider = new SiteURLContentProvider(url);
+			site.setSiteContentProvider(contentProvider);
+			contentProvider.setSite(site);
+			
+			site.resolve(url,url);
 			return site;
 		} catch (SAXException e) {
 			throw Utilities.newCoreException(Policy.bind("SiteModelObject.ErrorParsingSiteStream"),e); //$NON-NLS-1$

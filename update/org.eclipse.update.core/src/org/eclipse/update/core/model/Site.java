@@ -422,12 +422,8 @@ public abstract class Site extends ModelObject implements ISite{
 
 		IFeature[] features = getFeatures(monitor);
 		for (int i = 0; i < features.length; i++) {
-			try {
-				if (versionId.equals(features[i].getVersionedIdentifier()))
-					return features[i];
-			} catch (CoreException e) {
-				UpdateCore.warn(null, e);
-			}
+			if (versionId.equals(features[i].getVersionedIdentifier()))
+				return features[i];
 		}
 
 		return null;

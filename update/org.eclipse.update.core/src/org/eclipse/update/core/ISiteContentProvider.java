@@ -57,26 +57,16 @@ public interface ISiteContentProvider {
 	 * @since 2.0
 	 */
 	public ISite getSite();	
-	
-	/**
-	 * Sets the site for this provider.
-	 * In general, this method should only be called as part of
-	 * site creation. Once set, the site should not be reset.
-	 * 
-	 * @param site provider site
-	 * @since 2.0
-	 */
-	public void setSite(ISite site);
 
-
-	/**
-	 * Returns an array of entries corresponding to plug-ins installed
-	 * on this site.
-	 * 
-	 * @return array of plug-in entries,or an empty array.
-	 * @since 2.0
-	 */
-	public IPluginEntry[] getPluginEntries();
+//
+//	/**
+//	 * Returns an array of entries corresponding to plug-ins installed
+//	 * on this site.
+//	 * 
+//	 * @return array of plug-in entries,or an empty array.
+//	 * @since 2.0
+//	 */
+//	public IPluginEntry[] getPluginEntries();
 }
 
 

@@ -201,16 +201,16 @@ public class UpdateSite extends Site implements IUpdateSite {
 			Set allPluginEntries = new HashSet();
 			Set allNonPluginEntries = new HashSet();
 
-			IPluginEntry[] plugins = feature.getPluginEntries(true); // TODO should it be false?
+			IPluginEntry[] plugins = feature.getPluginEntries(false); // TODO should it be false?
 			allPluginEntries.addAll(Arrays.asList(plugins));
-			INonPluginEntry[] nonPlugins = feature.getNonPluginEntries(true); // TODO should it be false?
+			INonPluginEntry[] nonPlugins = feature.getNonPluginEntries(false); // TODO should it be false?
 			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
 
-			IFeature[] children = feature.getIncludedFeatures(true);
+			IFeature[] children = feature.getIncludedFeatures(false);
 			for (int i = 0; i < children.length; i++) {
-				plugins = children[i].getPluginEntries(true);
+				plugins = children[i].getPluginEntries(false);
 				allPluginEntries.addAll(Arrays.asList(plugins));
-				nonPlugins = children[i].getNonPluginEntries(true);
+				nonPlugins = children[i].getNonPluginEntries(false);
 				allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
 			}
 
@@ -246,16 +246,16 @@ public class UpdateSite extends Site implements IUpdateSite {
 			Set allPluginEntries = new HashSet();
 			Set allNonPluginEntries = new HashSet();
 
-			IPluginEntry[] plugins = feature.getPluginEntries(true);
+			IPluginEntry[] plugins = feature.getPluginEntries(false);
 			allPluginEntries.addAll(Arrays.asList(plugins));
-			INonPluginEntry[] nonPlugins = feature.getNonPluginEntries(true);
+			INonPluginEntry[] nonPlugins = feature.getNonPluginEntries(false);
 			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
 
-			IFeature[] children = feature.getIncludedFeatures(true);
+			IFeature[] children = feature.getIncludedFeatures(false);
 			for (int i = 0; i < children.length; i++) {
-				plugins = children[i].getPluginEntries(true);
+				plugins = children[i].getPluginEntries(false);
 				allPluginEntries.addAll(Arrays.asList(plugins));
-				nonPlugins = children[i].getNonPluginEntries(true);
+				nonPlugins = children[i].getNonPluginEntries(false);
 				allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
 			}
 
@@ -281,4 +281,27 @@ public class UpdateSite extends Site implements IUpdateSite {
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.IUpdateSite#getCategories(org.eclipse.update.core.IFeatureReference)
+	 */
+	public ICategory[] getCategories(IFeatureReference featureReference) {
+		if (categories == null)
+			return new ICategory[0];
+		else {
+			ArrayList cats = new ArrayList();
+			for (Iterator iterator=categories.iterator(); iterator.hasNext();) {
+				ICategory cat = (ICategory)iterator.next();
+				IFeatureReference[] refs = cat.getFeatureReferences();
+				for (int r=0; r<refs.length; r++) {
+					if (refs[r].equals(featureReference)) {
+						cats.add(cat);
+						break;
+					}
+				}
+			}
+			return (ICategory[])cats.toArray(new ICategory[cats.size()]);
+		}
+			
+	}
+
 }

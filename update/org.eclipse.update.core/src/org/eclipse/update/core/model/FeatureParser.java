@@ -419,7 +419,7 @@ public class FeatureParser extends DefaultHandler {
 				stateStack.pop();
 				if (objectStack.peek() instanceof Feature) {
 					featureModel = (Feature) objectStack.peek();
-					IImport[] importModels = featureModel.getImports();
+					IImport[] importModels = featureModel.getImports(false);
 					if (importModels.length == 0) {
 						internalError(Policy.bind("DefaultFeatureParser.RequireStateWithoutImportElement"));
 						//$NON-NLS-1$
