@@ -431,7 +431,7 @@ public class Main {
 			url = new URL(base);
 		} else {
 			// search in the root location
-			url = new URL(installLocation);
+			url = new URL(getInstallLocation());
 			String path = url.getFile() + "/plugins"; //$NON-NLS-1$
 			path = searchFor(framework, path);
 			if (path == null)
