@@ -165,9 +165,9 @@ public class DefaultFeatureParser extends DefaultHandler {
 		feature.setApplication(application);		
 		
 		if (DEBUG){
-			debug("End process Feature tag: id:"+id+" ver:"+ver+" label:"+label+" provider:"+provider);
-			debug("End process Feature tag: image:"+imageURL);
-			debug("End process Feature tag: ws:"+ws+" os:"+os+" nl:"+nl+" application:"+application); 
+			debug("End process DefaultFeature tag: id:"+id+" ver:"+ver+" label:"+label+" provider:"+provider);
+			debug("End process DefaultFeature tag: image:"+imageURL);
+			debug("End process DefaultFeature tag: ws:"+ws+" os:"+os+" nl:"+nl+" application:"+application); 
 		}
 	}
 	

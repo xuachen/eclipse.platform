@@ -11,12 +11,14 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 
 /**
  * Parse the default feature.xml
  */
-public class FeaturePackaged extends DefaultFeature {
+public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 	private JarFile currentOpenJarFile = null;
 
@@ -72,17 +74,10 @@ public class FeaturePackaged extends DefaultFeature {
 	}
 
 	/**
-	 * Constructor for DefaultPackagedFeature
+	 * Constructor 
 	 */
-	public FeaturePackaged(IFeature sourceFeature, ISite targetSite) throws CoreException {
-		super(sourceFeature, targetSite);
-	}
-
-	/**
-	 * Constructor for DefaultPackagedFeature
-	 */
-	public FeaturePackaged(URL url, ISite targetSite)  throws CoreException {
-		super(targetSite);
+	public FeaturePackagedContentProvider(URL url)  throws CoreException {
+		super(url);
 	}
 
 	/**
@@ -93,7 +88,7 @@ public class FeaturePackaged extends DefaultFeature {
 		if (pluginsToInstall != null) {
 			names = new String[pluginsToInstall.length];
 			for (int i = 0; i < pluginsToInstall.length; i++) {
-				names[i] = getArchiveID(pluginsToInstall[i]);
+				names[i] = getPluginEntryArchiveID(pluginsToInstall[i]);
 			}
 		}
 		return names;
@@ -108,7 +103,7 @@ public class FeaturePackaged extends DefaultFeature {
 		try {
 			// check if the site.xml had a coded URL for this plugin or if we
 			// should look in teh default place to find it: <site>+/plugins/+archiveId
-			String filePath = UpdateManagerUtils.getPath(((Site) getSite()).getURL(getArchiveID(pluginEntry)));						
+			String filePath = UpdateManagerUtils.getPath(((Site) getSite()).getURL(getPluginEntryArchiveID(pluginEntry)));						
 			open(filePath);
 			if (!(new File(filePath)).exists())
 				throw new IOException("The File:" + filePath + "does not exist.");
@@ -129,7 +124,7 @@ public class FeaturePackaged extends DefaultFeature {
 
 		// try to obtain the URL of the JAR file that contains the plugin entry from teh site.xml
 		// if it doesn't exist, use the default one
-		URL jarURL = ((Site) getSite()).getURL(getArchiveID(pluginEntry));
+		URL jarURL = ((Site) getSite()).getURL(getPluginEntryArchiveID(pluginEntry));
 		String path = UpdateManagerUtils.getPath(jarURL);					
 		String[] result = getJAREntries(path);
 
@@ -137,32 +132,9 @@ public class FeaturePackaged extends DefaultFeature {
 	}
 
 	/**
-	 * Transfer feature.jar file locally
-	 */
-	private void transferLocally() throws CoreException {
-		// install in DEFAULT PATH for feature
-		// as we OWN the temp site
-
-		try {
-			String path = UpdateManagerUtils.getPath(getURL());			
-			URL resolvedURL = UpdateManagerUtils.resolveAsLocal(getURL(),path,null);
-			this.setURL(resolvedURL);
-
-			// DEBUG:
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_INSTALL) {
-				UpdateManagerPlugin.getPlugin().debug("the feature on TEMP file is :" + resolvedURL.toExternalForm());
-			}
-		} catch (IOException e) {
-			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error transfering feature to TEMP directory", e);
-			throw new CoreException(status);
-		}
-	}
-
-	/**
 	 * return the archive ID for a plugin
 	 */
-	public String getArchiveID(IPluginEntry entry) {
+	public String getPluginEntryArchiveID(IPluginEntry entry) {
 		String type = (entry.isFragment())?Site.DEFAULT_FRAGMENT_PATH:Site.DEFAULT_PLUGIN_PATH;
 		return type+entry.getIdentifier().toString() + JAR_EXTENSION;
 	}
@@ -170,11 +142,11 @@ public class FeaturePackaged extends DefaultFeature {
 	/**
 	 * @see AbstractFeature#getArchiveID()
 	 */
-	public String[] getArchiveID(IFeature feature) {
-		String[] names = new String[getPluginEntryCount()];
-		IPluginEntry[] entries = getPluginEntries();
-		for (int i = 0; i < getPluginEntryCount(); i++) {
-			names[i] = getArchiveID(entries[i]);
+	public String[] getFeatureEntryArchiveID() {
+		String[] names = new String[feature.getPluginEntryCount()];
+		IPluginEntry[] entries = feature.getPluginEntries();
+		for (int i = 0; i < feature.getPluginEntryCount(); i++) {
+			names[i] = getPluginEntryArchiveID(entries[i]);
 		}
 		return names;
 	}
@@ -189,12 +161,13 @@ public class FeaturePackaged extends DefaultFeature {
 	/**
 	 * @see AbstractFeature#getInputStreamFor(String)
 	 */
-	protected InputStream getInputStreamFor(IFeature feature,String name) throws CoreException, IOException {
+	protected InputStream getFeatureInputStreamFor(String name) throws CoreException, IOException {
 		InputStream result = null;
 		try {
-			// ensure the file is local
-			transferLocally();
 
+			// ensure teh file is local
+			
+			
 			// teh feature must have a URL as 
 			//it has been transfered locally
 			String filePath = UpdateManagerUtils.getPath(getURL());						
@@ -468,4 +441,106 @@ public class FeaturePackaged extends DefaultFeature {
 	
 	
 	
+	/*
+	 * @see IFeatureContentProvider#getFeatureManifest()
+	 */
+	public ContentReference getFeatureManifest() throws CoreException {
+		ContentReference result = null;
+		try {
+		ContentReference[] featureContentReference = getFeatureEntryArchiveReferences();
+		ContentReference localContentReference = asLocalReference(featureContentReference[1],null);
+		result = unpack(localContentReference,Feature.FEATURE_XML,null);
+		} catch (IOException e){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving manifest file in  feature :" + feature.getURL().toExternalForm(), e);
+			throw new CoreException(status);			
+		}
+		return result;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#getArchiveReferences()
+	 */
+	public ContentReference[] getArchiveReferences() throws CoreException {
+		IPluginEntry[] entries = feature.getPluginEntries();
+		INonPluginEntry[] nonEntries = feature.getNonPluginEntries();
+		List listAllContentRef = new ArrayList();
+		ContentReference[] allContentRef = new ContentReference[0];
+		
+		// feature
+		listAllContentRef.addAll(Arrays.asList(getFeatureEntryArchiveReferences()));
+		
+		// plugins
+		for (int i = 0; i < entries.length; i++) {
+			listAllContentRef.addAll(Arrays.asList(getPluginEntryArchiveReferences(entries[i])));				
+		}
+		
+		// non plugins
+		for (int i = 0; i < nonEntries.length; i++) {
+			listAllContentRef.addAll(Arrays.asList(getNonPluginEntryArchiveReferences(nonEntries[i])));				
+		}
+		
+		if (listAllContentRef.size()>0){
+			allContentRef = new ContentReference[listAllContentRef.size()];
+			listAllContentRef.toArray(allContentRef);
+		}
+		
+		return allContentRef;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#getFeatureEntryArchiveReferences()
+	 */
+	public ContentReference[] getFeatureEntryArchiveReferences() throws CoreException {
+		String[] archiveIDs = getFeatureEntryArchiveID();
+		try {
+		ContentReference[] references = new ContentReference[archiveIDs.length];
+		for (int i = 0; i < archiveIDs.length; i++) {
+			URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]);
+			ContentReference currentReference = new ContentReference(archiveIDs[i],url);
+			currentReference = asLocalReference(currentReference,null);
+			references[i] = currentReference;
+		}
+		} catch (IOException e){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving feature Entry Archive Reference :" + feature.getURL().toExternalForm(), e);
+			throw new CoreException(status);			
+		}
+		return references;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#getPluginEntryArchiveReferences(IPluginEntry)
+	 */
+	public ContentReference[] getPluginEntryArchiveReferences(IPluginEntry pluginEntry) throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#getNonPluginEntryArchiveReferences(INonPluginEntry)
+	 */
+	public ContentReference[] getNonPluginEntryArchiveReferences(INonPluginEntry nonPluginEntry) throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#getFeatureEntryContentReferences()
+	 */
+	public ContentReference[] getFeatureEntryContentReferences() throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#getPluginEntryContentReferences(IPluginEntry)
+	 */
+	public ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry) throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see IFeatureContentProvider#setFeature(IFeature)
+	 */
+	public void setFeature(IFeature feature) {
+	}
+
 }

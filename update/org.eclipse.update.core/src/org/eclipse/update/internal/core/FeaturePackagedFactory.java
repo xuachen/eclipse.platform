@@ -57,7 +57,7 @@ public class FeaturePackagedFactory extends FeatureModelFactory implements IFeat
 		ResourceBundle bundle = null;
 		try {
 			ClassLoader l = new URLClassLoader(new URL[] { url }, null);
-			bundle = ResourceBundle.getBundle(Feature.FEATURE_FILE, Locale.getDefault(), l);
+			bundle = ResourceBundle.getBundle(DefaultFeature.FEATURE_FILE, Locale.getDefault(), l);
 		} catch (MissingResourceException e) {
 			//ok, there is no bundle, keep it as null
 			//DEBUG:

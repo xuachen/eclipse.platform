@@ -33,7 +33,7 @@ public interface IFeatureContentProvider {
 	ContentReference getFeatureManifest() throws CoreException;
 
 	/**
-	 * Returns an array of content references for the whole Feature
+	 * Returns an array of content references for the whole DefaultFeature
 	 * 
 	 * @return an array of ContentReference or an empty array if no references are found
 	 * @throws CoreException when an error occurs

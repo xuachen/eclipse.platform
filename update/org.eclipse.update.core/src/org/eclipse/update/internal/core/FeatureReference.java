@@ -49,7 +49,7 @@ public class FeatureReference implements IFeatureReference, IWritable {
 	}
 
 	/**
-	 * Returns the URL that points at the Feature.
+	 * Returns the URL that points at the DefaultFeature.
 	 * This URL is the unique identifier of the feature
 	 * within the site.
 	 * 

@@ -145,7 +145,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 	}
 
 	/** 
-	 * process the Feature info
+	 * process the DefaultFeature info
 	 */
 	private void processFeature(Attributes attributes) throws MalformedURLException, CoreException {
 
@@ -168,7 +168,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 
 			// DEBUG:		
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
-				UpdateManagerPlugin.getPlugin().debug("End Processing Feature Tag: url:" + url.toExternalForm());
+				UpdateManagerPlugin.getPlugin().debug("End Processing DefaultFeature Tag: url:" + url.toExternalForm());
 			}
 
 		} else {

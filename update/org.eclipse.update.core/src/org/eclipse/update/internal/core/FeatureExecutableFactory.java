@@ -20,16 +20,21 @@ public class FeatureExecutableFactory extends FeatureModelFactory implements IFe
 	 */
 	public IFeature createFeature(URL url, ISite site) throws CoreException {
 
-		FeatureExecutable feature = null;
+		Feature feature = null;
 		InputStream featureStream = null;
 		
 		try {	
 			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
+			IContentConsumer contentConsumer = new FeatureExecutableContentConsumer();
+			
 			featureStream = contentProvider.getFeatureManifest().asURL().openStream();
 			FeatureModelFactory factory = (FeatureModelFactory) this;
-			feature = (FeatureExecutable) factory.parseFeature(featureStream);
+			feature = (Feature)factory.parseFeature(featureStream);
 			feature.setSite(site);
+			
 			feature.setFeatureContentProvider(contentProvider);
+			feature.setContentConsumer(contentConsumer);
+			
 			feature.resolve(url, getResourceBundle(url));
 			feature.markReadOnly();
 		} catch (IOException e) {
@@ -59,7 +64,7 @@ public class FeatureExecutableFactory extends FeatureModelFactory implements IFe
 		ResourceBundle bundle = null;
 		try {
 			ClassLoader l = new URLClassLoader(new URL[] { url }, null);
-			bundle = ResourceBundle.getBundle(Feature.FEATURE_FILE, Locale.getDefault(), l);
+			bundle = ResourceBundle.getBundle(DefaultFeature.FEATURE_FILE, Locale.getDefault(), l);
 		} catch (MissingResourceException e) {
 			//ok, there is no bundle, keep it as null
 			//DEBUG:

@@ -5,12 +5,12 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */ 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.eclipse.core.runtime.*;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
 /**
  * Default content reference. 

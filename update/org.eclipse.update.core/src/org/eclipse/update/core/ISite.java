@@ -31,7 +31,7 @@ public interface ISite extends IPluginContainer {
 	/**
 	 * Notify listener of installation of the feature
 	 * returns the newly created feature reference
-	 * @param feature the Feature to install
+	 * @param feature the DefaultFeature to install
 	 * @param monitor the Progress Monitor
 	 * @since 2.0 
 	 */
@@ -40,7 +40,7 @@ public interface ISite extends IPluginContainer {
 	
 	/**
 	 * 
-	 * @param feature the Feature to remove
+	 * @param feature the DefaultFeature to remove
 	 * @param monitor the Progress Monitor
 	 * @since 2.0 
 	 */
@@ -155,4 +155,17 @@ public interface ISite extends IPluginContainer {
 	 */
 	ISiteContentProvider getSiteContentProvider() throws CoreException;
 	
-}
+	/**
+	 * Create a file in teh feature meta data
+	 * 
+	 * @param entry the feature entry
+	 * @param name the file to be created in the feature
+	 * @param inStream the content of the remote file to be transfered in the new file
+	 * @param the progress monitor
+	 * @since 2.0 
+	 */
+
+	void store(IFeature feature, String name, InputStream inStream,IProgressMonitor monitor) throws CoreException;
+	
+
+	}

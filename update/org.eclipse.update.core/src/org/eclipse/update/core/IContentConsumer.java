@@ -33,6 +33,7 @@ public interface IContentConsumer {
 	/**
 	 * opens a Non plugin Entry for storage
 	 * @return the new ContentConsumer for this <code>IPluginEntry</code>
+	 * @throws CoreException if the opens is done on a ContentConsumer parent other than an IFeature.
 	 * @since 2.0 
 	 */
 
@@ -42,26 +43,36 @@ public interface IContentConsumer {
 	 * Stores a content reference into the ContentConsumer
 	 * @param ContentReference the content reference to store
 	 * @param IProgressMonitor the progress monitor
+	 * @throws CoreException if an error occurs storing the content reference
 	 * @since 2.0 
 	 */
 
-	void store(ContentReference contentReference, IProgressMonitor monitor);
+	void store(ContentReference contentReference, IProgressMonitor monitor) throws CoreException;
 	
 	/**
 	 * removes a content reference into the ContentConsumer
 	 * @param ContentReference the content reference to remove
 	 * @param IProgressMonitor the progress monitor
+	 * @throws CoreException if an error occurs removing the content reference
 	 * @since 2.0 
 	 */
 
-	void remove(ContentReference contentReference, IProgressMonitor monitor);	
+	void remove(ContentReference contentReference, IProgressMonitor monitor) throws CoreException;	
 	
 	/**
 	 * closes the opened ContentConsumer
 	 * @since 2.0 
 	 */
 
-	void close();		
+	void close();	
+	
+	/**
+	 * sets the feature for this content provider
+	 * @param the IFeature 
+	 * @since 2.0
+	 */
+	void setFeature(IFeature feature);
+			
 }
 
 

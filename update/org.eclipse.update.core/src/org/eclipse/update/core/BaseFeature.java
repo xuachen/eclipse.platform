@@ -1,6 +1,6 @@
 
-// NOTE: this is a placeholder for the eventual common Feature implementation.
-//       This class will eventually be renamed to Feature and 
+// NOTE: this is a placeholder for the eventual common DefaultFeature implementation.
+//       This class will eventually be renamed to DefaultFeature and 
 //       will implement IFeature
 
 package org.eclipse.update.core;

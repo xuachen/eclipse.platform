@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 
 /**
- * Default implementation of an Executable Feature Content Provider
+ * Default implementation of an Executable DefaultFeature Content Provider
  */
 
 public class FeatureExecutableContentProvider extends FeatureContentProvider {
@@ -57,7 +57,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 	}
 
 	/**
-	 * return the path for the Feature
+	 * return the path for the DefaultFeature
 	 */
 	private String getFeaturePath() throws IOException {
 		String result = UpdateManagerUtils.getPath(feature.getURL());
@@ -112,11 +112,11 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 	public ContentReference getFeatureManifest() throws CoreException {
 		ContentReference result = null;
 		try {
-			result = new ContentReference(null, new URL(rootURL, Feature.FEATURE_XML));
+			result = new ContentReference(null, new URL(rootURL, DefaultFeature.FEATURE_XML));
 			
 		} catch (MalformedURLException e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "cannot create URL for :"+rootURL.toExternalForm()+" "+Feature.FEATURE_XML, e);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "cannot create URL for :"+rootURL.toExternalForm()+" "+DefaultFeature.FEATURE_XML, e);
 			throw new CoreException(status);
 		}
 		return result;

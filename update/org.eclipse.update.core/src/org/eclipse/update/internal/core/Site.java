@@ -165,12 +165,12 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	}
 
 	/**
-	 * store Feature files/ Features info into the Site
+	 * store DefaultFeature files/ Features info into the Site
 	 */
 	protected abstract void storeFeatureInfo(VersionedIdentifier featureIdentifier, String contentKey, InputStream inStream) throws CoreException;
 
 	/**
-	 * removes Feature files/ Feature info from the Site
+	 * removes DefaultFeature files/ DefaultFeature info from the Site
 	 */
 	protected abstract void removeFeatureInfo(VersionedIdentifier featureIdentifier) throws CoreException;
 

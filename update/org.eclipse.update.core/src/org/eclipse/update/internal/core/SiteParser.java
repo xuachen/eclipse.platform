@@ -146,7 +146,7 @@ public class SiteParser extends DefaultHandler {
 	}
 
 	/** 
-	 * process the Feature info
+	 * process the DefaultFeature info
 	 */
 	private void processFeature(Attributes attributes) throws MalformedURLException {
 
@@ -165,11 +165,11 @@ public class SiteParser extends DefaultHandler {
 
 			// DEBUG:		
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
-				UpdateManagerPlugin.getPlugin().debug("End Processing Feature Tag: url:" + url.toExternalForm() + "  ->type:" + type + " Class name:" + feature.getClass().toString());
+				UpdateManagerPlugin.getPlugin().debug("End Processing DefaultFeature Tag: url:" + url.toExternalForm() + "  ->type:" + type + " Class name:" + feature.getClass().toString());
 			}
 
 		} else {
-			IStatus status = new Status(IStatus.WARNING, UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier(), IStatus.OK, "Feature doesn\'t have a URL", null);
+			IStatus status = new Status(IStatus.WARNING, UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier(), IStatus.OK, "DefaultFeature doesn\'t have a URL", null);
 			UpdateManagerPlugin.getPlugin().getLog().log(status);
 		}
 

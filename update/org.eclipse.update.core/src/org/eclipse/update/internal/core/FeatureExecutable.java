@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.update.core.*;
 
 /**
- * Default implementation of an Executable Feature
+ * Default implementation of an Executable DefaultFeature
  */
 
-public class FeatureExecutable extends Feature {
+public class FeatureExecutable extends DefaultFeature {
 
 	/**
 	 * URL of the feature, used to create other URLs
@@ -128,7 +128,7 @@ public class FeatureExecutable extends Feature {
 	}
 
 	/**
-	 * return the path for the Feature
+	 * return the path for the DefaultFeature
 	 */
 	private String getFeaturePath() throws IOException {
 		String result = UpdateManagerUtils.getPath(getURL());;		

@@ -68,7 +68,7 @@ public class SiteFile extends SiteURL {
 	}
 
 	/**
-	 * store Feature files
+	 * store DefaultFeature files
 	 * Store the inputStream into a file named contentKey in the install feature path of the feature
 	 */
 	public void storeFeatureInfo(VersionedIdentifier featureIdentifier, String contentKey, InputStream inStream) throws CoreException {

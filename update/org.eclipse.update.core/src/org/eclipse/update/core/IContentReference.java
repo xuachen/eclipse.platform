@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
  
  /**
-  *A ContentReference is a handle on a resource inside a Feature or a Site
+  *A ContentReference is a handle on a resource inside a DefaultFeature or a Site
   * 
   */
  

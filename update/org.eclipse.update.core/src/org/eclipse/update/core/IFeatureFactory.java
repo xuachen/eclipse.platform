@@ -25,7 +25,7 @@ public interface IFeatureFactory {
 	public static final String EXECUTABLE_FEATURE_TYPE = "exe";	
 	
 	/**
-	 * Returns a feature based on the URL and the site in which the Feature is.
+	 * Returns a feature based on the URL and the site in which the DefaultFeature is.
 	 * @return a feature
 	 * @since 2.0 
 	 */

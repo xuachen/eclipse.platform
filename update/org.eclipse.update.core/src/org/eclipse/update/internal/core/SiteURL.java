@@ -106,7 +106,7 @@ public class SiteURL extends Site {
 	}
 	
 	/**
-	 * store Feature files
+	 * store DefaultFeature files
 	 */
 	public void storeFeatureInfo(VersionedIdentifier featureIdentifier,String contentKey,InputStream inStream) throws CoreException {
 		//FIXME: should not be called should it ?

@@ -163,7 +163,7 @@ public class DefaultSiteParser extends DefaultHandler {
 		currentFeature = feature;
 		
 		if (DEBUG)
-			debug("End Processing Feature Tag: url:" + urlInfo + " type:" + type);
+			debug("End Processing DefaultFeature Tag: url:" + urlInfo + " type:" + type);
 	}
 
 	/** 
