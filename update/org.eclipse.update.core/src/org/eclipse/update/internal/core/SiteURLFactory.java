@@ -1,10 +1,14 @@
 package org.eclipse.update.internal.core;
-
+/*
+ * (c) Copyright IBM Corp. 2000, 2002.
+ * All Rights Reserved.
+ */
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.*;
 import org.eclipse.update.core.ISite;
+import org.eclipse.update.core.ISiteFactory;
+import org.eclipse.update.core.model.InvalidSiteTypeException;
 
 public class SiteURLFactory implements ISiteFactory {
 

@@ -9,13 +9,8 @@ import java.net.URLClassLoader;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.ISiteContentProvider;
-import org.eclipse.update.core.model.SiteCategoryModel;
-import org.eclipse.update.core.model.SiteMapModel;
 import org.eclipse.update.core.model.*;
-import org.xml.sax.SAXException;
 
 public abstract class Site extends SiteMapModel implements ISite, IWritable {
 

@@ -1,6 +1,6 @@
 package org.eclipse.update.internal.core;
 /*
- * (c) Copyright IBM Corp. 2000, 2001.
+ * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
 import java.io.InputStream;
@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.InvalidSiteTypeException;
 
 public class SiteURL extends Site {
 	

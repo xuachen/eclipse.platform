@@ -1,7 +1,7 @@
 package org.eclipse.update.internal.core;
 
 /*
- * (c) Copyright IBM Corp. 2000, 2001.
+ * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
 
@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.InvalidSiteTypeException;
 import org.xml.sax.SAXException;
 
 /**
