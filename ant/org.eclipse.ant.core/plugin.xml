@@ -26,7 +26,7 @@
      point="org.eclipse.core.runtime.applications">
      <application>
        <run
-         class="org.eclipse.ant.core.AntRunnerApplication">
+         class="org.eclipse.ant.core.AntRunner">
        </run>
     </application>
    </extension>
