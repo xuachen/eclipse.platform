@@ -59,6 +59,6 @@ public interface ICategory {
 	 * @since 2.0 
 	 */
 
-	IInfo getDescription();
+	IURLEntry getDescription();
 }
 

@@ -6,7 +6,7 @@ package org.eclipse.update.internal.core;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import org.eclipse.update.core.ICategory;
-import org.eclipse.update.core.IInfo;
+import org.eclipse.update.core.IURLEntry;
 
 /**
  * Default Implementation of ICategory
@@ -15,7 +15,7 @@ public class Category implements ICategory {
 	
 	private String name;
 	private String label;
-	private IInfo description;
+	private IURLEntry description;
 	private static Comparator comp;
 	
 	/**
@@ -114,7 +114,7 @@ public class Category implements ICategory {
 	/*
 	 * @see ICategory#getDescription()
 	 */
-	public IInfo getDescription() {
+	public IURLEntry getDescription() {
 		return description;
 	}
 
@@ -122,7 +122,7 @@ public class Category implements ICategory {
 	 * Sets the description.
 	 * @param description The description to set
 	 */
-	public void setDescription(IInfo description) {
+	public void setDescription(IURLEntry description) {
 		this.description = description;
 	}
 }

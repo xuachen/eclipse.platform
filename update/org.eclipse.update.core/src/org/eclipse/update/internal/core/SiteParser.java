@@ -181,7 +181,7 @@ public class SiteParser extends DefaultHandler {
 		String id = attributes.getValue("path");
 		String urlString = attributes.getValue("url");
 		URL url = UpdateManagerUtils.getURL(site.getURL(), urlString, null);
-		site.addArchive(new Info(id, url));
+		site.addArchive(new URLEntry(id, url));
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
@@ -225,15 +225,15 @@ public class SiteParser extends DefaultHandler {
 	/** 
 	 * process the info
 	 */
-	private IInfo processInfo(Attributes attributes) throws MalformedURLException {
+	private IURLEntry processInfo(Attributes attributes) throws MalformedURLException {
 		String infoURL = attributes.getValue("url");
 		infoURL = UpdateManagerUtils.getResourceString(infoURL, bundle);
 		URL url = UpdateManagerUtils.getURL(site.getURL(), infoURL, null);
-		Info inf = new Info(url);
+		URLEntry inf = new URLEntry(url);
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
-			UpdateManagerPlugin.getPlugin().debug("Processed Info: url:" + infoURL);
+			UpdateManagerPlugin.getPlugin().debug("Processed URLEntry: url:" + infoURL);
 		}
 
 		return inf;
@@ -256,7 +256,7 @@ public class SiteParser extends DefaultHandler {
 			String tag = localName.trim();
 
 			if (tag.equalsIgnoreCase(DESCRIPTION)) {
-				((Info) currentCategory.getDescription()).setText(text);
+				((URLEntry) currentCategory.getDescription()).setAnnotation(text);
 
 				// DEBUG:		
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {

@@ -8,7 +8,7 @@ package org.eclipse.update.core;
  /**
   *  A pluginEntry is a handle to a plugin 
   */
-public interface IDataEntry {
+public interface INonPluginEntry {
 	
 	/** 
 	 * Returns the identifier of this data entry

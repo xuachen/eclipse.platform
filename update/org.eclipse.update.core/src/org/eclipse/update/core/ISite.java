@@ -97,7 +97,7 @@ public interface ISite extends IPluginContainer {
 	 * @since 2.0 
 	 */
 
-	IInfo[] getArchives();
+	IURLEntry[] getArchives();
 	
 	/**
 	 * Creates a new categoy within the Site

@@ -102,12 +102,12 @@ public class FeatureParser extends DefaultHandler {
 		}
 	
 		if (tag.equalsIgnoreCase(UPDATE)){
-			feature.setUpdateInfo(processURLInfo(attributes));
+			feature.setUpdateSiteEntry(processURLInfo(attributes));
 			return;
 		}		
 		
 		if (tag.equalsIgnoreCase(DISCOVERY)){
-			feature.addDiscoveryInfo(processURLInfo(attributes));
+			feature.addDiscoverySiteEntry(processURLInfo(attributes));
 			return;
 		}		
 		
@@ -182,15 +182,15 @@ public class FeatureParser extends DefaultHandler {
 	/** 
 	 * process the info
 	 */
-	private IInfo processInfo(Attributes attributes) throws MalformedURLException, IOException, CoreException {
+	private IURLEntry processInfo(Attributes attributes) throws MalformedURLException, IOException, CoreException {
 		String infoURL = attributes.getValue("url");
 		infoURL = UpdateManagerUtils.getResourceString(infoURL,bundle);
 		URL url = UpdateManagerUtils.getURL(feature.getRootURL(),infoURL,null);
-		Info inf = new Info(url);
+		URLEntry inf = new URLEntry(url);
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
-			UpdateManagerPlugin.getPlugin().debug("Processed Info: url:"+infoURL);
+			UpdateManagerPlugin.getPlugin().debug("Processed URLEntry: url:"+infoURL);
 		}
 		
 		return inf;
@@ -199,13 +199,13 @@ public class FeatureParser extends DefaultHandler {
 	/** 
 	 * process the URL info
 	 */
-	private IInfo processURLInfo(Attributes attributes) throws MalformedURLException, IOException, CoreException {
+	private IURLEntry processURLInfo(Attributes attributes) throws MalformedURLException, IOException, CoreException {
 		String infoURL = attributes.getValue("url");
 		infoURL = UpdateManagerUtils.getResourceString(infoURL,bundle);
 		URL url = UpdateManagerUtils.getURL(feature.getRootURL(),infoURL,null);
 		String label = attributes.getValue("label");
 		label = UpdateManagerUtils.getResourceString(label,bundle);
-		IInfo inf = new Info(label,url);
+		IURLEntry inf = new URLEntry(label,url);
 		
 
 		// DEBUG:		
@@ -319,7 +319,7 @@ public class FeatureParser extends DefaultHandler {
 	 */
 	private void processData(Attributes attributes) {
 		String id  = attributes.getValue("id");
-		DataEntry dataEntry = new DataEntry(id);
+		NonPluginEntry dataEntry = new NonPluginEntry(id);
 		
 		// download size
 		int download_size = -1;
@@ -357,7 +357,7 @@ public class FeatureParser extends DefaultHandler {
 		}
 
 	
-		feature.addDataEntry(dataEntry);
+		feature.addNonPluginEntry(dataEntry);
 	}
 
 
@@ -380,7 +380,7 @@ public class FeatureParser extends DefaultHandler {
 			String tag = localName.trim();
 
 			if (tag.equalsIgnoreCase(DESCRIPTION)) {
-				((Info)feature.getDescription()).setText(text);
+				((URLEntry)feature.getDescription()).setAnnotation(text);
 				
 				// DEBUG:		
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
@@ -390,7 +390,7 @@ public class FeatureParser extends DefaultHandler {
 
 
 			if (tag.equalsIgnoreCase(COPYRIGHT)) {
-				((Info)feature.getCopyright()).setText(text);
+				((URLEntry)feature.getCopyright()).setAnnotation(text);
 
 				// DEBUG:		
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
@@ -401,7 +401,7 @@ public class FeatureParser extends DefaultHandler {
 
 
 			if (tag.equalsIgnoreCase(LICENSE)) {
-				((Info)feature.getLicense()).setText(text);
+				((URLEntry)feature.getLicense()).setAnnotation(text);
 
 				// DEBUG:		
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){

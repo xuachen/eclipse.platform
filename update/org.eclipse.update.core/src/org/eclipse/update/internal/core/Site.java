@@ -278,12 +278,12 @@ public abstract class Site implements ISite, IWritable {
 	/**
 	 * @see ISite#getArchives()
 	 */
-	public IInfo[] getArchives() {
-		IInfo[] result = new IInfo[0];
+	public IURLEntry[] getArchives() {
+		IURLEntry[] result = new IURLEntry[0];
 		if (archives == null && !isInitialized)
 			logNotInitialized();
 		if (!(archives == null || archives.isEmpty())) {
-			result = new IInfo[archives.size()];
+			result = new IURLEntry[archives.size()];
 			archives.toArray(result);
 		}
 		return result;
@@ -301,10 +301,10 @@ public abstract class Site implements ISite, IWritable {
 
 		if (!(archiveId == null || archiveId.equals("") || archives == null || archives.isEmpty())) {
 			Iterator iter = archives.iterator();
-			IInfo info;
+			IURLEntry info;
 			while (iter.hasNext() && !found) {
-				info = (IInfo) iter.next();
-				if (archiveId.trim().equalsIgnoreCase(info.getText())) {
+				info = (IURLEntry) iter.next();
+				if (archiveId.trim().equalsIgnoreCase(info.getAnnotation())) {
 					result = info.getURL();
 					found = true;
 				}
@@ -329,14 +329,14 @@ public abstract class Site implements ISite, IWritable {
 	 * adds an archive
 	 * @param archive The archive to add
 	 */
-	public void addArchive(IInfo archive) {
+	public void addArchive(IURLEntry archive) {
 		if (archives == null) {
 			archives = new ArrayList(0);
 		}
-		if (getArchiveURLfor(archive.getText()) != null) {
+		if (getArchiveURLfor(archive.getAnnotation()) != null) {
 			// DEBUG:		
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug("The Archive with ID:" + archive.getText() + " already exist on the site.");
+				UpdateManagerPlugin.getPlugin().debug("The Archive with ID:" + archive.getAnnotation() + " already exist on the site.");
 			}
 		} else {
 			this.archives.add(archive);
@@ -347,7 +347,7 @@ public abstract class Site implements ISite, IWritable {
 	 * Sets the archives
 	 * @param archives The archives to set
 	 */
-	public void setArchives(IInfo[] _archives) {
+	public void setArchives(IURLEntry[] _archives) {
 		if (_archives != null) {
 			for (int i = 0; i < _archives.length; i++) {
 				this.addArchive(_archives[i]);
@@ -465,11 +465,11 @@ public abstract class Site implements ISite, IWritable {
 		}
 		w.println("");
 
-		IInfo[] archives = getArchives();
+		IURLEntry[] archives = getArchives();
 		for (int index = 0; index < archives.length; index++) {
-			IInfo element = (IInfo) archives[index];
+			IURLEntry element = (IURLEntry) archives[index];
 			URLInfoString = UpdateManagerUtils.getURLAsString(this.getURL(), element.getURL());
-			w.println(gap + "<" + SiteParser.ARCHIVE + " id=\"" + Writer.xmlSafe(element.getText()) + "\" url=\"" + Writer.xmlSafe(URLInfoString) + "\"/>");
+			w.println(gap + "<" + SiteParser.ARCHIVE + " id=\"" + Writer.xmlSafe(element.getAnnotation()) + "\" url=\"" + Writer.xmlSafe(URLInfoString) + "\"/>");
 		}
 		w.println("");
 
@@ -478,7 +478,7 @@ public abstract class Site implements ISite, IWritable {
 			Category element = (Category) categories[index];
 			w.println(gap + "<" + SiteParser.CATEGORY_DEF + " label=\"" + Writer.xmlSafe(element.getLabel()) + "\" name=\"" + Writer.xmlSafe(element.getName()) + "\">");
 
-			IInfo info = element.getDescription();
+			IURLEntry info = element.getDescription();
 			if (info != null) {
 				w.print(gap + increment + "<" + SiteParser.DESCRIPTION + " ");
 				URLInfoString = null;
@@ -487,8 +487,8 @@ public abstract class Site implements ISite, IWritable {
 					w.print("url=\"" + Writer.xmlSafe(URLInfoString) + "\"");
 				}
 				w.println(">");
-				if (info.getText() != null) {
-					w.println(gap + increment + increment + Writer.xmlSafe(info.getText()));
+				if (info.getAnnotation() != null) {
+					w.println(gap + increment + increment + Writer.xmlSafe(info.getAnnotation()));
 				}
 				w.print(gap + increment + "</" + SiteParser.DESCRIPTION + ">");
 			}

@@ -1,9 +1,9 @@
 package org.eclipse.update.internal.core;
 
-import org.eclipse.update.core.IDataEntry;
+import org.eclipse.update.core.INonPluginEntry;
 import org.eclipse.update.core.VersionedIdentifier;
 
-public class DataEntry implements IDataEntry {
+public class NonPluginEntry implements INonPluginEntry {
 	
 	private String identifier;
 	private int downloadSize ;
@@ -12,26 +12,26 @@ public class DataEntry implements IDataEntry {
 	/**
 	 * Constructor
 	 */
-	public DataEntry(String identifier) {
+	public NonPluginEntry(String identifier) {
 		this.identifier = identifier;
 	}
 
 	/*
-	 * @see IDataEntry#getIdentifier()
+	 * @see INonPluginEntry#getIdentifier()
 	 */
 	public String getIdentifier() {
 		return identifier;
 	}
 
 	/*
-	 * @see IDataEntry#getDownloadSize()
+	 * @see INonPluginEntry#getDownloadSize()
 	 */
 	public int getDownloadSize() {
 		return downloadSize;
 	}
 
 	/*
-	 * @see IDataEntry#getInstallSize()
+	 * @see INonPluginEntry#getInstallSize()
 	 */
 	public int getInstallSize() {
 		return installSize;

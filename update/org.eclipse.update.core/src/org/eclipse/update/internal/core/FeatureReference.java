@@ -109,9 +109,9 @@ public class FeatureReference implements IFeatureReference, IWritable {
 					featureType = ((Site) site).getDefaultFeatureType(url);
 				}
 			}
+		feature = createFeature(featureType,url,site);				
 		}
 		
-		feature = createFeature(featureType,url,site);		
 		return feature;
 	}
 

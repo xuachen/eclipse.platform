@@ -71,7 +71,7 @@ public interface IFeature extends IPluginContainer {
 	
 	/**
 	 * Returns the Update Information about the Feature.
-	 * The Info is usually a URL of a Site in which user 
+	 * The URLEntry is usually a URL of a Site in which user 
 	 * can find new version of the feature.
 	 * 
 	 * The Update Information is composed of a URL and short label
@@ -79,12 +79,12 @@ public interface IFeature extends IPluginContainer {
 	 * 
 	 * The URL is declared in the <code>feature.xml</code> file.
 	 * 
-	 * @see IInfo
-	 * @return the IInfo that contains Update Information about this feature
+	 * @see IURLEntry
+	 * @return the IURLEntry that contains Update Information about this feature
 	 * @since 2.0 
 	 */
 
-	IInfo getUpdateInfo() ;
+	IURLEntry getUpdateSiteEntry() ;
 	
 	/**
 	 * Return an array of info where the user can find other features
@@ -95,13 +95,13 @@ public interface IFeature extends IPluginContainer {
 	 * 
 	 * The URLs are declared in the <code>feature.xml</code> file.
 	 *  
-	 * @see IInfo
+	 * @see IURLEntry
 	 * @return a Array of discovery info.Returns an empty array
 	 * if there are no discovey info.
 	 * @since 2.0 
 	 */
 
-	IInfo [] getDiscoveryInfos() ;
+	IURLEntry [] getDiscoverySiteEntries() ;
 	
 	/**
 	 * Returns the provider of the feature
@@ -121,12 +121,12 @@ public interface IFeature extends IPluginContainer {
 	 * 
 	 * The description is declared in the <code>feature.xml</code> file.
 	 * 
-	 * @see IInfo
+	 * @see IURLEntry
 	 * @return the description of this feature
 	 * @since 2.0 
 	 */
 
-	IInfo getDescription() ;
+	IURLEntry getDescription() ;
 	
 	/**
 	 * Returns the copyright of the Feature.
@@ -138,12 +138,12 @@ public interface IFeature extends IPluginContainer {
 	 * 
 	 * The copyright is declared in the <code>feature.xml</code> file.
 	 * 
-	 * @see IInfo
+	 * @see IURLEntry
 	 * @return the copyright of this feature
 	 * @since 2.0 
 	 */
 
-	IInfo getCopyright() ;
+	IURLEntry getCopyright() ;
 	
 	/**
 	 * Returns the license of the Feature.
@@ -155,12 +155,12 @@ public interface IFeature extends IPluginContainer {
 	 * 
 	 * The license is declared in the <code>feature.xml</code> file.
 	 * 
-	 * @see IInfo
+	 * @see IURLEntry
 	 * @return the license of this feature
 	 * @since 2.0 
 	 */
 
-	IInfo getLicense() ;
+	IURLEntry getLicense() ;
 	
 	/**
 	 * Optional operating system specification.
@@ -270,7 +270,7 @@ public interface IFeature extends IPluginContainer {
 	 * @since 2.0 
 	 */
 	// FIXME: javadoc	
-	IDataEntry[] getDataEntries();
+	INonPluginEntry[] getNonPluginEntries();
 	
 	/**
 	 * Adds a dataEntry to the list of managed dataEntry
@@ -279,7 +279,7 @@ public interface IFeature extends IPluginContainer {
 	 * @since 2.0 
 	 */
 	
-	void addDataEntry(IDataEntry dataEntry);
+	void addNonPluginEntry(INonPluginEntry dataEntry);
 	
 	/**
 	 * returns the download size

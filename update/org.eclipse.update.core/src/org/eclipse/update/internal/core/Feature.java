@@ -11,12 +11,15 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.IPluginEntry;
+import org.eclipse.update.core.model.FeatureModel;
+import org.eclipse.update.core.model.URLEntryModel;
+import org.eclipse.update.core.model.*;
 import org.xml.sax.SAXException;
 /**
  * Abstract Class that implements most of the behavior of a feature
  * A feature ALWAYS belongs to an ISite
  */
-public abstract class Feature implements IFeature {
+public abstract class Feature extends FeatureModel implements IFeature {
 
 	/**
 	 * 
@@ -34,19 +37,9 @@ public abstract class Feature implements IFeature {
 	public static final String FEATURE_XML = FEATURE_FILE + ".xml";
 
 	/**
-	 * Identifier of the Feature
-	 */
-	private VersionedIdentifier versionIdentifier;
-
-	/**
 	 * Site in which teh feature resides
 	 */
 	private ISite site;
-
-	/**
-	 * User label fo the Feature
-	 */
-	private String label;
 
 	/**
 	 * reference to the feature inside the site.
@@ -54,76 +47,6 @@ public abstract class Feature implements IFeature {
 	 * Subclass of AbstractFeature.
 	 */
 	private URL url;
-
-	/**
-	 * Url and label of site where update of this feature can ve found
-	 */
-	private IInfo updateInfo;
-
-	/**
-	 * Url and label of site where other informations related to this feature can be found
-	 */
-	private List discoveryInfos;
-
-	/**
-	 * The primary application 
-	 */
-	private String application;
-
-	/**
-	 * provider of the Feature
-	 */
-	private String provider;
-
-	/**
-	 * Short description and url for long description of this feature
-	 */
-	private IInfo description;
-
-	/**	
-	 * Short copyright and url for long copyright of this feature
-	 */
-	private IInfo copyright;
-
-	/**
-	 * Short license and url for long license of this feature
-	 */
-	private IInfo license;
-
-	/**
-	 * Image (shoudl be either GIF or JPG)
-	 */
-	private URL image;
-
-	private String nl;
-	private String os;
-	private String ws;
-
-	/**
-	 * List of plugin entries teh feature contains
-	 * read from teh xml file
-	 */
-	private List pluginEntries;
-
-	/**
-	 * List of data entries the feature contains
-	 * read from the xml file
-	 */
-	private List dataEntries;
-
-	/**
-	 * List of plugin the feature require
-	 * to be installed in the site before this feature
-	 * can be installed
-	 */
-	private List requires;
-
-	/**
-	 * private internal
-	 * used for lazy instantiation and 
-	 * hydration with the XML file
-	 */
-	private boolean isInitialized = false;
 
 	/**
 	 * Static block to initialize the possible CANCEL ERROR
@@ -140,19 +63,17 @@ public abstract class Feature implements IFeature {
 	 * Copy constructor
 	 */
 	public Feature(IFeature sourceFeature, ISite targetSite) throws CoreException {
-		// do not call other ctr as we do not want t parse XML file
-		this.site = targetSite;
-		this.url = sourceFeature.getURL();
-		this.versionIdentifier = sourceFeature.getIdentifier();
-		this.label = sourceFeature.getLabel();
-		this.updateInfo = sourceFeature.getUpdateInfo();
-		this.setDiscoveryInfos(sourceFeature.getDiscoveryInfos());
-		this.provider = sourceFeature.getProvider();
-		this.description = sourceFeature.getDescription();
-		this.copyright = sourceFeature.getCopyright();
-		this.license = sourceFeature.getLicense();
+		this(sourceFeature.getURL(),targetSite);
+		this.setIdentifier(sourceFeature.getIdentifier());
+		this.setLabel(sourceFeature.getLabel());
+		this.setUpdateSiteEntry(sourceFeature.getUpdateSiteEntry());
+		this.setDiscoverySiteEntries(sourceFeature.getDiscoverySiteEntries());
+		this.setProvider(sourceFeature.getProvider());
+		this.setDescription(sourceFeature.getDescription());
+		this.setCopyright(sourceFeature.getCopyright());
+		this.setLicense(sourceFeature.getLicense());
 		this.setPluginEntries(sourceFeature.getPluginEntries());
-		this.isInitialized = true;
+		this.setImage(sourceFeature.getImage());
 	}
 
 	/**
@@ -161,16 +82,13 @@ public abstract class Feature implements IFeature {
 	public Feature(URL url, ISite targetSite) throws CoreException {
 		this.site = targetSite;
 		this.url = url;
-		initializeFeature();
 	}
 
 	/**
 	 * @see IFeature#getIdentifier()
 	 */
 	public VersionedIdentifier getIdentifier() {
-		if (versionIdentifier == null && !isInitialized)
-			logNotInitialized();
-		return versionIdentifier;
+		return new VersionedIdentifier(getFeatureIdentifier(),getFeatureVersion());
 	}
 
 	/**
@@ -179,15 +97,6 @@ public abstract class Feature implements IFeature {
 	 */
 	public ISite getSite() {
 		return site;
-	}
-
-	/**
-	 * @see IFeature#getLabel()
-	 */
-	public String getLabel() {
-		if (label == null && !isInitialized)
-			logNotInitialized();
-		return label;
 	}
 
 	/**
@@ -221,106 +130,51 @@ public abstract class Feature implements IFeature {
 	}
 
 	/**
-	 * @see IFeature#getUpdateInfo()
+	 * @see IFeature#getUpdateSiteEntry()
 	 */
-	public IInfo getUpdateInfo() {
-		if (updateInfo == null && !isInitialized)
-			logNotInitialized();
-		return updateInfo;
+	public IURLEntry getUpdateSiteEntry() {
+		return (IURLEntry)getUpdateSiteEntryModel();
 	}
 
 	/**
-	 * @see IFeature#getDiscoveryInfos()
+	 * @see IFeature#getDiscoverySiteEntries()
 	 */
-	public IInfo[] getDiscoveryInfos() {
-		IInfo[] result = new IInfo[0];
-		if (discoveryInfos == null && !isInitialized)
-			logNotInitialized();
-		if (!(discoveryInfos == null || discoveryInfos.isEmpty())) {
-			result = new IInfo[discoveryInfos.size()];
-			discoveryInfos.toArray(result);
+	public IURLEntry[] getDiscoverySiteEntries() {
+		int length = getDiscoverySiteEntryModels().length;
+		IURLEntry[] result = new IURLEntry[length];
+		if (length>0){
+			result = (IURLEntry[])getDiscoverySiteEntryModels();
 		}
 		return result;
-	}
-
-	/*
-	 * @see IFeature#getApplication()
-	 */
-	public String getApplication() {
-		return application;
-	}
-
-	/**
-	 * @see IFeature#getProvider()
-	 */
-	public String getProvider() {
-		if (provider == null && !isInitialized)
-			logNotInitialized();
-		return provider;
 	}
 
 	/**
 	 * @see IFeature#getDescription()
 	 */
-	public IInfo getDescription() {
-		if (description == null && !isInitialized)
-			logNotInitialized();
-		return description;
+	public IURLEntry getDescription() {
+		return (IURLEntry)getDescriptionModel();
 	}
 
 	/**
 	 * @see IFeature#getCopyright()
 	 */
-	public IInfo getCopyright() {
-		if (copyright == null && !isInitialized)
-			logNotInitialized();
-		return copyright;
+	public IURLEntry getCopyright() {
+		return (IURLEntry)getCopyrightModel();
 	}
 
 	/**
 	 * @see IFeature#getLicense()
 	 */
-	public IInfo getLicense() {
-		if (license == null && !isInitialized)
-			logNotInitialized();
-		return license;
+	public IURLEntry getLicense() {
+		return (IURLEntry)getLicenseModel();
 	}
 
 	/**
 	 * @see IFeature#getImage()
 	 */
 	public URL getImage() {
-		if (image == null && !isInitialized)
-			logNotInitialized();
-		return image;
+		return getImageURL();
 	}
-	/**
-	 * @see IFeature#getNL()
-	 */
-	public String getNL() {
-		if (nl == null && !isInitialized)
-			logNotInitialized();
-		return nl;
-	}
-
-	/**
-	 * @see IFeature#getOS()
-	 */
-	public String getOS() {
-		if (os == null && !isInitialized)
-			logNotInitialized();
-		return os;
-	}
-
-	/**
-	 * @see IFeature#getWS()
-	 */
-	public String getWS() {
-		if (ws == null && !isInitialized)
-			logNotInitialized();
-		return ws;
-	}
-
 	/**
 	 * Sets the site
 	 * @param site The site to set
@@ -334,15 +188,8 @@ public abstract class Feature implements IFeature {
 	 * @param identifier The identifier to set
 	 */
 	public void setIdentifier(VersionedIdentifier identifier) {
-		this.versionIdentifier = identifier;
-	}
-
-	/**
-	 * Sets the label
-	 * @param label The label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
+		setFeatureIdentifier(identifier.getIdentifier());
+		setFeatureVersion(identifier.getVersion().toString());
 	}
 
 	/**
@@ -353,74 +200,53 @@ public abstract class Feature implements IFeature {
 		this.url = url;
 	}
 
+
 	/**
-	 * Sets the updateInfo
-	 * @param updateInfo The updateInfo to set
+	 * Sets the discoverySiteEntries
+	 * @param discoveryInfos The discoveryInfos to set
 	 */
-	public void setUpdateInfo(IInfo updateInfo) {
-		this.updateInfo = updateInfo;
+	public void setDiscoverySiteEntries(IURLEntry[] discoveryInfos) {
+		setDiscoverySiteEntryModels((URLEntryModel[]) discoveryInfos);
 	}
 
 	/**
-	 * Sets the discoveryInfos
-	 * @param discoveryInfos The discoveryInfos to set
+	 * Sets the updateSiteEntry
+	 * @param updateInfo The updateInfo to set
 	 */
-	public void setDiscoveryInfos(IInfo[] discoveryInfos) {
-		if (discoveryInfos != null) {
-			this.discoveryInfos = (new ArrayList());
-			for (int i = 0; i < discoveryInfos.length; i++) {
-				this.discoveryInfos.add(discoveryInfos[i]);
-			}
-		}
+	public void setUpdateSiteEntry(IURLEntry updateInfo) {
+		setUpdateSiteEntryModel((URLEntryModel) updateInfo);
 	}
 
 	/**
 	 * Adds a discoveryInfo
 	 * @param discoveryInfo The discoveryInfo to add
 	 */
-	public void addDiscoveryInfo(IInfo discoveryInfo) {
-		if (discoveryInfos == null)
-			discoveryInfos = new ArrayList(0);
-		discoveryInfos.add(discoveryInfo);
+	public void addDiscoverySiteEntry(IURLEntry discoveryInfo) {
+		addDiscoverySiteEntryModel((URLEntryModel) discoveryInfo);
 	}
 
-	/**
-	 *  Sets the application
-	 * @param application the application to set
-	 */
-	public void setApplication(String application) {
-		this.application = application;
-	}
-
-	/**
-	 * Sets the provider
-	 * @param provider The provider to set
-	 */
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
 	/**
 	 * Sets the description
 	 * @param description The description to set
 	 */
-	public void setDescription(IInfo description) {
-		this.description = description;
+	public void setDescription(IURLEntry description) {
+		setDescriptionModel((URLEntryModel)description);
 	}
 
 	/**
 	 * Sets the copyright
 	 * @param copyright The copyright to set
 	 */
-	public void setCopyright(IInfo copyright) {
-		this.copyright = copyright;
+	public void setCopyright(IURLEntry copyright) {
+		setCopyrightModel((URLEntryModel)copyright);
 	}
 
 	/**
 	 * Sets the license
 	 * @param license The license to set
 	 */
-	public void setLicense(IInfo license) {
-		this.license = license;
+	public void setLicense(IURLEntry license) {
+		setLicenseModel((URLEntryModel)license);
 	}
 
 	/**
@@ -428,31 +254,7 @@ public abstract class Feature implements IFeature {
 	 * @param image The image to set
 	 */
 	public void setImage(URL image) {
-		this.image = image;
-	}
-
-	/**
-	 * Sets the nl
-	 * @param nl The nl to set
-	 */
-	public void setNL(String nl) {
-		this.nl = nl;
-	}
-
-	/**
-	 * Sets the os
-	 * @param os The os to set
-	 */
-	public void setOS(String os) {
-		this.os = os;
-	}
-
-	/**
-	 * Sets the ws
-	 * @param ws The ws to set
-	 */
-	public void setWS(String ws) {
-		this.ws = ws;
+		setImageURLString(image.toExternalForm());
 	}
 
 	/**
@@ -569,7 +371,7 @@ public abstract class Feature implements IFeature {
 	try {
 			// download and install data bundles
 			// before we set the site of teh feature to the TEMP site
-			IDataEntry[] dataEntries = getDataEntries();
+			INonPluginEntry[] dataEntries = getNonPluginEntries();
 			if (dataEntries.length > 0) {
 				downloadDataLocally(targetFeature, dataEntries, monitor);
 			}
@@ -733,8 +535,7 @@ public abstract class Feature implements IFeature {
 	 * initialize teh feature by reading the feature.xml if it exists
 	 */
 	public void initializeFeature() throws CoreException {
-		if (!isInitialized) {
-			isInitialized = true;
+
 			InputStream featureStream = null;
 			try {
 				featureStream = getInputStreamFor(FEATURE_XML);
@@ -760,7 +561,7 @@ public abstract class Feature implements IFeature {
 				} catch (Exception e) {
 				}
 			}
-		}
+
 	}
 
 	/**
@@ -787,7 +588,7 @@ public abstract class Feature implements IFeature {
 			newURL = UpdateManagerUtils.resolveAsLocal(sourceURL, newFile, monitor);
 
 			// transfer the possible mapping to the temp site						
-			 ((Site) tempSite).addArchive(new Info(archiveIDToInstall[i], newURL));
+			 ((Site) tempSite).addArchive(new URLEntry(archiveIDToInstall[i], newURL));
 			if (monitor != null) {
 				monitor.worked(1);
 				if (monitor.isCanceled()) {
@@ -808,11 +609,11 @@ public abstract class Feature implements IFeature {
 
 	/**
 	 */
-	private void downloadDataLocally(IFeature targetFeature, IDataEntry[] dataToInstall, IProgressMonitor monitor) throws CoreException, IOException {
+	private void downloadDataLocally(IFeature targetFeature, INonPluginEntry[] dataToInstall, IProgressMonitor monitor) throws CoreException, IOException {
 
 		URL sourceURL;
 		// any other data
-		IDataEntry[] entries = getDataEntries();
+		INonPluginEntry[] entries = getNonPluginEntries();
 		if (entries != null) {
 			if (monitor != null) {
 				monitor.beginTask("Installing Other Data information", dataToInstall.length);
@@ -844,16 +645,6 @@ public abstract class Feature implements IFeature {
 	}
 
 		/**
-		 * Logs that an attempt to read a non initialize variable has been made
-		 */
-		private void logNotInitialized() {
-			Exception trace = new Exception("Attempt to read uninitialized variable");
-			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "the program is reading a variable of Feature before loading it", trace);
-			UpdateManagerPlugin.getPlugin().getLog().log(status);
-		}
-
-		/**
 		 * Returns the intersection between two array of PluginEntries.
 		 */
 		private IPluginEntry[] intersection(IPluginEntry[] array1, IPluginEntry[] array2) {
@@ -877,26 +668,25 @@ public abstract class Feature implements IFeature {
 		 * @see IPluginContainer#getPluginEntries()
 		 */
 		public IPluginEntry[] getPluginEntries() {
-			IPluginEntry[] result = new IPluginEntry[0];
-			if (pluginEntries == null && !isInitialized)
-				logNotInitialized();
-			if (!(pluginEntries == null || pluginEntries.isEmpty())) {
-				result = new IPluginEntry[pluginEntries.size()];
-				pluginEntries.toArray(result);
+			int length = getPluginEntryModels().length;
+			IPluginEntry[] result = new IPluginEntry[length];
+			if (length>0){
+				result = (IPluginEntry[])getPluginEntryModels();
 			}
+//			for (int i = 0; i < length; i++) {
+//				result[i]= (IPluginEntry)getPluginEntryModels()[i];
+//			}
 			return result;
 		}
 
 		/**
 		 * @see IFeature#getDataEntries()
 		 */
-		public IDataEntry[] getDataEntries() {
-			IDataEntry[] result = new IDataEntry[0];
-			if (dataEntries == null && !isInitialized)
-				logNotInitialized();
-			if (!(dataEntries == null || dataEntries.isEmpty())) {
-				result = new IDataEntry[dataEntries.size()];
-				dataEntries.toArray(result);
+		public INonPluginEntry[] getNonPluginEntries() {
+			int length = getNonPluginEntryModels().length;			
+			INonPluginEntry[] result = new INonPluginEntry[length];
+			if (length>0){
+				result = (INonPluginEntry[])getNonPluginEntryModels();
 			}
 			return result;
 		}
@@ -905,17 +695,17 @@ public abstract class Feature implements IFeature {
 		 * @see IPluginContainer#getPluginEntryCount()
 		 */
 		public int getPluginEntryCount() {
-			return getPluginEntries().length;
+			return getPluginEntryModels().length;
 		}
 
 		/**
 		 * @see IFeature#getImports()
 		 */
 		public IImport[] getImports() {
-			IImport[] result = new IImport[0];
-			if (!(requires == null || requires.isEmpty())) {
-				result = new IImport[requires.size()];
-				requires.toArray(result);
+			int length = getImportModels().length;
+			IImport[] result = new IImport[length];
+			if (length>0){
+				result = (IImport[])getImportModels();
 			}
 			return result;
 		}
@@ -948,18 +738,18 @@ public abstract class Feature implements IFeature {
 		 * @see IPluginContainer#addPluginEntry(IPluginEntry)
 		 */
 		public void addPluginEntry(IPluginEntry pluginEntry) {
-			if (pluginEntries == null)
-				pluginEntries = new ArrayList(0);
-			pluginEntries.add(pluginEntry);
+			if (pluginEntry!=null){
+				addPluginEntryModel((PluginEntryModel)pluginEntry);
+			}
 		}
 
 		/**
-		 * @see IFeature#addDataEntry(IDataEntry)
+		 * @see IFeature#addDataEntry(INonPluginEntry)
 		 */
-		public void addDataEntry(IDataEntry dataEntry) {
-			if (dataEntries == null)
-				dataEntries = new ArrayList(0);
-			dataEntries.add(dataEntry);
+		public void addNonPluginEntry(INonPluginEntry dataEntry) {
+			if (dataEntry!=null){
+				addNonPluginEntryModel((NonPluginEntryModel)dataEntry);
+			}
 		}
 
 		/**
@@ -967,9 +757,9 @@ public abstract class Feature implements IFeature {
 		 * @param anImport The import to add
 		 */
 		public void addImport(IImport anImport) {
-			if (this.requires == null)
-				this.requires = new ArrayList(0);
-			this.requires.add(anImport);
+			if (anImport!=null){
+				addImportModel((ImportModel) anImport);
+			}
 		}
 
 		/**

@@ -275,12 +275,12 @@ public class SiteFile extends SiteURL {
 		String location = null;
 		try {
 			if (plugins.length > 0) {
-				Info info;
+				URLEntry info;
 				for (int index = 0; index < plugins.length; index++) {
 					String pluginID = new VersionedIdentifier(plugins[index].getId(), plugins[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
 					location = plugins[index].getLocation();
 					URL url = new URL(location);
-					info = new Info(pluginID, url);
+					info = new URLEntry(pluginID, url);
 					this.addArchive(info);
 				}
 			}
@@ -329,7 +329,7 @@ public class SiteFile extends SiteURL {
 							// the id is plugins\<pluginid>_<ver> as per the specs
 							String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(models[index].getId(), models[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
 							URL url = new URL("file",null,file.getAbsolutePath());
-							IInfo info = new Info(pluginID, url);
+							IURLEntry info = new URLEntry(pluginID, url);
 							this.addArchive(info);
 						}
 					}
