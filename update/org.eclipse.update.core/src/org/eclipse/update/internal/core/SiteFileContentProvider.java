@@ -12,7 +12,9 @@ import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.model.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.ArchiveReferenceModel;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 /**
@@ -97,7 +99,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		File featureDir = new File(featurePath);
 		if (featureDir.exists()) {
 			String[] dir;
-			FeatureReference featureRef;
+			FeatureReferenceModel featureRef;
 			URL featureURL;
 			String newFilePath = null;
 		
@@ -105,13 +107,17 @@ public class SiteFileContentProvider extends SiteContentProvider {
 				// handle teh installed featuresConfigured under featuresConfigured subdirectory
 				dir = featureDir.list();
 				for (int index = 0; index < dir.length; index++) {
-					// teh URL must ends with '/' for teh bundle to be resolved
+
+				SiteFileFactory archiveFactory = new SiteFileFactory();							
+					// the URL must ends with '/' for the bundle to be resolved
 					newFilePath = featurePath + dir[index] + "/";
-					featureURL = new URL("file", null, newFilePath);
-					featureRef = new FeatureReference();
+					featureURL = new URL("file", null, newFilePath);						
+					Feature newFeature = createPackagedFeature(featureURL);
+					
+					featureRef = archiveFactory.createFeatureReferenceModel();
 					featureRef.setSite(site);
-					featureRef.setURL(featureURL);
-					site.addFeatureReference(featureRef);
+					featureRef.setURLString(featureURL.toExternalForm());
+					((Site)site).addFeatureReferenceModel(featureRef);										
 				}
 			} catch (MalformedURLException e) {
 				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -134,7 +140,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		File featureDir = new File(featurePath);
 		if (featureDir.exists()) {
 			String[] dir;
-			FeatureReference featureRef;
+			FeatureReferenceModel featureRef;
 			URL featureURL;
 			String newFilePath = null;
 		
@@ -142,12 +148,17 @@ public class SiteFileContentProvider extends SiteContentProvider {
 				// handle teh installed featuresConfigured under featuresConfigured subdirectory
 				dir = featureDir.list(FeaturePackaged.filter);
 				for (int index = 0; index < dir.length; index++) {
+					
+					SiteFileFactory archiveFactory = new SiteFileFactory();							
 					newFilePath = featurePath + dir[index];
-					featureURL = new URL("file", null, newFilePath);
-					featureRef = new FeatureReference();
+					featureURL = new URL("file", null, newFilePath);						
+					Feature newFeature = createPackagedFeature(featureURL);
+					
+					featureRef = archiveFactory.createFeatureReferenceModel();
 					featureRef.setSite(site);
-					featureRef.setURL(featureURL);
-					site.addFeatureReference(featureRef);
+					featureRef.setURLString(featureURL.toExternalForm());
+					((Site)site).addFeatureReferenceModel(featureRef);					
+		
 				}
 			} catch (MalformedURLException e) {
 				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -202,13 +213,15 @@ public class SiteFileContentProvider extends SiteContentProvider {
 			if (plugins.length > 0) {
 				URLEntry info;
 				for (int index = 0; index < plugins.length; index++) {
-					String pluginID = new VersionedIdentifier(plugins[index].getId(), plugins[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
+					SiteFileFactory archiveFactory = new SiteFileFactory();							
+					// the id is plugins\<pluginid>_<ver>.jar as per the specs
+					String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(plugins[index].getId(), plugins[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
+					ArchiveReferenceModel archive = archiveFactory.createArchiveReferenceModel();		
+					archive.setPath(pluginID);
 					location = plugins[index].getLocation();
 					URL url = new URL(location);
-					info = new URLEntry();
-					info.setAnnotation(pluginID);
-					info.resolve(url,null);
-					site.addPlugins(info); // add parsed plugins in teh site
+					archive.setURLString(url.toExternalForm());
+					((Site)site).addArchiveReferenceModel(archive);					
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -256,13 +269,13 @@ public class SiteFileContentProvider extends SiteContentProvider {
 							models = registryModel.getFragments();
 						}
 						for (int index = 0; index < models.length; index++) {
-							// the id is plugins\<pluginid>_<ver> as per the specs
+							SiteFileFactory archiveFactory = new SiteFileFactory();							
+							// the id is plugins\<pluginid>_<ver>.jar as per the specs
 							String pluginID = Site.DEFAULT_PLUGIN_PATH+new VersionedIdentifier(models[index].getId(), models[index].getVersion()).toString() + FeaturePackaged.JAR_EXTENSION;
-							URL url = new URL("file",null,file.getAbsolutePath());
-							URLEntry info = new URLEntry();
-							info.setAnnotation(pluginID);
-							info.resolve(url,null);
-							site.addPlugins(info); // add parsed plugins in teh site
+							ArchiveReferenceModel archive = archiveFactory.createArchiveReferenceModel();		
+							archive.setPath(pluginID);
+							archive.setURLString(file.toURL().toExternalForm());
+							((Site)site).addArchiveReferenceModel(archive);
 						}
 					}
 				}
@@ -277,7 +290,33 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		 
 	}
 
-	
+	/**
+	 * 
+	 */
+	private Feature createPackagedFeature(URL url) throws CoreException {
+		String packagedFeatureType = getDefaultInstallableFeatureType();
+		Feature result = null;
+		if (packagedFeatureType != null) {
+			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(packagedFeatureType);
+			result = (Feature)factory.createFeature(url, site);
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 */
+	private IFeature createExecutableFeature(IFeature sourceFeature) throws CoreException {
+		String executableFeatureType = getDefaultExecutableFeatureType();
+		IFeature result = null;
+		if (executableFeatureType != null) {
+			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(executableFeatureType);
+			ContentReference localFeatureContentReference = site.getSiteContentProvider().getFeatureArchivesReferences(sourceFeature);
+			result = factory.createFeature(localFeatureContentReference.asURL(), site);
+		}
+		return result;
+	}
+		
 	/*
 	 * @see ISite#getDefaultExecutableFeatureType()
 	 */

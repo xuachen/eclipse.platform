@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import org.eclipse.update.core.ISite;
+
 /**
  * An object which represents a feature reference.
  * <p>
@@ -22,6 +24,7 @@ public class FeatureReferenceModel extends ModelObject {
 	private String type;
 	private String urlString;
 	private URL url;
+	private ISite site;
 	private List /* of String*/ categoryNames;
 	
 	/**
@@ -40,6 +43,13 @@ public class FeatureReferenceModel extends ModelObject {
 		return type;
 	}
 
+	/**
+	 * @since 2.0
+	 */
+	public ISite getSite() {
+		return site;
+	}
+	
 	/**
 	 * @since 2.0
 	 */	
@@ -75,6 +85,14 @@ public class FeatureReferenceModel extends ModelObject {
 		this.type = type;
 	}
 
+	/**
+	 * @since 2.0
+	 */
+	public void setSite(ISite site) {
+		assertIsWriteable();
+		this.site = site;
+	}
+	
 	/**
 	 * @since 2.0
 	 */

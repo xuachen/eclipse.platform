@@ -25,8 +25,6 @@ import org.eclipse.update.internal.core.obsolete.FeaturePackaged;
 
 public class FeatureReference extends FeatureReferenceModel implements IFeatureReference, IWritable {
 
-	private ISite site;
-
 	private IFeature feature;
 
 	/**
@@ -56,7 +54,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 			categories = new ArrayList();
 			String[] categoriesAsString = getCategoryNames();
 			for (int i = 0; i < categoriesAsString.length; i++){
-					categories.add(site.getCategory(categoriesAsString[i]));
+					categories.add(getSite().getCategory(categoriesAsString[i]));
 			}
 		}
 
@@ -83,10 +81,10 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 					setType(pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE);
 				} else {
 					// ask the Site for the default type 
-					setType(site.getDefaultExecutableFeatureType());
+					setType(getSite().getDefaultExecutableFeatureType());
 				}
 			}
-		feature = createFeature(getType(),getURL(),site);				
+		feature = createFeature(getType(),getURL(),getSite());				
 		}
 		
 		return feature;
@@ -114,7 +112,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		// feature URL
 		String URLInfoString = null;
 		if(getURL()!=null) {
-			URLInfoString = UpdateManagerUtils.getURLAsString(site.getURL(),getURL());
+			URLInfoString = UpdateManagerUtils.getURLAsString(getSite().getURL(),getURL());
 			w.print("url=\""+Writer.xmlSafe(URLInfoString)+"\"");
 		}
 		w.println(">");
@@ -139,20 +137,6 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	
 
 		/*
-	 * @see IFeatureReference#getSite()
-	 */
-	public ISite getSite() {
-		return site;
-	}
-
-	/*
-	 * @see IFeatureReference#setSite(ISite)
-	 */
-	public void setSite(ISite site) {
-		this.site = site;
-	}
-
-	/*
 	 * @see IFeatureReference#setURL(URL)
 	 */
 	public void setURL(URL url) {
