@@ -44,7 +44,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	/**
 	 * Constructor 
 	 */
-	public FeaturePackagedContentProvider(URL url)  throws CoreException {
+	public FeaturePackagedContentProvider(URL url) {
 		super(url);
 	}
 

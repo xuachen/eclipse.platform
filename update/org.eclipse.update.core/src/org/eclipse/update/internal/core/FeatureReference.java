@@ -7,6 +7,7 @@ package org.eclipse.update.internal.core;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -138,12 +139,19 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	}
 	
 
-		/*
+	/*
 	 * @see IFeatureReference#setURL(URL)
 	 */
-	public void setURL(URL url) {
+	public void setURL(URL url) throws CoreException {
 		if (url!=null){
 			setURLString(url.toExternalForm());
+			try {
+				resolve(url,null);
+			} catch (MalformedURLException e){
+				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+				IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "Cannot resolve URL:" + url.toExternalForm(), e);
+				throw new CoreException(status);
+			}
 		}
 	}
 

@@ -43,7 +43,7 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 	 * @see IContentConsumer#open(INonPluginEntry)
 	 */
 	public IContentConsumer open(INonPluginEntry nonPluginEntry) throws CoreException {
-		return new NonPluginEntryContentConsumer(getContentConsumer().open(nonPluginEntry));
+		return feature.getSite().createSiteContentConsumer(feature);
 	}
 
 	/*

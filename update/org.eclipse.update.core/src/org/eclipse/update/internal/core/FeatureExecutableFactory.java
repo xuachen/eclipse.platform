@@ -5,8 +5,10 @@ package org.eclipse.update.internal.core;
  */
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
@@ -25,6 +27,9 @@ public class FeatureExecutableFactory extends BaseFeatureFactory {
 
 		Feature feature = null;
 		InputStream featureStream = null;
+		
+		// the URL should point to a directory, we will add the feature.xml
+		url = validate(url);
 		
 		try {	
 			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
@@ -78,6 +83,28 @@ public class FeatureExecutableFactory extends BaseFeatureFactory {
 		feature.markReadOnly();
 
 		return feature;	
+	}
+
+	/**
+	 * validates a URL as a directory URL
+	 */
+	private URL validate(URL url) throws CoreException {
+		
+		if (url==null) 
+			throw newCoreException("URL is null",null);		
+		
+		if (!url.getFile().endsWith("/") || !url.getFile().endsWith(File.separator)){
+			try {
+				url = new URL(url.getProtocol(),url.getHost(), url.getFile()+"/");
+			} catch (MalformedURLException e){
+				throw newCoreException("Unable to create new URL for url"+url.toExternalForm(),e);				
+			}
+		}
+		return url;
+	}
+
+	private CoreException newCoreException(String s, Throwable e) throws CoreException {
+		return new CoreException(new Status(IStatus.ERROR,"org.eclipse.update.core",0,s,e));
 	}
 
 }

@@ -38,4 +38,12 @@ public class SiteFile extends Site {
 		return consumer;
 	}
 
+	/*
+	 * @see ISite#getDefaultInstallableFeatureType()
+	 */
+	public String getDefaultInstallableFeatureType() {
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
+		return pluginID+IFeatureFactory.EXECUTABLE_FEATURE_TYPE;
+	}
+
 }

@@ -46,8 +46,8 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 			remoteFeature = featuresRef[i].getFeature();
 			localSite.install(remoteFeature, null);
 			
-			if (remoteFeature instanceof FeaturePackaged) packFeature = true;
-			if (remoteFeature instanceof FeatureExecutable) execFeature = true;
+			if (remoteFeature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider) packFeature = true;
+			if (remoteFeature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider) execFeature = true;
 
 			// verify
 			String site = localSite.getURL().getFile();
@@ -100,8 +100,8 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 			remoteFeature = featuresRef[i].getFeature();
 			localSite.install(remoteFeature, null);
 			
-			if (remoteFeature instanceof FeaturePackaged) packFeature = true;
-			if (remoteFeature instanceof FeatureExecutable) execFeature = true;
+			if (remoteFeature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider) packFeature = true;
+			if (remoteFeature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider) execFeature = true;
 
 			// verify
 			String site = localSite.getURL().getFile();

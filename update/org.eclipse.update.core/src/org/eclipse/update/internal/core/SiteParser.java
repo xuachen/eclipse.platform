@@ -157,7 +157,7 @@ public class SiteParser extends DefaultHandler {
 		if (url != null) {
 			feature = new FeatureReference();
 			feature.setSite(site);
-			feature.setURL(url);			
+			//feature.setURL(url);			
 
 			// the type of the feature
 			String type = attributes.getValue("type");

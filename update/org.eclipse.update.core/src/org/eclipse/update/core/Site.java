@@ -46,8 +46,6 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	private SiteParser parser;
 
 	private ListenersList listeners = new ListenersList();
-	private URL infoURL;
-
 	/**
 	 * The content consumer of the Site
 	 */
@@ -224,7 +222,9 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see ISite#getInfoURL()
 	 */
 	public URL getInfoURL() {
-		return infoURL;
+		URLEntryModel description = getDescriptionModel();
+		if (description==null) return null;
+		return description.getURL();
 	}
 
 	/*

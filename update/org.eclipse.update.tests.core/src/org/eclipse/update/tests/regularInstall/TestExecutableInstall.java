@@ -32,6 +32,7 @@ public class TestExecutableInstall extends UpdateManagerTestCase {
 		IFeatureReference[] remoteFeatureReference = remoteSite.getFeatureReferences();
 		IFeature remoteFeature = remoteFeatureReference[0].getFeature();
 		ISite localSite = SiteManager.getSite(TARGET_FILE_SITE);
+		assertNotNull(remoteFeature);
 		localSite.install(remoteFeature,null);
 		
 		// verify
@@ -44,6 +45,7 @@ public class TestExecutableInstall extends UpdateManagerTestCase {
 
 		File featureFile = new File(site,Site.INSTALL_FEATURE_PATH+remoteFeature.getVersionIdentifier().toString());
 		assertTrue("feature info not installed locally:"+featureFile,featureFile.exists());
+		assertTrue("feature is a file, not a directory:"+featureFile,featureFile.isDirectory());
 
 		
 		File featureFileXML = new File(site,Site.INSTALL_FEATURE_PATH+remoteFeature.getVersionIdentifier().toString()+File.separator+"feature.xml");

@@ -287,6 +287,8 @@ public class UpdateManagerUtils {
 			result = file;
 		}
 		return result;*/
+		
+		if (url==null) return null;
 		return url.getPath();
 	}
 	

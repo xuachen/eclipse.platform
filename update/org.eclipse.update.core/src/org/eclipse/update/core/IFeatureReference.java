@@ -5,6 +5,7 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
  
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
@@ -35,7 +36,7 @@ public interface IFeatureReference {
 	 * @param the URL identifying feature in the Site.
 	 * @since 2.0 
 	 */
-	void setURL(URL url);	
+	void setURL(URL url) throws CoreException ;	
 
 	/**
 	 * Returns the Site of the FeatureReference

@@ -31,8 +31,8 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 		 
 		boolean found1 = false;
 		boolean found2 = false;
-		String name1= "org.eclipse.update.core.tests.feature1.plugin2_5.0.0.jar";
-		String name2 = "org.eclipse.update.core.tests.feature1.plugin2_5.0.1.jar";
+		String name1= "plugins/org.eclipse.update.core.tests.feature1.plugin2_5.0.0.jar";
+		String name2 = "plugins/org.eclipse.update.core.tests.feature1.plugin2_5.0.1.jar";
 		
 		for (int i =0; i<info.length; i++){
 			if (info[i].getPath().equals(name1)) found1 = true;

@@ -52,10 +52,14 @@ public class TestInstall extends UpdateManagerTestCase {
 
 	private IFeature getFeature1(ISite site) throws MalformedURLException, CoreException {
 		URL url = UpdateManagerUtils.getURL(site.getURL(), "features/org.eclipse.update.core.tests.feature1_1.0.4.jar", null);
-		Feature remoteFeature = createPackagedFeature(url,site);
+		FeatureReference ref = new FeatureReference();
+		ref.setSite(site);
+		ref.setURLString("features/org.eclipse.update.core.tests.feature1_1.0.4.jar");
+		ref.resolve(site.getURL(),null);
+		//Feature remoteFeature = createPackagedFeature(url,site);
 		//remoteFeature.setFeatureIdentifier("org.eclipse.update.core.tests.feature1");
 		//remoteFeature.setFeatureVersion("1.0.4");		
-		return remoteFeature;
+		return ref.getFeature();
 	}
 
 	public void testFileSite() throws Exception {
@@ -80,14 +84,10 @@ public class TestInstall extends UpdateManagerTestCase {
 		UpdateManagerUtils.removeFromFileSystem(new File(localSite.getURL().getFile()));
 
 	}
-	private IFeature getFeature2(ISite site) throws MalformedURLException, CoreException {
-		URL url = UpdateManagerUtils.getURL(site.getURL(), "features/org.eclipse.update.core.tests.feature1_1.0.4.jar", null);
-		Feature remoteFeature = createPackagedFeature(url,site);
-		//remoteFeature.setFeatureIdentifier("oorg.eclipse.update.core.tests.feature1");
-		//remoteFeature.setFeatureVersion("1.0.4");		
-		return remoteFeature;
-	}
-
+	
+	/**
+	 * 
+	 */
 	public void testHTTPSite() throws Exception {
 
 		ISite remoteSite = SiteManager.getSite(SOURCE_HTTP_SITE);

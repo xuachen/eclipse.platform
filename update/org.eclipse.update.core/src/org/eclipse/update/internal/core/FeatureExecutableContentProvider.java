@@ -96,12 +96,22 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 	 * the default ID is plugins/pluginId_pluginVer or
 	 * the default ID is fragments/pluginId_pluginVer or
 		*/
-	public String getArchiveID(IPluginEntry entry) {
+	private String getArchiveID(IPluginEntry entry) {
 		//FIXME: fragments
 		String type = (entry.isFragment()) ? Site.DEFAULT_FRAGMENT_PATH : Site.DEFAULT_PLUGIN_PATH;
 		return type + entry.getIdentifier().toString();
 	}
 
+	/**
+	 * return the archive ID for a plugin
+	 * The id is based on the feature
+	 * the default ID is plugins/pluginId_pluginVer or
+	 * the default ID is fragments/pluginId_pluginVer or
+		*/
+	private String getArchiveID(INonPluginEntry entry) {
+		String nonPluginBaseID = Site.DEFAULT_FEATURE_PATH + feature.getVersionIdentifier().toString()+"/";
+		return nonPluginBaseID + entry.getIdentifier().toString();
+	}
 	/*
 	 * @see IFeatureContentProvider#getFeatureManifestReference()
 	 */
@@ -160,17 +170,14 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
-			URL fileURL = provider.getArchiveReference(nonPluginEntry.getIdentifier());
+			URL fileURL = provider.getArchiveReference(getArchiveID(nonPluginEntry));
 			String fileString = UpdateManagerUtils.getPath(fileURL);
 
-			// return the list of all subdirectories
-			if (!fileString.endsWith(File.separator))
-				fileString += File.separator;
-			File pluginDir = new File(fileString);
-			if (!pluginDir.exists())
-				throw new IOException("The File:" + fileString + "does not exist.");
+			File nonPluginData = new File(fileString);
+			if (!nonPluginData.exists())
+				throw new IOException("The File:" + fileString + " does not exist.");
 
-			result[1] = new ContentReference(null,pluginDir.toURL());
+			result[0] = new ContentReference(nonPluginEntry.getIdentifier(),nonPluginData.toURL());
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive references:" + nonPluginEntry.getIdentifier().toString(), e);
@@ -199,7 +206,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 			result = new ContentReference[files.size()];
 			for (int i = 0; i < result.length; i++) {
 				File currentFile = (File) files.get(i);
-				result[i] = new ContentReference(null,currentFile.toURL());
+				result[i] = new ContentReference(currentFile.getName(),currentFile.toURL());
 			}
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
