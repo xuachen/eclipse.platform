@@ -16,7 +16,10 @@ public class MyURLEntry extends URLEntry {
 	public MyURLEntry(String annotation, URL url) throws MalformedURLException {
 		super();
 		setAnnotation(annotation);
-		resolve(url,null);
+		if (url!=null) {
+			setURLString(url.toExternalForm());
+			resolve(null,null);
+		}
 	}
 
 }

@@ -176,7 +176,10 @@ public class Feature extends FeatureModel implements IFeature {
 		int length = getDiscoverySiteEntryModels().length;
 		IURLEntry[] result = new IURLEntry[length];
 		if (length > 0) {
-			result = (IURLEntry[]) getDiscoverySiteEntryModels();
+			URLEntryModel[] list = getDiscoverySiteEntryModels();
+			for (int i = 0; i < list.length; i++) {
+				result[i] = (IURLEntry) getDiscoverySiteEntryModels()[i];
+			}
 		}
 		return result;
 	}
@@ -396,7 +399,10 @@ public class Feature extends FeatureModel implements IFeature {
 		int length = getPluginEntryModels().length;
 		IPluginEntry[] result = new IPluginEntry[length];
 		if (length > 0) {
-			result = (IPluginEntry[]) getPluginEntryModels();
+			for (int i = 0; i < result.length; i++) {
+				result[i] = (IPluginEntry) getPluginEntryModels()[i];
+			}
+
 		}
 		return result;
 	}

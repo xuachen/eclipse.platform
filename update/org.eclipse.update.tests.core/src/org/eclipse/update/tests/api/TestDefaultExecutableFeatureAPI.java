@@ -115,7 +115,7 @@ public class TestDefaultExecutableFeatureAPI extends UpdateManagerTestCase {
 	 * @see IFeature#testDiscoveryURLs()
 	 */
 	public void testDiscoveryURLs() throws CoreException,MalformedURLException {
-		IURLEntry[] urlInfo = new URLEntry[2];
+		IURLEntry[] urlInfo = new MyURLEntry[2];
 		URL[] url = new URL[2];
 		String[] label = new String[2];
 		try {

@@ -25,6 +25,23 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	private URL rootURL;
 
 	public static final String JAR_EXTENSION = ".jar";
+	
+	private FeatureContentProvider.IContentSelector contentSelector = new FeatureContentProvider.IContentSelector(){
+		/*
+		 * 
+		 */
+		public boolean include(String entry){
+			return true;
+		}
+		
+		/*
+		 *
+		 */
+		public String defineIdentifier(String entry){
+			return 	SiteFile.INSTALL_FEATURE_PATH+entry+"/";
+		}
+		
+	};
 
 	/**
 	 * Constructor 
@@ -243,7 +260,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		try {
 		ContentReference[] featureContentReference = getFeatureEntryArchiveReferences();
 		ContentReference localContentReference = asLocalReference(featureContentReference[0],null);
-		result = unpack(localContentReference,Feature.FEATURE_XML,null);
+		result = unpack(localContentReference,Feature.FEATURE_XML,contentSelector,null);
 		} catch (IOException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving manifest file in  feature :" + feature.getURL().toExternalForm(), e);
@@ -291,7 +308,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		try {
 				// feature may not be known, 
 				// we may be asked for the manifest before the feature is set
-				String archiveID = (feature!=null)?SiteFile.INSTALL_FEATURE_PATH+feature.getVersionIdentifier().toString()+"/":"";
+				String archiveID = (feature!=null)?contentSelector.defineIdentifier(feature.getVersionIdentifier().toString()):"";				
 				ContentReference currentReference = new ContentReference(archiveID,getURL());
 				currentReference = asLocalReference(currentReference,null);
 				references[0] = currentReference;
