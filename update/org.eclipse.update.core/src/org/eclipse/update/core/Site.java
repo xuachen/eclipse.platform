@@ -159,6 +159,10 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 		}
 
 	}
+	
+	private void remove(IPluginEntry p, IProgressMonitor m) {
+		// DUMMY METHOD
+	}
 
 	/**
 	 * 
