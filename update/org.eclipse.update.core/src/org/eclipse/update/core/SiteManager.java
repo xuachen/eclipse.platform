@@ -255,7 +255,7 @@ public class SiteManager {
 			}
 			site = installedSiteParser.parse(url) ;
 			// set the content provider
-			SiteContentProvider contentProvider = new SiteURLContentProvider(url);
+			SiteContentProvider contentProvider = new SiteContentProvider(url);
 			((InstalledSite)site).setSiteContentProvider(contentProvider);
 		}
 		return site;
@@ -407,7 +407,7 @@ public class SiteManager {
 				throw new CoreException(status);
 			}
 			// set the content provider
-			SiteContentProvider contentProvider = new SiteURLContentProvider(url);
+			SiteContentProvider contentProvider = new SiteContentProvider(url);
 			site.setSiteContentProvider(contentProvider);
 			contentProvider.setSite(site);
 			

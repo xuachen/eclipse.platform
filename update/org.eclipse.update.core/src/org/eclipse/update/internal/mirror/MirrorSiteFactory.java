@@ -95,7 +95,7 @@ public class MirrorSiteFactory extends BaseSiteFactory {
 				mue);
 		}
 		SiteContentProvider contentProvider = null;
-		contentProvider = new SiteFileContentProvider(url);
+		contentProvider = new SiteContentProvider(url);
 
 		site.setSiteContentProvider(contentProvider);
 		contentProvider.setSite(site);
