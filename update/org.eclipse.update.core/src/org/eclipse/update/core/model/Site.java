@@ -17,8 +17,7 @@ import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
-import org.xml.sax.*;
-
+import org.eclipse.update.internal.core.URLEncoder;
 
 /**
  * Site model object.
@@ -75,6 +74,8 @@ public abstract class Site extends ModelObject implements ISite{
 	private String locationURLString;
 	private URL locationURL;
 	private ISiteContentProvider siteContentProvider;
+	private List features = new ArrayList(0);
+	private boolean featuresLoaded = false;
 
 	private static FeatureParser parser = new FeatureParser();
 
@@ -390,6 +391,8 @@ public abstract class Site extends ModelObject implements ISite{
 		throws CoreException {
 
 		IFeature[] features = getFeatures(monitor);
+		if (features == null)
+			return null;
 		for (int i = 0; i < features.length; i++) {
 			if (versionId.equals(features[i].getVersionedIdentifier()))
 				return features[i];
@@ -398,4 +401,123 @@ public abstract class Site extends ModelObject implements ISite{
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.ISite#getFeatureReference(org.eclipse.update.core.VersionedIdentifier)
+	 */
+	public IFeatureReference getFeatureReference(VersionedIdentifier versionId) {
+		if (versionId == null)
+			return null;
+		IFeatureReference[] featureRefs = getFeatureReferences();
+		for (int i=0; i<featureRefs.length; i++)
+			if (versionId.equals(featureRefs[i].getVersionedIdentifier()))
+				return featureRefs[i];
+		return null;
+	}
+	
+	
+	/**
+	 * Creates the feature at specified url.
+	 * This is a factory method that creates the full feature object.
+	 * 
+	 * @param monitor the progress monitor
+	 * @param url the url of feature to get
+	 * @return the feature located at specified url
+	 * @since 3.0 
+	 */
+	private IFeature createFeature(URL url, IProgressMonitor monitor) throws CoreException {
+
+		if (url == null)
+			throw Utilities.newCoreException(Policy.bind("FeatureExecutableFactory.NullURL"), null);
+
+		// the URL should point to a directory
+		//url = validate(url);
+
+		InputStream featureStream = null;
+		if (monitor == null)
+			monitor = new NullProgressMonitor();
+
+		try {
+			IFeatureContentProvider contentProvider = createFeatureContentProvider(url);
+			URL nonResolvedURL = contentProvider.getFeatureManifestReference(null).asURL();
+			URL resolvedURL = URLEncoder.encode(nonResolvedURL);
+			featureStream = UpdateCore.getPlugin().get(resolvedURL).getInputStream();
+
+			parser.init();
+			Feature feature = parser.parse(featureStream);
+			monitor.worked(1);
+			
+			feature.setSite(this);
+			//feature.setFeatureContentProvider(contentProvider);
+			feature.setURL(url);
+			feature.resolve(url, url);
+			feature.markReadOnly();
+			//featureCache.put(url, feature);
+			addFeatureReference(feature);
+			features.add(feature);
+			return feature;
+		} catch (CoreException e) {
+			throw e;
+		} catch (Exception e) {
+			throw Utilities.newCoreException(Policy.bind("FeatureFactory.CreatingError", url.toExternalForm()), e);
+			//$NON-NLS-1$
+		} finally {
+			try {
+				if (featureStream != null)
+					featureStream.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+	
+
+	/**
+	 * Creates a feature content provider for the specified feature url
+	 * @param url
+	 * @return
+	 * @throws CoreException
+	 */
+	protected abstract IFeatureContentProvider createFeatureContentProvider(URL url) throws CoreException;
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.ISite#getFeature(org.eclipse.update.core.IFeatureReference, org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public IFeature getFeature(IFeatureReference featureRef, IProgressMonitor monitor)throws CoreException {
+		if (featureRef instanceof IFeature)
+			return (IFeature)featureRef;
+		else {
+			VersionedIdentifier versionId = featureRef.getVersionedIdentifier();
+			if (versionId != null) {
+				return getFeature(versionId,monitor);
+			} else {
+				return getFeature(featureRef.getURL(), monitor);
+			}
+		}	
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.ISite#getFeature(java.net.URL, org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public IFeature getFeature(URL url, IProgressMonitor monitor)
+			throws CoreException {
+
+		for (int i=0; url != null && i<features.size(); i++)
+			if (url.equals(((IFeature)features.get(i)).getURL()))
+				return (IFeature)features.get(i);
+		return createFeature(url, null);
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.ISite#getFeatures(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public IFeature[] getFeatures(IProgressMonitor monitor)
+			throws CoreException {
+
+		if (!featuresLoaded) {
+			IFeatureReference[] featureRefs = getFeatureReferences();
+			for (int i=0; i<featureRefs.length; i++)
+				// create implicity adds the features
+				createFeature(featureRefs[i].getURL(), monitor);
+			featuresLoaded = true;
+		}
+		return (IFeature[])features.toArray(new IFeature[features.size()]);
+	}
 }

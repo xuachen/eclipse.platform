@@ -81,19 +81,6 @@ public interface IUpdateSite extends ISite {
 	 * @since 2.0
 	 */
 	public ICategory getCategory(String name);
-
-	/**
-	 * Returns a reference to the specified feature if 
-	 * it is installed on this site.
-	 * filtered by the operating system, windowing system and architecture
-	 * system set in <code>Sitemanager</code>
-	 * 
-	 * @param feature feature
-	 * @return feature reference, or <code>null</code> if this feature
-	 * cannot be located on this site.
-	 * @since 2.0
-	 */
-	public IFeatureReference getFeatureReference(IFeature feature);
 	
 	/**
 	 * Returns the download size of the feature, if it can be determined.

@@ -33,30 +33,35 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 		//cleanup target  
 		File target = new File(TARGET_FILE_SITE.getFile());
 		UpdateManagerUtils.removeFromFileSystem(target);
+		InstallRegistry.cleanup();
 		
-		URL newURL = new File(dataPath + "ExecutableFeaturePackagedSite/data2/site.xml").toURL();
-		ISite remoteSite = SiteManager.getSite(newURL);
-		IFeatureReference[] featuresRef = remoteSite.getFeatureReferences();
-		ISite localSite = SiteManager.getSite(TARGET_FILE_SITE);
-		IFeature remoteFeature = null;
+		URL newURL = new File(dataPath + "ExecutableFeaturePackagedSite/data2/site.xml").toURL();	
+		IUpdateSite remoteSite = SiteManager.getUpdateSite(newURL,null);
+		IFeatureReference[] remoteFeatureReferences = remoteSite.getFeatureReferences();
+		IFeature remoteFeature = remoteSite.getFeature(remoteFeatureReferences[0],null);
+		IInstalledSite localSite = SiteManager.getInstalledSite(TARGET_FILE_SITE,null);
+		assertNotNull(remoteFeature);
+		remove(remoteFeature,localSite);		
+		localSite.install(remoteFeature,null,null,null,null);
+		
 		
 		// at least one executable feature and on packaged
 		boolean execFeature = false;
 		boolean packFeature = false;
 
-		if (featuresRef.length==0) fail ("no feature found");
+		if (remoteFeatureReferences.length==0) fail ("no feature found");
 	
-		for (int i = 0; i < featuresRef.length; i++) {
-			remoteFeature = featuresRef[i].getFeature();
+		for (int i = 0; i < remoteFeatureReferences.length; i++) {
+			remoteFeature = remoteSite.getFeature(remoteFeatureReferences[i],null);
 			remove(remoteFeature,localSite);			
-			localSite.install(remoteFeature, null,null);
+			localSite.install(remoteFeature, null,null,null,null);
 			
 			if (remoteFeature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider) packFeature = true;
 			if (remoteFeature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider) execFeature = true;
 
 			// verify
 			String site = localSite.getURL().getFile();
-			IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
+			IPluginEntry[] entries = remoteFeature.getPluginEntries(false);
 			assertTrue("no plugins entry", (entries != null && entries.length != 0));
 			String pluginName = entries[0].getVersionedIdentifier().toString();
 			File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);

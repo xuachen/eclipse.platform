@@ -437,9 +437,9 @@ public class FeatureInstaller {
 			// otherwise create a new feature primed from the files just installed
 			Feature feature = (Feature)targetSite.getFeature(sourceFeature.getVersionedIdentifier(),null);
 			if (feature != null)
-				;//return reinitializeFeature(feature);
+				return feature;//return reinitializeFeature(feature);
 			else
-				return (Feature)targetSite.createFeature(new File(getFeaturePath()).toURL(), null);
+				return targetSite.getFeature(new File(getFeaturePath()).toURL(), null);
 		} catch (MalformedURLException e) {
 			throw Utilities.newCoreException(Policy.bind("SiteFileContentConsumer.UnableToCreateURLForFile", getFeaturePath()), e);
 			//$NON-NLS-1$

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.update.core.model;
 
-import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -19,7 +18,7 @@ import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.model.*;
-import org.eclipse.update.internal.core.URLEncoder;
+
 
 /**
  * Installed Site model object.
@@ -35,7 +34,6 @@ public class InstalledSite extends Site implements IInstalledSite {
 
 	private ConfiguredSite configuredSiteModel;
 	private List pluginEntries = new ArrayList(0);
-	private List features = new ArrayList(0);
 	
 	private static FeatureParser parser = new FeatureParser();
 
@@ -149,24 +147,6 @@ public class InstalledSite extends Site implements IInstalledSite {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.ISite#getFeature(org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public IFeature getFeature(IFeatureReference featureRef, IProgressMonitor monitor) throws CoreException {
-		if (featureRef instanceof IFeature) {
-			return (IFeature)featureRef;
-		} else {
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.ISite#getFeatures()
-	 */
-	public IFeature[] getFeatures(IProgressMonitor monitor) throws CoreException {
-		return (IFeature[])features.toArray(new IFeature[features.size()]);
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.IInstalledSite#getCurrentConfiguredSite()
@@ -211,49 +191,12 @@ public class InstalledSite extends Site implements IInstalledSite {
 		}
 	}
 	
-	public IFeature createFeature(URL url, IProgressMonitor monitor) throws CoreException {
+	protected IFeatureContentProvider createFeatureContentProvider(URL url) throws CoreException {
 
 		if (url == null)
 			throw Utilities.newCoreException(Policy.bind("FeatureExecutableFactory.NullURL"), null);
 
-		// the URL should point to a directory
-		//url = validate(url);
-
-		InputStream featureStream = null;
-		if (monitor == null)
-			monitor = new NullProgressMonitor();
-
-		try {
-			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
-			URL nonResolvedURL = contentProvider.getFeatureManifestReference(null).asURL();
-			URL resolvedURL = URLEncoder.encode(nonResolvedURL);
-			featureStream = UpdateCore.getPlugin().get(resolvedURL).getInputStream();
-
-			parser.init();
-			Feature feature = parser.parse(featureStream);
-			monitor.worked(1);
-			
-			feature.setSite(this);
-			//feature.setFeatureContentProvider(contentProvider);
-			feature.setURL(url);
-			feature.resolve(url, url);
-			feature.markReadOnly();
-			//featureCache.put(url, feature);
-			addFeatureReference(feature);
-			features.add(feature);
-			return feature;
-		} catch (CoreException e) {
-			throw e;
-		} catch (Exception e) {
-			throw Utilities.newCoreException(Policy.bind("FeatureFactory.CreatingError", url.toExternalForm()), e);
-			//$NON-NLS-1$
-		} finally {
-			try {
-				if (featureStream != null)
-					featureStream.close();
-			} catch (IOException e) {
-			}
-		}
+		return new FeatureExecutableContentProvider(url);
 	}
 
 }

@@ -421,9 +421,13 @@ public class FeatureReference extends ModelObject implements IFeatureReference {
 		}
 
 		// we need the exact match or we may have an infinite loop
-		versionId = new VersionedIdentifier(getURL().toExternalForm(), null);
+		if (getURL() == null)
+			return null;
+
 		try {
-			versionId = getFeature().getVersionedIdentifier();
+			IFeature f = getSite().getFeature(getURL(), null);
+			if (f != null)
+				versionId = f.getVersionedIdentifier();
 		} catch (CoreException e) {
 			UpdateCore.warn("", e);
 		}

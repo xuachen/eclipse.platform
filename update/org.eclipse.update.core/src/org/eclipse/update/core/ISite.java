@@ -12,8 +12,6 @@ package org.eclipse.update.core;
 import java.net.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.update.configuration.*;
-import org.eclipse.update.core.model.*;
 
 /**
  * Site represents a location containing some number of features (packaged
@@ -116,7 +114,7 @@ public interface ISite extends IAdaptable {
 
 	
 	/**
-	 * Returns the feature at the specified URL.
+	 * Returns the feature of the specified version.
 	 * This is a factory method that creates the full feature object.
 	 * 
 	 * @param monitor the progress monitor
@@ -126,4 +124,29 @@ public interface ISite extends IAdaptable {
 	 */
 	public IFeature getFeature(VersionedIdentifier versionId, IProgressMonitor monitor) throws CoreException;
 
+	
+	/**
+	 * Returns the feature at specified url.
+	 * This is a factory method that creates the full feature object.
+	 * 
+	 * @param monitor the progress monitor
+	 * @param url the url of feature to get
+	 * @return the feature located at specified url
+	 * @since 3.0 
+	 */
+	public IFeature getFeature(URL url, IProgressMonitor monitor) throws CoreException;
+	
+	
+	/**
+	 * Returns a reference to the specified feature if 
+	 * it is installed on this site.
+	 * filtered by the operating system, windowing system and architecture
+	 * system set in <code>Sitemanager</code>
+	 * 
+	 * @param versionId versioned identifier for feature to find
+	 * @return feature reference, or <code>null</code> if this feature
+	 * cannot be located on this site.
+	 * @since 2.0
+	 */
+	public IFeatureReference getFeatureReference(VersionedIdentifier versionId);
 }

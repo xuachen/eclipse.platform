@@ -791,8 +791,8 @@ public class Feature extends FeatureReference implements IFeature{
 		markReferenceReadOnly((URLEntry)getUpdateSiteEntry());
 		markListReferenceReadOnly((URLEntry[])getDiscoverySiteEntries());
 		markListReferenceReadOnly((Import[])getImports(false));
-		markListReferenceReadOnly((URLEntry[])getPluginEntries(false));
-		markListReferenceReadOnly((URLEntry[])getNonPluginEntries(false));
+		markListReferenceReadOnly((PluginEntry[])getPluginEntries(false));
+		markListReferenceReadOnly((NonPluginEntry[])getNonPluginEntries(false));
 	}
 
 	/**
@@ -812,8 +812,8 @@ public class Feature extends FeatureReference implements IFeature{
 		this.base = base;
 
 		// plugin entry and nonpluginentry are optimized too
-		resolveListReference((URLEntry[])getPluginEntries(false), base, bundleURL);
-		resolveListReference((URLEntry[])getNonPluginEntries(false), base, bundleURL);
+		resolveListReference((PluginEntry[])getPluginEntries(false), base, bundleURL);
+		resolveListReference((NonPluginEntry[])getNonPluginEntries(false), base, bundleURL);
 		
 		//URLSiteModel are optimized
 		resolveReference((URLEntry)getDescription(),base, bundleURL);

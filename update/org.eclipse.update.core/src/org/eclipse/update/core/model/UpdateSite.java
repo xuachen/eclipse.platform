@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.update.core.model;
 
-import java.io.*;
 import java.net.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.URLEncoder;
+
 
 
 /**
@@ -34,6 +33,7 @@ public class UpdateSite extends Site implements IUpdateSite {
 
 	private Set /*of Category*/ categories;
 	private List features = new ArrayList(0);
+	private boolean featuresLoaded = false;
 	private static FeatureParser parser = new FeatureParser();
 	
 
@@ -131,6 +131,7 @@ public class UpdateSite extends Site implements IUpdateSite {
 	 * @since 2.0
 	 */
 	public void resolve(URL base, URL bundleURL) throws MalformedURLException {
+		super.resolve(base, bundleURL);
 		resolveListReference((Category[])getCategories(), base, bundleURL);
 	}
 
@@ -165,46 +166,6 @@ public class UpdateSite extends Site implements IUpdateSite {
 		}
 
 		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.ISite#getFeature(org.eclipse.update.core.IFeatureReference, org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public IFeature getFeature(
-		IFeatureReference featureRef,
-		IProgressMonitor monitor)
-		throws CoreException {
-		if (featureRef instanceof IFeature)
-			return (IFeature)featureRef;
-		else {
-			VersionedIdentifier versionId = featureRef.getVersionedIdentifier();
-			if (versionId != null) {
-				return getFeature(versionId,monitor);
-			} else {
-				URL url = featureRef.getURL();
-				for (int i=0; url != null && i<features.size(); i++)
-					if (url.equals(((IFeature)features.get(i)).getURL()))
-						return (IFeature)features.get(i);
-				return createFeature(url, null);
-			}
-		}	
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.ISite#getFeatures()
-	 */
-	public IFeature[] getFeatures(IProgressMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.update.core.IUpdateSite#getFeatureReference(org.eclipse.update.core.IFeature)
-	 */
-	public IFeatureReference getFeatureReference(IFeature feature) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -320,48 +281,11 @@ public class UpdateSite extends Site implements IUpdateSite {
 			
 	}
 
-	public IFeature createFeature(URL url, IProgressMonitor monitor) throws CoreException {
+	public IFeatureContentProvider createFeatureContentProvider(URL url) throws CoreException {
 
 		if (url == null)
 			throw Utilities.newCoreException(Policy.bind("FeatureExecutableFactory.NullURL"), null);
 
-		// the URL should point to a directory
-		//url = validate(url);
-
-		InputStream featureStream = null;
-		if (monitor == null)
-			monitor = new NullProgressMonitor();
-
-		try {
-			IFeatureContentProvider contentProvider = new FeaturePackagedContentProvider(url);
-			URL nonResolvedURL = contentProvider.getFeatureManifestReference(null).asURL();
-			URL resolvedURL = URLEncoder.encode(nonResolvedURL);
-			featureStream = UpdateCore.getPlugin().get(resolvedURL).getInputStream();
-
-			parser.init();
-			Feature feature = parser.parse(featureStream);
-			monitor.worked(1);
-			
-			feature.setSite(this);
-			//feature.setFeatureContentProvider(contentProvider);
-			feature.setURL(url);
-			feature.resolve(url, url);
-			feature.markReadOnly();
-			//featureCache.put(url, feature);
-			addFeatureReference(feature);
-			features.add(feature);
-			return feature;
-		} catch (CoreException e) {
-			throw e;
-		} catch (Exception e) {
-			throw Utilities.newCoreException(Policy.bind("FeatureFactory.CreatingError", url.toExternalForm()), e);
-			//$NON-NLS-1$
-		} finally {
-			try {
-				if (featureStream != null)
-					featureStream.close();
-			} catch (IOException e) {
-			}
-		}
+		return new FeaturePackagedContentProvider(url);
 	}
 }
