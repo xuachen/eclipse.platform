@@ -100,7 +100,8 @@ public interface IFeature extends IPluginContainer {
 	 * if there are no discovey info.
 	 * @since 2.0 
 	 */
-
+	//VK: method name: getDiscoveryInfo (singular == plural)
+	
 	IInfo [] getDiscoveryInfos() ;
 	
 	/**
@@ -269,6 +270,15 @@ public interface IFeature extends IPluginContainer {
 	 * @return 
 	 * @since 2.0 
 	 */
+	// VK: I am confused ... pluginEntry, dataEntry, archive
+	// VK: getPluginEntries()
+	// VK: getPluginEntryCount()
+	// VK: addPluginEntry(...)
+	// VK: remove(IPluginEntry)
+	// VK: getDataEntries()
+	// VK: addDataEntry(...)
+	// VK: no count, no remove
+	// VK: getArchives() .... no rest
 	// FIXME: javadoc	
 	IDataEntry[] getDataEntries();
 	
@@ -278,6 +288,7 @@ public interface IFeature extends IPluginContainer {
 	 * @param entry the data entry
 	 * @since 2.0 
 	 */
+	//VK: what is this used for. Why do we not have addArchive as well?
 	
 	void addDataEntry(IDataEntry dataEntry);
 	

@@ -148,6 +148,7 @@ public class SiteURL extends Site {
 	/*
 	 * @see IAdaptable#getAdapter(Class)
 	 */
+	 // VK: what is this used for ???
 	public Object getAdapter(Class adapter) {
 		return null;
 	}

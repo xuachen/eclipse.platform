@@ -82,6 +82,7 @@ public class InternalSiteManager {
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
 					UpdateManagerPlugin.getPlugin().debug("URL's protocol :" + protocol + " is not recongnize, attempting to discover site type in site.xml");
 				}
+				// VK: should have local private debug(String) that delegates as above ... readability
 
 				// protocol not found, attempt to use default site
 				// we will atemopt to read teh site.xml 
@@ -144,6 +145,7 @@ public class InternalSiteManager {
 	 * Gets the sitesTypes
 	 * @return Returns a Map
 	 */
+	// VK: getSiteTypes() ???
 	public Map getSitesTypes() {
 		return sitesTypes;
 	}

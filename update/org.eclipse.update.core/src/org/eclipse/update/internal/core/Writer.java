@@ -33,6 +33,7 @@ public void writeSite(IWritable element, PrintWriter w) {
  * @param buffer
  * @param c
  */
+// VK: if we are reading/ writing as UTF-8, why are we doing this ?????
 private static void appendEscapedChar(StringBuffer buffer, char c) {
 	String replacement = getReplacement(c);
 	if (replacement != null) {

@@ -170,6 +170,8 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#getContentReferences()
 	 */
+	// VK: javadoc: AbstractFeature does not exist
+	// VK: code below handles plugin data only. What about non-plugin data???
 	public String[] getArchives() {
 		String[] names = new String[getPluginEntryCount()];
 		IPluginEntry[] entries = getPluginEntries();
@@ -182,6 +184,7 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#isInstallable()
 	 */
+	// VK: javadoc: AbstractFeature does not exist
 	public boolean isInstallable() {
 		return true;
 	}
@@ -189,6 +192,7 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#getInputStreamFor(String)
 	 */
+	// VK: javadoc: AbstractFeature does not exist
 	protected InputStream getInputStreamFor(String name) throws CoreException, IOException {
 		InputStream result = null;
 		try {
@@ -213,6 +217,7 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#getStorageUnitNames()
 	 */
+	// VK: javadoc: AbstractFeature does not exist
 	protected String[] getStorageUnitNames() throws CoreException {
 
 		// make sure the feature archive has been transfered locally
@@ -267,6 +272,7 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#close(IPluginEntry)
 	 */
+	// VK: javadoc: AbstractFeature does not exist
 	protected void close(IPluginEntry entry) throws IOException {
 		if (currentOpenJarFile != null)
 			currentOpenJarFile.close();
@@ -275,6 +281,7 @@ public class FeaturePackaged extends Feature {
 	/**
 	 * @see AbstractFeature#closeFeature()
 	 */
+	// VK: javadoc: AbstractFeature does not exist
 	public void closeFeature() throws IOException {
 		if (currentOpenJarFile != null)
 			currentOpenJarFile.close();
@@ -328,6 +335,8 @@ public class FeaturePackaged extends Feature {
 	 * baseclass 
 	 * baseclass + ".properties" 
 	 */
+	// VK: why do we not use the class loader to load these? would not need to do the lookup
+	// VK: (ie. use the ResourceBundle support)
 	public ResourceBundle getResourceBundle() throws IOException, CoreException {
 
 		ResourceBundle result = null;

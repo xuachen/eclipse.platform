@@ -23,6 +23,7 @@ public abstract class Site implements ISite, IWritable {
 	 * default path under the site where plugins will be installed
 	 */
 	//FIXME: fragment
+	//VK: plugins and fragments are going to be in plugins/ (no separate fragment path)
 	public static final String DEFAULT_FRAGMENT_PATH = "fragments/";
 
 	/**
@@ -145,6 +146,8 @@ public abstract class Site implements ISite, IWritable {
 		// should start Unit Of Work and manage Progress Monitor
 		Feature localFeature = createExecutableFeature(sourceFeature);
 		((Feature) sourceFeature).install(localFeature, monitor);
+		// VK: any time you need to cast like this it means that any other implementation of
+		// IFeature will not work !!!!
 		IFeatureReference localReference = new FeatureReference(this, localFeature.getURL());
 		this.addFeatureReference(localReference);
 
@@ -162,6 +165,8 @@ public abstract class Site implements ISite, IWritable {
 	public void remove(IFeature feature, IProgressMonitor monitor) throws CoreException {
 
 		((Feature)feature).remove(monitor);
+		// VK: any time you need to cast like this it means that any other implementation of
+		// IFeature will not work !!!!
 
 		// remove feature reference
 		IFeatureReference[] featureReferences = getFeatureReferences();

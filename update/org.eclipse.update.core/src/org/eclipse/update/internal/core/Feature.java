@@ -16,6 +16,12 @@ import org.xml.sax.SAXException;
  * Abstract Class that implements most of the behavior of a feature
  * A feature ALWAYS belongs to an ISite
  */
+// VK: we need to rework this as an API base class. Also need to rework which methods
+// VK: need to be exposed on IFeature (same comment for Site, ISite)
+// VK: Also, need to be able to poof-up a feature model from XML without having a site,
+// VK: or passing null site (needed in PDE, build code, etc). Need a constructor
+// VK: that takes a stream
+
 public abstract class Feature implements IFeature {
 
 	/**
@@ -232,6 +238,7 @@ public abstract class Feature implements IFeature {
 	/**
 	 * @see IFeature#getDiscoveryInfos()
 	 */
+	//VK: method name: getDiscoveryInfo (plural==singular)
 	public IInfo[] getDiscoveryInfos() {
 		IInfo[] result = new IInfo[0];
 		if (discoveryInfos == null && !isInitialized)
@@ -365,6 +372,7 @@ public abstract class Feature implements IFeature {
 	 * Sets the discoveryInfos
 	 * @param discoveryInfos The discoveryInfos to set
 	 */
+	//VK: method name: getDiscoveryInfo (plural==singular)
 	public void setDiscoveryInfos(IInfo[] discoveryInfos) {
 		if (discoveryInfos != null) {
 			this.discoveryInfos = (new ArrayList());
@@ -732,6 +740,7 @@ public abstract class Feature implements IFeature {
 	/** 
 	 * initialize teh feature by reading the feature.xml if it exists
 	 */
+	// VK: why is this public ???
 	public void initializeFeature() throws CoreException {
 		if (!isInitialized) {
 			isInitialized = true;
@@ -765,6 +774,7 @@ public abstract class Feature implements IFeature {
 
 	/**
 	 */
+	// VK: method name ... downloadArchives(...)
 	private void downloadArchivesLocally(ISite tempSite, String[] archiveIDToInstall, IProgressMonitor monitor) throws CoreException, IOException {
 
 		URL sourceURL;
@@ -785,6 +795,7 @@ public abstract class Feature implements IFeature {
 			// should be the regular plugins/pluginID_ver as the Temp site is OUR site
 			newFile = Site.DEFAULT_PLUGIN_PATH + archiveIDToInstall[i];
 			newURL = UpdateManagerUtils.resolveAsLocal(sourceURL, newFile, monitor);
+			// VK: this is a very confusing way to do a download
 
 			// transfer the possible mapping to the temp site						
 			 ((Site) tempSite).addArchive(new Info(archiveIDToInstall[i], newURL));
@@ -808,11 +819,15 @@ public abstract class Feature implements IFeature {
 
 	/**
 	 */
+	// VK: downloadData ... why are we handling the download of plugin and non-plugin
+	// VK: file differently??? Why not just have one download method that takes a source
+	// VK: and target??? Would have one download code handling progress, recovery, etc
 	private void downloadDataLocally(IFeature targetFeature, IDataEntry[] dataToInstall, IProgressMonitor monitor) throws CoreException, IOException {
 
 		URL sourceURL;
 		// any other data
 		IDataEntry[] entries = getDataEntries();
+		// VK: why getDataEntries() when this is passed as dataToInstall ??? It is not used anywhere else.
 		if (entries != null) {
 			if (monitor != null) {
 				monitor.beginTask("Installing Other Data information", dataToInstall.length);
@@ -822,6 +837,7 @@ public abstract class Feature implements IFeature {
 			}
 
 			for (int j = 0; j < entries.length; j++) {
+				// VK: see above ... use "entries.length" but iterate over dataToInstall[j] !!!!
 				String name = dataToInstall[j].getIdentifier();
 				if (monitor != null) {
 					monitor.subTask("..." + name);
@@ -1012,6 +1028,7 @@ public abstract class Feature implements IFeature {
 		/**
 		 * perform pre processing before opening the feature archive
 		 */
+		// VK: why is open protected and close public
 		protected void openFeature() {
 		};
 
@@ -1052,6 +1069,9 @@ public abstract class Feature implements IFeature {
 		 * the default ID is plugins/pluginId_pluginVer or
 		 * the default ID is fragments/pluginId_pluginVer or
 	 	*/
+		// VK: what do we want the concept of the id to be? we override it in PackagedFeature.
+		// VK: the whole handling of pluginEntry, dataEntry, archive is CONFUSING !!!
+		// VK: what about non-plugin data ??? are these archives???
 		public String getArchiveID(IPluginEntry entry){
 			//FIXME: fragments
 			String type = (entry.isFragment())?Site.DEFAULT_FRAGMENT_PATH:Site.DEFAULT_PLUGIN_PATH;
@@ -1061,11 +1081,14 @@ public abstract class Feature implements IFeature {
 		/**
 		 * return the list of FILE to be transfered for a Plugin
 		 */
+		// VK: why are some of the abstract methods public and others are protected. All
+		// VK: methods that need to be called by other objects (ec. Site) need to be public
 		protected abstract String[] getStorageUnitNames(IPluginEntry pluginEntry) throws CoreException;
 
 		/**
 		 * return the list of FILE to be transfered from within the Feature
 		 */
+		// VK: the term "storage unit" is confusing ...
 		protected abstract String[] getStorageUnitNames() throws CoreException;
 
 		/**
@@ -1089,6 +1112,7 @@ public abstract class Feature implements IFeature {
 		/*
 	 * @see IAdaptable#getAdapter(Class)
 	 */
+	 //VK: who calls this. Why is this needed?
 	public Object getAdapter(Class adapter) {
 		return null;
 	}

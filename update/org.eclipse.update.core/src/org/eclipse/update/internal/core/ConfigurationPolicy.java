@@ -215,7 +215,9 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 					IPluginEntry entry = entries[index];
 					String id = entry.getIdentifier().toString();
 					// obtain the path of the plugin directory on teh site	
-					String archiveID = ((Feature)feature).getArchiveID(entry);				
+					String archiveID = ((Feature)feature).getArchiveID(entry);	
+		// VK: any time you need to cast like this it means that any other implementation of
+		// IFeature will not work !!!!			
 					URL url =  ((Site) site).getURL(archiveID);
 					if (url!=null){
 						// make it relative to teh site

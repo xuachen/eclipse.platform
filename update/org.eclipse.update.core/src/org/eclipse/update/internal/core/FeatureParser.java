@@ -56,6 +56,8 @@ public class FeatureParser extends DefaultHandler {
 		
 		Assert.isTrue(feature instanceof Feature);
 		this.feature = (Feature)feature;
+		// VK: any time you need to cast like this it means that any other implementation of
+		// IFeature will not work !!!!
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING){
@@ -63,6 +65,8 @@ public class FeatureParser extends DefaultHandler {
 		}
 
 		bundle = ((Feature)feature).getResourceBundle();
+		// VK: any time you need to cast like this it means that any other implementation of
+		// IFeature will not work !!!!
 		
 		parser.parse(new InputSource(featureStream));
 	}
