@@ -11,6 +11,8 @@ import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.core.*;
+import org.eclipse.update.core.*;
 
 public class MissingFeature implements IFeature {
 	private URL url;
@@ -232,6 +234,25 @@ public class MissingFeature implements IFeature {
 	 * @see IPluginContainer#remove(IPluginEntry)
 	 */
 	public void remove(IPluginEntry entry) throws CoreException {
+	}
+
+	/*
+	 * @see IFeature#setFeatureContentProvider(IFeatureContentProvider)
+	 */
+	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider) {
+	}
+
+	/*
+	 * @see IFeature#setContentConsumer(IContentConsumer)
+	 */
+	public void setContentConsumer(IContentConsumer contentConsumer) {
+	}
+
+	/*
+	 * @see IFeature#getContentConsumer()
+	 */
+	public IContentConsumer getContentConsumer() throws CoreException {
+		return null;
 	}
 
 }
