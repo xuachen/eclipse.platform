@@ -5,6 +5,7 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
  
+import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
  
  /**
@@ -15,6 +16,14 @@ import org.eclipse.core.runtime.CoreException;
  
 public interface IFeatureContentProvider {
 	
+	/**
+	 * Returns the feature url
+	 * 
+	 * @return the feature url
+	 * @since 2.0
+	 */
+	URL getURL();	
+
 	/**
 	 * Returns the feature manifest 
 	 * 

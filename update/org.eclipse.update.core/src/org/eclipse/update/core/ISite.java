@@ -108,6 +108,21 @@ public interface ISite extends IPluginContainer {
 	void addCategory(ICategory category);
 	
 	/**
+	 * returns the default type for an executable feature on this site
+	 * @return String the type
+	 * @since 2.0
+	 */
+	String getDefaultExecutableFeatureType();
+	
+	/**
+	 * returns the default type for an installable feature on this site
+	 * @return String the type
+	 * @since 2.0
+	 */
+	String getDefaultInstallableFeatureType();
+	
+	
+	/**
 	 * Saves the site in a persitent form
 	 * @since 2.0 
 	 */
@@ -135,8 +150,9 @@ public interface ISite extends IPluginContainer {
 	
 	/**
 	 * Returns the ISiteContentProvider for this feature
+	 * @throws CoreException when the content provider is not set
 	 * @since 2.0
 	 */
-	ISiteContentProvider getSiteContentProvider();
+	ISiteContentProvider getSiteContentProvider() throws CoreException;
 	
 }

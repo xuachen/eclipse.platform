@@ -103,10 +103,10 @@ public class FeatureReference implements IFeatureReference, IWritable {
 				if (url.toExternalForm().endsWith(FeaturePackaged.JAR_EXTENSION)) {
 					// if it ends with JAR, guess it is a FeaturePackaged
 					String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
-					featureType = pluginID+IFeatureFactory.PACKAGED_FEATURE_TYPE;
+					featureType = pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
 				} else {
 					// ask the Site for the default type 
-					featureType = ((Site) site).getDefaultFeatureType(url);
+					featureType =site.getDefaultExecutableFeatureType();
 				}
 			}
 		feature = createFeature(featureType,url,site);				

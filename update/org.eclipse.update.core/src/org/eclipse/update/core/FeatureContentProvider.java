@@ -54,6 +54,13 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	}
 
 	/*
+	 * @see IFeatureContentProvider#getURL()
+	 */
+	public URL getURL() {
+		return base;
+	}
+
+	/*
 	 * @see IFeatureContentProvider#getFeatureManifest()
 	 */
 	public abstract ContentReference getFeatureManifest()
@@ -109,7 +116,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	public ContentReference asLocalReference(ContentReference ref, BaseFeature.ProgressMonitor monitor) throws IOException {
+	public ContentReference asLocalReference(ContentReference ref, Feature.ProgressMonitor monitor) throws IOException {
 		
 		// check to see if this is already a local reference
 		if (ref.isLocalReference())
@@ -146,7 +153,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	public File asLocalFile(ContentReference ref, BaseFeature.ProgressMonitor monitor) throws IOException {
+	public File asLocalFile(ContentReference ref, Feature.ProgressMonitor monitor) throws IOException {
 		File file = ref.asFile();
 		if (file != null)
 			return file;
@@ -222,7 +229,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */	
-	protected void copy(InputStream is, OutputStream os, BaseFeature.ProgressMonitor monitor) throws IOException {
+	protected void copy(InputStream is, OutputStream os, Feature.ProgressMonitor monitor) throws IOException {
 		// TBA: progress monitor support
 		// TBA: indication of download size (xK of yK)
 		byte[] buf = getBuffer();
@@ -247,7 +254,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * 
 	 * @since 2.0
 	 */
-	protected ContentReference[] unpack(ContentReference archive, BaseFeature.ProgressMonitor monitor) throws IOException {
+	protected ContentReference[] unpack(ContentReference archive, Feature.ProgressMonitor monitor) throws IOException {
 		
 		// assume we have a reference that represents a jar archive.
 		File archiveFile = asLocalFile(archive, monitor);

@@ -21,7 +21,7 @@ public interface IFeatureFactory {
 	 * extension point ID
 	 */
 	public static final String SIMPLE_EXTENSION_ID = "featureTypes";
-	public static final String PACKAGED_FEATURE_TYPE = "jar";
+	public static final String INSTALLABLE_FEATURE_TYPE = "jar";
 	public static final String EXECUTABLE_FEATURE_TYPE = "exe";	
 	
 	/**

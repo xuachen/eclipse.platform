@@ -97,8 +97,8 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 */
 	public IFeatureReference install(IFeature sourceFeature, IProgressMonitor monitor) throws CoreException {
 		// should start Unit Of Work and manage Progress Monitor
-		Feature localFeature = createExecutableFeature(sourceFeature);
-		((Feature) sourceFeature).install(localFeature, monitor);
+		IFeature localFeature = createExecutableFeature(sourceFeature);
+		sourceFeature.install(localFeature, monitor);
 		IFeatureReference localReference = new FeatureReference(this, localFeature.getURL());
 		this.addFeatureReference(localReference);
 
@@ -141,7 +141,28 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/**
 	 * 
 	 */
-	public abstract Feature createExecutableFeature(IFeature sourceFeature) throws CoreException;
+	public Feature createExecutableFeature(IFeature sourceFeature) throws CoreException {
+		String executableType =  getDefaultExecutableFeatureType();
+		IFeature result = null;
+		if (executableType!=null){
+			IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(featureType);
+			result = factory.createFeature(url,site);
+			this.getSiteContentProvider().get
+			
+		String featurePath = getFeaturePath(sourceFeature.getIdentifier());
+		featurePath += featurePath.endsWith("/") ? "" : "/";		
+
+			try {
+				URL newLocalURL = new URL("file",null,featurePath);
+				result.getFeatureContentProvider().setURL(newLocalURL);
+			} catch (MalformedURLException e){
+					String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+					IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error creating file new Local URL for feature:" + featurePath, e);
+					throw new CoreException(status);			
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * store Feature files/ Features info into the Site
@@ -157,11 +178,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * return the URL of the archive ID
 	 */
 	public abstract URL getURL(String archiveID) throws CoreException;
-	/**
-	 * returns the default prefered feature type for this site
-	 */
-	public abstract String getDefaultFeatureType(URL featureURL) throws CoreException;
-
 	/**
 	 * parse the physical site to initialize the site object
 	 * @throws CoreException
@@ -464,7 +480,12 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/*
 	 * @see ISite#getSiteContentProvider()
 	 */
-	public ISiteContentProvider getSiteContentProvider() {
+	public ISiteContentProvider getSiteContentProvider() throws CoreException {
+		if (contentConsumer==null){
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Content Provider not set for site:" + getURL().toExternalForm(),null);
+			throw new CoreException(status);
+		}		
 		return siteContentProvider;
 	}
 

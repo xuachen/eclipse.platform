@@ -82,7 +82,7 @@ public class FeaturePackaged extends Feature {
 	 * Constructor for DefaultPackagedFeature
 	 */
 	public FeaturePackaged(URL url, ISite targetSite)  throws CoreException {
-		super(url, targetSite);
+		super(targetSite);
 	}
 
 	/**

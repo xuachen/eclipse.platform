@@ -37,24 +37,6 @@ public class SiteFile extends SiteURL {
 	}
 
 	/**
-	 * @see AbstractSite#createExecutableFeature(IFeature)
-	 */
-	public Feature createExecutableFeature(IFeature sourceFeature) throws CoreException {
-		Feature result =  new FeatureExecutable(sourceFeature, this);
-		String featurePath = getFeaturePath(sourceFeature.getIdentifier());
-		featurePath += featurePath.endsWith("/") ? "" : "/";		
-		try {
-			URL newLocalURL = new URL("file",null,featurePath);
-			result.setURL(newLocalURL);
-		} catch (MalformedURLException e){
-				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-				IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error creating file new Local URL for feature:" + featurePath, e);
-				throw new CoreException(status);			
-		}
-		return result;
-	}
-
-	/**
 	 * @see IPluginContainer#store(IPluginEntry, String, InputStream)
 	 */
 	public void store(IPluginEntry pluginEntry, String contentKey, InputStream inStream) throws CoreException {
@@ -115,14 +97,6 @@ public class SiteFile extends SiteURL {
 		String path = UpdateManagerUtils.getPath(getURL());
 		String featurePath = path + INSTALL_FEATURE_PATH + featureIdentifier.toString();
 		return featurePath;
-	}
-
-	/*
-	 * @see Site#getDefaultFeature(URL)
-	 */
-	public String getDefaultFeatureType(URL featureURL) throws CoreException {
-		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
-		return pluginID+IFeatureFactory.EXECUTABLE_FEATURE_TYPE;
 	}
 
 	/**
@@ -417,6 +391,22 @@ public class SiteFile extends SiteURL {
 		}
 		
 		
+	}
+
+	/*
+	 * @see ISite#getDefaultExecutableFeatureType()
+	 */
+	public String getDefaultExecutableFeatureType() {
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
+		return pluginID+IFeatureFactory.EXECUTABLE_FEATURE_TYPE;
+	}
+
+	/*
+	 * @see ISite#getDefaultInstallableFeatureType()
+	 */
+	public String getDefaultInstallableFeatureType() {
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";
+		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
 	}
 
 }

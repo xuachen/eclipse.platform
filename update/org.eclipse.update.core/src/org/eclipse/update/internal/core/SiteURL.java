@@ -57,15 +57,6 @@ public class SiteURL extends Site {
 	}
 
 	/**
-	 * @see AbstractSite#createExecutableFeature(IFeature)
-	 */
-	public Feature createExecutableFeature(IFeature sourceFeature) throws CoreException {
-		return null;
-	}
-
-
-
-	/**
 	 * @see IPluginContainer#getPluginEntries()
 	 */
 	public IPluginEntry[] getPluginEntries() {
@@ -122,14 +113,6 @@ public class SiteURL extends Site {
 	}
 
 	/**
-	 * @see Site#getDefaultFeatureType(URL)
-	 */
-	public String getDefaultFeatureType(URL featureURL) throws CoreException {
-		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";		
-		return pluginID+IFeatureFactory.PACKAGED_FEATURE_TYPE;
-	}
-
-	/**
 	 * Method parseSite.
 	 */
 	protected void parseSite() throws CoreException {
@@ -161,6 +144,21 @@ public class SiteURL extends Site {
 	 */
 	public void remove(IPluginEntry entry) throws CoreException {
 		//FIXME: should not be called should it ? Can I remove from any URL Site ?		
+	}
+
+	/*
+	 * @see ISite#getDefaultExecutableFeatureType()
+	 */
+	public String getDefaultExecutableFeatureType() {
+		return null;
+	}
+
+	/*
+	 * @see ISite#getDefaultInstallableFeatureType()
+	 */
+	public String getDefaultInstallableFeatureType() {
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";		
+		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
 	}
 
 }

@@ -27,7 +27,6 @@ public class FeaturePackagedFactory extends FeatureModelFactory implements IFeat
 			featureStream = url.openStream();
 			FeatureModelFactory factory = (FeatureModelFactory) this;
 			feature = (FeaturePackaged) factory.parseFeature(featureStream);
-			feature.setURL(url);
 			feature.setSite(site);
 			feature.resolve(url, getResourceBundle(url));
 			feature.markReadOnly();

@@ -8,11 +8,8 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.IFeatureReference;
 
 /**
  * 
@@ -142,7 +139,7 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 		MultiStatus multiStatus = new MultiStatus(uniqueId,IStatus.WARNING,"Some plugin of this feature are required by the following running plugins",null);
 
 		// plugins to remove		
-		IPluginEntry[] pluginsToRemove = ((SiteLocal)SiteManager.getLocalSite()).getDeltaPluginEntries(feature.getFeature());
+		IPluginEntry[] pluginsToRemove = ((SiteLocal)SiteManager.getLocalSite()).getUnusedPluginEntries(feature.getFeature());
 		
 		// all other plugins that are configured
 		IPluginDescriptor[] descriptors =Platform.getPluginRegistry().getPluginDescriptors();
@@ -214,9 +211,11 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 				for (int index = 0; index < entries.length; index++) {
 					IPluginEntry entry = entries[index];
 					String id = entry.getIdentifier().toString();
-					// obtain the path of the plugin directory on teh site	
-					String archiveID = ((Feature)feature).getArchiveID(entry);				
-					URL url =  ((Site) site).getURL(archiveID);
+					// obtain the path of the plugin directories on the site	
+					ContentReference[] featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry);				
+
+					ContentReference siteContentReference = site.getSiteContentProvider().getArchivesReferences(archiveID);
+					URL url =  siteContentReference.asFile().toURL();
 					if (url!=null){
 						// make it relative to teh site
 						String path = UpdateManagerUtils.getURLAsString(site.getURL(),url);

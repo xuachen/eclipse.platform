@@ -6,7 +6,9 @@ package org.eclipse.update.core;
  */
  
 import java.net.URL;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
  
  /**
   * Features define the packaging structure for a group 
@@ -38,12 +40,21 @@ public interface IFeature extends IPluginContainer {
 	VersionedIdentifier getIdentifier();
 	
 	/**
-	 * Returns the Site this Featur belongs to.
+	 * Returns the Site this Feature belongs to.
+	 * The site may be <code>null</code>.
 	 * @return the site of this feature
 	 * @since 2.0 
 	 */
 
 	ISite getSite();
+	
+	/**
+	 * Sets the Site this Feature belongs to.
+	 * @throws CoreException if the site is already set for this feature
+	 * @since 2.0 
+	 */
+
+	void setSite(ISite site) throws CoreException;	
 	
 	/**
 	 * Returns the label of the feature.
@@ -252,6 +263,13 @@ public interface IFeature extends IPluginContainer {
 	// FIXME: javadoc
 	boolean isInstallable();
 
+	/**
+	 * Install this feature into the targetFeature
+	 * @param targetFeature the feature to install into
+	 * @param monitor
+	 * @throws CoreException
+	 */
+	public void install(IFeature targetFeature, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns an array of archives identifier that compose the feature.
@@ -319,6 +337,13 @@ public interface IFeature extends IPluginContainer {
 	 * @since 2.0
 	 */
 	void setFeatureContentProvider(IFeatureContentProvider featureContentProvider);
+	
+	/**
+	 * Returns the IFeatureContentProvider for this feature
+	 * @throws CoreExcepton if the content provider is <code>null</code>
+	 * @since 2.0
+	 */
+	IFeatureContentProvider getFeatureContentProvider() throws CoreException;	
 	
 	/**
 	 * Sets the IContentConsumer for this feature

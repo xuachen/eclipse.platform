@@ -16,7 +16,7 @@ import org.eclipse.update.core.*;
  * Default implementation of an Executable Feature Content Provider
  */
 
-public class FeatureExecutableContentProvider implements IFeatureContentProvider {
+public class FeatureExecutableContentProvider extends FeatureContentProvider {
 
 	/**
 	 * URL of the feature, used to create other URLs
@@ -31,17 +31,8 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 	/**
 	 * Constructor for DefaultExecutableFeature
 	 */
-	public FeatureExecutableContentProvider(URL url) throws CoreException {
-		this.rootURL = url;
-		try {
-			if (!rootURL.getFile().endsWith("/")) {
-				rootURL = new URL(rootURL.getProtocol(), rootURL.getHost(), rootURL.getFile() + "/");
-			}
-		} catch (Exception e) {
-			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error adding '/' at the end of URL:" + url.toExternalForm(), e);
-			throw new CoreException(status);
-		}
+	public FeatureExecutableContentProvider(URL url) {
+		super(url);
 	}
 
 	/**
@@ -118,22 +109,31 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 	/*
 	 * @see IFeatureContentProvider#getFeatureManifest()
 	 */
-	public URL getFeatureManifest() throws MalformedURLException {
-		return new URL(rootURL, Feature.FEATURE_XML);
+	public ContentReference getFeatureManifest() throws CoreException {
+		ContentReference result = null;
+		try {
+			result = new ContentReference(null, new URL(rootURL, Feature.FEATURE_XML));
+			
+		} catch (MalformedURLException e) {
+			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "cannot create URL for :"+rootURL.toExternalForm()+" "+Feature.FEATURE_XML, e);
+			throw new CoreException(status);
+		}
+		return result;
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getArchivesReferences()
+	 * @see IFeatureContentProvider#getArchiveReferences()
 	 */
-	public IContentReference[] getArchivesReferences() throws CoreException {
+	public ContentReference[] getArchiveReferences() throws CoreException {
 		return null;
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getArchivesReferences(IPluginEntry)
+	 * @see IFeatureContentProvider#getPluginEntryArchiveReferences(IPluginEntry)
 	 */
-	public IContentReference[] getArchivesReferences(IPluginEntry pluginEntry) throws CoreException {
-		IContentReference[] result = new IContentReference[1];
+	public ContentReference[] getPluginEntryArchiveReferences(IPluginEntry pluginEntry) throws CoreException {
+		ContentReference[] result = new ContentReference[1];
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
@@ -147,7 +147,7 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 			if (!pluginDir.exists())
 				throw new IOException("The File:" + fileString + "does not exist.");
 
-			result[1] = new ContentReference(pluginDir.toURL(), null);
+			result[1] = new ContentReference(null,pluginDir.toURL());
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive names for:" + pluginEntry.getIdentifier().toString(), e);
@@ -157,10 +157,10 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getArchivesReferences(INonPluginEntry)
+	 * @see IFeatureContentProvider#getNonPluginEntryArchiveReferences(INonPluginEntry)
 	 */
-	public IContentReference[] getArchivesReferences(INonPluginEntry nonPluginEntry) throws CoreException {
-		IContentReference[] result = new IContentReference[1];
+	public ContentReference[] getNonPluginEntryArchiveReferences(INonPluginEntry nonPluginEntry) throws CoreException {
+		ContentReference[] result = new ContentReference[1];
 		try {
 			// get the URL of the Archive file that contains the plugin entry
 			ISiteContentProvider provider = feature.getSite().getSiteContentProvider();
@@ -174,7 +174,7 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 			if (!pluginDir.exists())
 				throw new IOException("The File:" + fileString + "does not exist.");
 
-			result[1] = new ContentReference(pluginDir.toURL(), null);
+			result[1] = new ContentReference(null,pluginDir.toURL());
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive references:" + nonPluginEntry.getIdentifier().toString(), e);
@@ -184,26 +184,26 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getArchivesReferences(IFeature)
+	 * @see IFeatureContentProvider#getFeatureEntryArchiveReferences()
 	 */
-	public IContentReference[] getArchivesReferences(IFeature feature) throws CoreException {
-		IContentReference[] contentReferences = new ContentReference[1];
-		contentReferences[1] = new ContentReference(rootURL, null);
+	public ContentReference[] getFeatureEntryArchiveReferences() throws CoreException {
+		ContentReference[] contentReferences = new ContentReference[1];
+		contentReferences[1] = new ContentReference(null,rootURL);
 		return contentReferences;
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getArchivesContentReferences(IFeature)
+	 * @see IFeatureContentProvider#getFeatureEntryArchivesContentReferences()
 	 */
-	public IContentReference[] getArchivesContentReferences(IFeature feature) throws CoreException {
-		IContentReference[] result = new IContentReference[0];
+	public ContentReference[] getFeatureEntryContentReferences() throws CoreException {
+		ContentReference[] result = new ContentReference[0];
 		try {
 			File featureDir = new File(getFeaturePath());
 			List files = getFiles(featureDir);
-			result = new IContentReference[files.size()];
+			result = new ContentReference[files.size()];
 			for (int i = 0; i < result.length; i++) {
 				File currentFile = (File) files.get(i);
-				result[i] = new ContentReference(currentFile.toURL(), null);
+				result[i] = new ContentReference(null,currentFile.toURL());
 			}
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -214,20 +214,20 @@ public class FeatureExecutableContentProvider implements IFeatureContentProvider
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getArchivesContentReferences(IPluginEntry)
+	 * @see IFeatureContentProvider#getPluginEntryContentReferences(IPluginEntry)
 	 */
-	public IContentReference[] getArchivesContentReferences(IPluginEntry pluginEntry) throws CoreException {
+	public ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry) throws CoreException {
 
-		IContentReference[] result = new IContentReference[0];
+		ContentReference[] result = new ContentReference[0];
 
 		try {
 			// return the list of all subdirectories
 			File pluginDir = new File(getPath(pluginEntry));
 			List files = getFiles(pluginDir);
-			result = new IContentReference[files.size()];
+			result = new ContentReference[files.size()];
 			for (int i = 0; i < result.length; i++) {
 				File currentFile = (File) files.get(i);
-				result[i] = new ContentReference(currentFile.toURL(), null);
+				result[i] = new ContentReference(null,currentFile.toURL());
 			}
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();

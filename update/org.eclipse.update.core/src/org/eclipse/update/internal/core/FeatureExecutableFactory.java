@@ -25,10 +25,9 @@ public class FeatureExecutableFactory extends FeatureModelFactory implements IFe
 		
 		try {	
 			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
-			featureStream = contentProvider.getFeatureManifest().openStream();
+			featureStream = contentProvider.getFeatureManifest().asURL().openStream();
 			FeatureModelFactory factory = (FeatureModelFactory) this;
 			feature = (FeatureExecutable) factory.parseFeature(featureStream);
-			feature.setURL(url);
 			feature.setSite(site);
 			feature.setFeatureContentProvider(contentProvider);
 			feature.resolve(url, getResourceBundle(url));

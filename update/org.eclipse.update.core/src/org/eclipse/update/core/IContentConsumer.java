@@ -45,7 +45,16 @@ public interface IContentConsumer {
 	 * @since 2.0 
 	 */
 
-	void store(IContentReference contentReference, IProgressMonitor monitor);
+	void store(ContentReference contentReference, IProgressMonitor monitor);
+	
+	/**
+	 * removes a content reference into the ContentConsumer
+	 * @param ContentReference the content reference to remove
+	 * @param IProgressMonitor the progress monitor
+	 * @since 2.0 
+	 */
+
+	void remove(ContentReference contentReference, IProgressMonitor monitor);	
 	
 	/**
 	 * closes the opened ContentConsumer

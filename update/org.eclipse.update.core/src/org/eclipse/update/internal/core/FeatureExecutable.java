@@ -38,7 +38,7 @@ public class FeatureExecutable extends Feature {
 	 * Constructor for DefaultExecutableFeature
 	 */
 	public FeatureExecutable(URL url, ISite targetSite) throws CoreException {
-		super(url, targetSite);
+		super(targetSite);
 	}
 
 	/**
