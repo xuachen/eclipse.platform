@@ -384,34 +384,34 @@ public abstract class Site extends ModelObject implements ISite{
 		return siteContentProvider;
 	}
 	
-	/**
-	 * Creates and populates a default feature from stream.
-	 * The parser assumes the stream contains a default feature manifest
-	 * (feature.xml) as documented by the platform.
-	 * 
-	 * @param stream feature stream
-	 * @return populated feature model
-	 * @exception ParsingException
-	 * @exception IOException
-	 * @exception SAXException
-	 * @since 2.0
-	 */
-	public Feature parseFeature(InputStream stream)
-		throws CoreException, SAXException {
-		parser.init();
-		Feature featureModel = null;
-		try {
-			featureModel = parser.parse(stream);
-			if (parser.getStatus()!=null) {
-				// some internalError were detected
-				IStatus status = parser.getStatus();
-				throw new CoreException(status);
-			}
-		} catch (IOException e) {
-			throw Utilities.newCoreException(Policy.bind("FeatureModelFactory.ErrorAccesingFeatureStream"), e); //$NON-NLS-1$
-		}
-		return featureModel;
-	}
+//	/**
+//	 * Creates and populates a default feature from stream.
+//	 * The parser assumes the stream contains a default feature manifest
+//	 * (feature.xml) as documented by the platform.
+//	 * 
+//	 * @param stream feature stream
+//	 * @return populated feature model
+//	 * @exception ParsingException
+//	 * @exception IOException
+//	 * @exception SAXException
+//	 * @since 2.0
+//	 */
+//	public Feature parseFeature(InputStream stream)
+//		throws CoreException, SAXException {
+//		parser.init();
+//		Feature feature = null;
+//		try {
+//			feature = parser.parse(stream);
+//			if (parser.getStatus()!=null) {
+//				// some internalError were detected
+//				IStatus status = parser.getStatus();
+//				throw new CoreException(status);
+//			}
+//		} catch (IOException e) {
+//			throw Utilities.newCoreException(Policy.bind("FeatureModelFactory.ErrorAccesingFeatureStream"), e); //$NON-NLS-1$
+//		}
+//		return feature;
+//	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.ISite#getFeature(org.eclipse.update.core.VersionedIdentifier, org.eclipse.core.runtime.IProgressMonitor)
 	 */

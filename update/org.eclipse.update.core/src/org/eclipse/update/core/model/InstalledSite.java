@@ -35,6 +35,7 @@ public class InstalledSite extends Site implements IInstalledSite {
 
 	private ConfiguredSite configuredSiteModel;
 	private List pluginEntries = new ArrayList(0);
+	private List features = new ArrayList(0);
 	
 	private static FeatureParser parser = new FeatureParser();
 
@@ -152,16 +153,18 @@ public class InstalledSite extends Site implements IInstalledSite {
 	 * @see org.eclipse.update.core.ISite#getFeature(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public IFeature getFeature(IFeatureReference featureRef, IProgressMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		if (featureRef instanceof IFeature) {
+			return (IFeature)featureRef;
+		} else {
+			return null;
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.ISite#getFeatures()
 	 */
 	public IFeature[] getFeatures(IProgressMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		return (IFeature[])features.toArray(new IFeature[features.size()]);
 	}
 
 
@@ -207,51 +210,50 @@ public class InstalledSite extends Site implements IInstalledSite {
 			UpdateCore.debug(trace);
 		}
 	}
-//	
-//	private IFeature createFeature(URL url, IProgressMonitor monitor) throws CoreException {
-//
-//		if (url == null)
-//			throw Utilities.newCoreException(Policy.bind("FeatureExecutableFactory.NullURL"), null);
-//
-//		// the URL should point to a directory
-//		//url = validate(url);
-//
-//		InputStream featureStream = null;
-//		if (monitor == null)
-//			monitor = new NullProgressMonitor();
-//
-//		try {
-//			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
-//			// PERF: Do not create FeatureContentConsumer
-//			//IFeatureContentConsumer contentConsumer =new FeatureExecutableContentConsumer();
-//
-//			URL nonResolvedURL = contentProvider.getFeatureManifestReference(null).asURL();
-//			URL resolvedURL = URLEncoder.encode(nonResolvedURL);
-//			featureStream = UpdateCore.getPlugin().get(resolvedURL).getInputStream();
-//
-//			parser.init();
-//			Feature feature = parser.parse(featureStream);
-//			monitor.worked(1);
-//			
-//			feature.setSite(this);
-//			feature.setFeatureContentProvider(contentProvider);
-//			feature.resolve(url, url);
-//			feature.markReadOnly();
-//			featureCache.put(url, feature);
-//			
-//			return feature;
-//		} catch (CoreException e) {
-//			throw e;
-//		} catch (Exception e) {
-//			throw Utilities.newCoreException(Policy.bind("FeatureFactory.CreatingError", url.toExternalForm()), e);
-//			//$NON-NLS-1$
-//		} finally {
-//			try {
-//				if (featureStream != null)
-//					featureStream.close();
-//			} catch (IOException e) {
-//			}
-//		}
-//	}
+	
+	public IFeature createFeature(URL url, IProgressMonitor monitor) throws CoreException {
+
+		if (url == null)
+			throw Utilities.newCoreException(Policy.bind("FeatureExecutableFactory.NullURL"), null);
+
+		// the URL should point to a directory
+		//url = validate(url);
+
+		InputStream featureStream = null;
+		if (monitor == null)
+			monitor = new NullProgressMonitor();
+
+		try {
+			IFeatureContentProvider contentProvider = new FeatureExecutableContentProvider(url);
+			URL nonResolvedURL = contentProvider.getFeatureManifestReference(null).asURL();
+			URL resolvedURL = URLEncoder.encode(nonResolvedURL);
+			featureStream = UpdateCore.getPlugin().get(resolvedURL).getInputStream();
+
+			parser.init();
+			Feature feature = parser.parse(featureStream);
+			monitor.worked(1);
+			
+			feature.setSite(this);
+			//feature.setFeatureContentProvider(contentProvider);
+			feature.setURL(url);
+			feature.resolve(url, url);
+			feature.markReadOnly();
+			//featureCache.put(url, feature);
+			addFeatureReference(feature);
+			features.add(feature);
+			return feature;
+		} catch (CoreException e) {
+			throw e;
+		} catch (Exception e) {
+			throw Utilities.newCoreException(Policy.bind("FeatureFactory.CreatingError", url.toExternalForm()), e);
+			//$NON-NLS-1$
+		} finally {
+			try {
+				if (featureStream != null)
+					featureStream.close();
+			} catch (IOException e) {
+			}
+		}
+	}
 
 }

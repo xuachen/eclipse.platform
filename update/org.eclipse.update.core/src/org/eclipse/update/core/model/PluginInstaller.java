@@ -24,7 +24,7 @@ public class PluginInstaller {
 
 	private IPluginEntry pluginEntry;
 	private IInstalledSite site;
-	private boolean closed = false;
+	private boolean installComplete = false;
 
 	// recovery
 	private String oldPath;
@@ -71,7 +71,7 @@ public class PluginInstaller {
 		InputStream inStream = null;
 		String pluginPath = null;
 
-		if (closed) {
+		if (installComplete) {
 			UpdateCore.warn("Attempt to store in a closed SiteFilePluginContentConsumer", new Exception());
 			return;
 		}
@@ -123,9 +123,9 @@ public class PluginInstaller {
 
 	/*
 	 */
-	public void finishInstall() throws CoreException {
+	public void completeInstall() throws CoreException {
 
-		if (closed) {
+		if (installComplete) {
 			UpdateCore.warn("Attempt to close a closed SiteFilePluginContentConsumer", new Exception());
 			return;
 		}
@@ -144,10 +144,9 @@ public class PluginInstaller {
 				throw Utilities.newCoreException(msg, new Exception(msg));
 			}
 		}
-// TODO: do we need anything similar?
-//		if (site instanceof SiteFile)
-//			 ((SiteFile) site).addPluginEntry(pluginEntry);
-		closed = true;
+
+		registerPlugin();
+		installComplete = true;
 	}
 
 	/*
@@ -155,7 +154,7 @@ public class PluginInstaller {
 	 */
 	public void abort() throws CoreException {
 
-		if (closed) {
+		if (installComplete) {
 			UpdateCore.warn("Attempt to abort a closed SiteFilePluginContentConsumer", new Exception());
 			return;
 		}
@@ -197,7 +196,45 @@ public class PluginInstaller {
 				InstallRegistry.unregisterPlugin(pluginEntry);
 			}
 		}
-		closed = true;
+		installComplete = true;
 	}
 
+	/**
+	 * tranform each Plugin and Fragment into an ArchiveReferenceModel
+	 * and a PluginEntry for the Site	 
+	 */
+	// PERF: removed intermediate Plugin object
+	private void registerPlugin() throws CoreException {
+
+		String location = null;
+		try {
+			if (pluginEntry != null) {
+
+				// create the plugin Entry
+				((InstalledSite)site).addPluginEntry(pluginEntry);
+
+				// Create the Site mapping ArchiveRef->PluginEntry
+				// the id of the archiveRef is plugins\<pluginid>_<ver>.jar as per the specs
+				// PERF: remove code
+				//SiteFileFactory archiveFactory = new SiteFileFactory();				
+				ArchiveReference archive = new ArchiveReference();
+				String id = (pluginEntry.getVersionedIdentifier().toString());
+				String pluginID = Site.DEFAULT_PLUGIN_PATH + id + FeaturePackagedContentProvider.JAR_EXTENSION;
+				archive.setPath(pluginID);
+				URL pluginURL = new URL(site.getURL(), Site.DEFAULT_PLUGIN_PATH + pluginEntry.getVersionedIdentifier().toString());
+				location = pluginURL.toExternalForm();
+				archive.setURLString(location);
+				((Site) site).addArchiveReference(archive);
+
+				// TRACE				
+				if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_PARSING) {
+					UpdateCore.debug("Added archive to site:" + pluginID + " pointing to: " + location);
+				}
+			}
+		} catch (MalformedURLException e) {
+			throw Utilities.newCoreException(Policy.bind("SiteFileFactory.UnableToCreateURLForFile", location), e);
+			//$NON-NLS-1$
+		}
+	}
+	
 }

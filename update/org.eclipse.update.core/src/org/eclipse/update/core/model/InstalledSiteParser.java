@@ -15,7 +15,6 @@ import java.net.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.model.*;
 import org.xml.sax.*;
 
 public class InstalledSiteParser {
@@ -33,7 +32,7 @@ public class InstalledSiteParser {
 	/*
 	 * @see ISiteFactory#createSite(URL,boolean)
 	 */
-	public Site createSite(URL url) throws CoreException{
+	public Site parse(URL url) throws CoreException{
 		InputStream siteStream = null;
 	
 		try {
@@ -99,38 +98,34 @@ public class InstalledSiteParser {
 	 */
 	private void parseInstalledFeatures(File directory) throws CoreException {
 
-		File featureDir = new File(directory, Site.DEFAULT_INSTALLED_FEATURE_PATH);
-		if (featureDir.exists()) {
-			String[] dir;
+		File featuresDir = new File(directory, Site.DEFAULT_INSTALLED_FEATURE_PATH);
+		if (featuresDir.exists()) {
+
 			FeatureReference featureRef;
 			URL featureURL;
-			File currentFeatureDir;
-			String newFilePath = null;
 
+
+			// handle the installed features under the features directory
+			File[] dirs = featuresDir.listFiles(new FileFilter() {
+				public boolean accept(File f) {
+					boolean valid = f.isDirectory() && (new File(f,Feature.FEATURE_XML).exists());
+					if (!valid)
+						UpdateCore.warn("Unable to find feature.xml in directory:" + f.getAbsolutePath());
+					return valid;
+				}
+			});
 			try {
-				// handle the installed featuresConfigured under featuresConfigured subdirectory
-				dir = featureDir.list();
-				for (int index = 0; index < dir.length; index++) {
-
-					// the URL must ends with '/' for the bundle to be resolved
-					newFilePath = dir[index] + (dir[index].endsWith("/") ? "/" : "");
-					currentFeatureDir = new File(featureDir, newFilePath);
-					// check if feature.xml exists
-					File featureXMLFile = new File(currentFeatureDir, Feature.FEATURE_XML);
-					if (!featureXMLFile.exists()) {
-						UpdateCore.warn("Unable to find feature.xml in directory:" + currentFeatureDir);
-					} else {
-						// PERF: remove code
-						//SiteFileFactory archiveFactory = new SiteFileFactory();
-						featureURL = currentFeatureDir.toURL();
-						featureRef = new FeatureReference();
-						featureRef.setSite(site);
-						featureRef.setURLString(featureURL.toExternalForm());
-						site.addFeatureReference(featureRef);
-					}
+				for (int index = 0; index < dirs.length; index++) {
+					// PERF: remove code
+					//SiteFileFactory archiveFactory = new SiteFileFactory();
+					featureURL = dirs[index].toURL();
+					featureRef = new FeatureReference();
+					featureRef.setSite(site);
+					featureRef.setURLString(featureURL.toExternalForm());
+					site.addFeatureReference(featureRef);
 				}
 			} catch (MalformedURLException e) {
-				throw Utilities.newCoreException(Policy.bind("SiteFileFactory.UnableToCreateURLForFile", newFilePath), e);
+				throw Utilities.newCoreException(Policy.bind("SiteFileFactory.UnableToCreateURLForFile", featuresDir.getAbsolutePath()), e);
 				//$NON-NLS-1$
 			}
 		}

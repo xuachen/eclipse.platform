@@ -251,7 +251,7 @@ public class SiteManager {
 		if ("file".equalsIgnoreCase(url.getProtocol())) {
 			File dir = new File(url.getFile());
 			if (dir != null && dir.isDirectory() && !(new File(dir, Site.SITE_XML).exists())) {
-				installedSiteParser.createSite(url) ;
+				installedSiteParser.parse(url) ;
 			}
 		}
 

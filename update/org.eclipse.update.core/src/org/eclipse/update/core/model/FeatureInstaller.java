@@ -30,8 +30,7 @@ public class FeatureInstaller {
 	private IFeature sourceFeature;
 	private InstalledSite targetSite;
 	
-	private IFeature feature;
-	private boolean closed = false;
+	private boolean installComplete = false;
 
 	// recovery
 	private String oldPath;
@@ -223,22 +222,22 @@ public class FeatureInstaller {
 		   Exception newException = null;
 		   try {
 
-				   if (success) {
-					   targetFeature = finishInstall();
-					   if (targetFeature == null) {
-					   		targetFeature = alreadyInstalledFeature; // 18867
-						   if (targetFeature != null
-							   && optionalfeatures != null
-							   && optionalfeatures.length > 0) {
-							   // reinitialize as new optional children may have been installed
-							   reinitializeFeature(targetFeature);
-						   }
+			   if (success) {
+				   targetFeature = completeInstall();
+				   if (targetFeature == null) {
+				   		targetFeature = alreadyInstalledFeature; // 18867
+					   if (targetFeature != null
+						   && optionalfeatures != null
+						   && optionalfeatures.length > 0) {
+						   // reinitialize as new optional children may have been installed
+						   reinitializeFeature(targetFeature);
 					   }
-					   // close the log
-					   recoveryLog.close(ErrorRecoveryLog.END_INSTALL_LOG);
-				   } else {
-					   consumer.abort();
 				   }
+				   // close the log
+				   recoveryLog.close(ErrorRecoveryLog.END_INSTALL_LOG);
+			   } else {
+				   abort();
+			   }
 
 			   handler.installCompleted(success);
 			   // if abort is done, no need for the log to stay
@@ -281,7 +280,7 @@ public class FeatureInstaller {
 		IVerificationResult vr = null;
 		if (verifier != null) {
 			for (int j = 0; j < references.length; j++) {
-				vr = verifier.verify(feature, references[j], isFeature, monitor);
+				vr = verifier.verify(sourceFeature, references[j], isFeature, monitor);
 				if (vr != null) {
 					if (verificationListener == null)
 						return;
@@ -333,15 +332,6 @@ public class FeatureInstaller {
 		}
 		return featurePath;
 	}
-
-	private IFeature getInstalledFeature(VersionedIdentifier versionId, IInstalledSite site) throws CoreException {
-		IFeature[] features = site.getFeatures(null);
-		for (int i=0; i<features.length; i++) {
-			if (versionId.equals(features[i].getVersionedIdentifier()))
-				return features[i];
-		}
-		return null;
-	}
 	
 	/*
 	 * Installation has been cancelled, abort and revert
@@ -353,7 +343,7 @@ public class FeatureInstaller {
 	
 	private void storeFeature(IFeature sourceFeature, ContentReference contentReference, IProgressMonitor monitor) throws CoreException {
 
-		if (closed) {
+		if (installComplete) {
 			UpdateCore.warn("Attempt to store in a closed SiteFileContentConsumer", new Exception());
 			return;
 		}
@@ -395,10 +385,11 @@ public class FeatureInstaller {
 	}
 
 	
-	public IFeature finishInstall() throws CoreException {
+	public IFeature completeInstall() throws CoreException {
 		
-		if (!closed && parentInstaller !=null){
-			closed=true;
+		// check if child feature
+		if (!installComplete && parentInstaller !=null){
+			installComplete=true;
 			return null;
 		}
 
@@ -406,10 +397,10 @@ public class FeatureInstaller {
 			ErrorRecoveryLog.getLog().append(ErrorRecoveryLog.ALL_INSTALLED);
 		}
 		
-		if (closed)
+		if (installComplete)
 			UpdateCore.warn("Attempt to close a closed SiteFileContentConsumer", new Exception());
 
-		//rename file back 
+		//rename featurexxxxxx.xml file back to feature.xml
 		if (newPath != null) {
 			ErrorRecoveryLog.getLog().appendPath(ErrorRecoveryLog.RENAME_ENTRY, newPath);
 			boolean sucess = false;
@@ -430,117 +421,30 @@ public class FeatureInstaller {
 
 		for (int i=0; i<pluginInstallers.size(); i++) {
 			PluginInstaller pluginInstaller = (PluginInstaller) pluginInstallers.get(i);
-			pluginInstaller.finishInstall();
+			pluginInstaller.completeInstall();
 		}
-
-
-		// create a new Feature reference to be added to the site
-		Feature feature = new Feature();
-		feature.setSite(targetSite);
-		File file = null;
-
-		try {
-			file = new File(getFeaturePath());
-			feature.setURL(file.toURL());
-		} catch (MalformedURLException e) {
-			throw Utilities.newCoreException(Policy.bind("SiteFileContentConsumer.UnableToCreateURLForFile", file.getAbsolutePath()), e);
-			//$NON-NLS-1$
-		}
-		commitPlugins(feature);
-		feature.markReadOnly();
 		
 		// close nested feature
 		for (int i = 0; i < featureInstallers.size(); i++) {
 			FeatureInstaller featureInstaller = (FeatureInstaller)featureInstallers.get(i);
-			featureInstaller.finishInstall();
+			featureInstaller.completeInstall();
 		}
 							
-		closed = true;
-		return feature;
-	}
-	
-	/*
-	 * commit the plugins installed as archive on the site
-	 * (creates the map between the plugin id and the location of the plugin)
-	 */
-	private void commitPlugins(IFeature localFeature) throws CoreException {
-	
-		// get the feature
-		 ((SiteFile) getSite()).addFeatureReferenceModel((SiteFeatureReferenceModel) localFeatureReference);
-		IFeature localFeature = null;
+		installComplete = true;
+		
 		try {
-			localFeature = localFeatureReference.getFeature(null);
-		} catch (CoreException e) {
-			UpdateCore.warn(null, e);
-			return;
+			// check if the feature existed already, and refresh it if so,
+			// otherwise create a new feature primed from the files just installed
+			Feature feature = (Feature)targetSite.getFeature(sourceFeature.getVersionedIdentifier(),null);
+			if (feature != null)
+				;//return reinitializeFeature(feature);
+			else
+				return (Feature)targetSite.createFeature(new File(getFeaturePath()).toURL(), null);
+		} catch (MalformedURLException e) {
+			throw Utilities.newCoreException(Policy.bind("SiteFileContentConsumer.UnableToCreateURLForFile", getFeaturePath()), e);
+			//$NON-NLS-1$
 		}
-	
-		if (localFeature == null)
-			return;
-	
-		// add the installed plugins directories as archives entry
-		ArchiveReference archive = null;
-		IPluginEntry[] pluginEntries = localFeature.getPluginEntries(true);
-		for (int i = 0; i < pluginEntries.length; i++) {
-			String versionId = pluginEntries[i].getVersionedIdentifier().toString();
-			String pluginID = Site.DEFAULT_PLUGIN_PATH + versionId + FeaturePackagedContentProvider.JAR_EXTENSION;
-			archive = archiveFactory.createArchiveReferenceModel();
-			archive.setPath(pluginID);
-			try {
-				URL url = new URL(getSite().getURL(), Site.DEFAULT_PLUGIN_PATH + versionId + File.separator);
-				archive.setURLString(url.toExternalForm());
-				archive.resolve(url, null);
-				((SiteFile) getSite()).addArchiveReferenceModel(archive);
-			} catch (MalformedURLException e) {
-	
-				String urlString = (getSite().getURL() != null) ? getSite().getURL().toExternalForm() : "";
-				//$NON-NLS-1$
-				urlString += Site.DEFAULT_PLUGIN_PATH + pluginEntries[i].toString();
-				throw Utilities.newCoreException(Policy.bind("SiteFile.UnableToCreateURL", urlString), e);
-				//$NON-NLS-1$
-			}
-		}
-		return;
-	}
 
-	
-	/*
-	 * re initialize children of the feature, invalidate the cache
-	 * @param result FeatureReference to reinitialize.
-	 */
-	private void reinitializeFeature(IFeatureReference referenceToReinitialize) {
-
-		if (referenceToReinitialize == null)
-			return;
-
-		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION)
-			UpdateCore.debug(
-				"Re initialize feature reference:" + referenceToReinitialize);
-
-		IFeature feature = null;
-		try {
-			feature = referenceToReinitialize.getFeature(null);
-			if (feature != null && feature instanceof Feature) {
-				((Feature) feature).initializeIncludedReferences();
-			}
-			// bug 24981 - recursively go into hierarchy
-			// only if site if file 
-			ISite site = referenceToReinitialize.getSite();
-			if (site == null)
-				return;
-			URL url = site.getURL();
-			if (url == null)
-				return;
-			if ("file".equals(url.getProtocol())) {
-				IFeatureReference[] included =
-					feature.getIncludedFeatures();
-				for (int i = 0; i < included.length; i++) {
-					reinitializeFeature(included[i]);
-				}
-			}
-		} catch (CoreException e) {
-			UpdateCore.warn("", e);
-		}
 	}
 
 }

@@ -46,7 +46,7 @@ public class SiteMain extends UpdateManagerTestCase {
 		w.println("Parsing site map ...");
 		try {
 			is = SiteMain.class.getResourceAsStream(xml);		
-			site = factory.parseSite(is);
+			site = factory.parse(is);
 		}  finally {
 			if (is != null) {
 				try { is.close();} catch(IOException e) {}

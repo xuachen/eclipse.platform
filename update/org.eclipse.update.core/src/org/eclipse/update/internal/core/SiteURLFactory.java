@@ -58,7 +58,7 @@ public class SiteURLFactory extends BaseSiteFactory implements ISiteFactoryExten
 			if (siteStream==null) return null;
 
 			SiteFactory factory = this;
-			site = (Site) factory.parseSite(siteStream);
+			site = (Site) factory.parse(siteStream);
 	
 			site.setSiteContentProvider(contentProvider);
 			contentProvider.setSite(site);
