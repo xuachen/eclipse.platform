@@ -56,26 +56,6 @@ public interface IFeatureContentProvider {
 	IContentReference[] getArchivesReferences(INonPluginEntry nonPluginEntry) throws CoreException;
 
 	/**
-	 * Returns an array of content references representing the Feature information
-	 * 
-	 * @return an array of ContentReference or an empty array if no references are found
-	 * @throws CoreException when an error occurs	 
-	 * @since 2.0 
-	 */
-
-	IContentReference[] getArchivesReferences(IFeature feature) throws CoreException;
-
-	/**
-	 * Returns an array of content references composing the IFeature information
-	 * 
-	 * @return an array of ContentReference or an empty array if no references are found
-	 * @throws CoreException when an error occurs
-	 * @since 2.0 
-	 */
-
-	IContentReference[] getArchivesContentReferences(IFeature feature) throws CoreException;
-
-	/**
 	 * Returns an array of content references composing the IPluginEntry
 	 * 
 	 * @return an array of ContentReference or an empty array if no references are found

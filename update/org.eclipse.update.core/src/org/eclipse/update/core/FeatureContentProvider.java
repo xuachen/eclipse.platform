@@ -25,7 +25,7 @@ import java.util.Stack;
  * @since 2.0
  */
 
-public abstract class FeatureContentProvider {
+public abstract class FeatureContentProvider implements IFeatureContentProvider {
 	
 	protected URL base;
 	protected IFeature feature;
