@@ -237,15 +237,15 @@ public URL[] getCustomURLs() {
 	return customURLs;
 }
 
-public void addCustomTasks(Task[] tasks) {
+public void setCustomTasks(Task[] tasks) {
 	this.customTasks = tasks;
 }
 
-public void addCustomTypes(Type[] types) {
+public void setCustomTypes(Type[] types) {
 	this.customTypes = types;
 }
 
-public void addCustomURLs(URL[] urls) {
+public void setCustomURLs(URL[] urls) {
 	this.customURLs = urls;
 }
 
