@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
 
@@ -159,6 +161,24 @@ public class SiteURL extends Site {
 	public String getDefaultInstallableFeatureType() {
 		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier()+".";		
 		return pluginID+IFeatureFactory.INSTALLABLE_FEATURE_TYPE;
+	}
+
+	/*
+	 * @see ISite#store(IFeature, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IFeature feature, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
+	 */
+	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
 	}
 
 }

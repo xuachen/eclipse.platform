@@ -36,6 +36,14 @@ public abstract class DefaultFeature extends Feature {
 	}
 	
 	/**
+	 * Constructor
+	 */
+	public DefaultFeature(ISite targetSite) throws CoreException {
+		super(targetSite);
+	}	
+	
+	
+	/**
 	 * Sets the identifier
 	 * @param identifier The identifier to set
 	 */

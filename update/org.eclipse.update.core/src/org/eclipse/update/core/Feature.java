@@ -3,16 +3,13 @@ package org.eclipse.update.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.update.core.*;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
 /**
  * Abstract Class that implements most of the behavior of a feature
  * A feature ALWAYS belongs to an ISite
@@ -27,11 +24,11 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 *       Extended handling function TBA 
 	 * 
 	 * @since 2.0
-	 */	
+	 */
 	public static class ProgressMonitor implements IProgressMonitor {
-		
+
 		private IProgressMonitor monitor;
-		
+
 		public ProgressMonitor(IProgressMonitor monitor) {
 			this.monitor = monitor;
 		}
@@ -42,9 +39,9 @@ public abstract class Feature extends FeatureModel implements IFeature {
 			monitor.beginTask(name, totalWork);
 		}
 
-			/*
-		 * @see IProgressMonitor#done()
-		 */
+		/*
+		* @see IProgressMonitor#done()
+		*/
 		public void done() {
 			monitor.done();
 		}
@@ -95,7 +92,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * 
 	 */
-	private static CoreException CANCEL_EXCEPTION;
+	protected static CoreException CANCEL_EXCEPTION;
 
 	/**
 	 * 
@@ -158,11 +155,12 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getURL()
 	 */
 	public URL getURL() {
-		IFeatureContentProvider contentProvider=null;
+		IFeatureContentProvider contentProvider = null;
 		try {
 			contentProvider = getFeatureContentProvider();
-		} catch (CoreException e){}
-		return (contentProvider!=null)?contentProvider.getURL():null;
+		} catch (CoreException e) {
+		}
+		return (contentProvider != null) ? contentProvider.getURL() : null;
 	}
 
 	/*
@@ -319,7 +317,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 
 		IPluginEntry[] sourceFeaturePluginEntries = getPluginEntries();
 		ISite targetSite = targetFeature.getSite();
-		IPluginEntry[] targetSitePluginEntries = (targetSite!=null)?site.getPluginEntries():null;
+		IPluginEntry[] targetSitePluginEntries = (targetSite != null) ? site.getPluginEntries() : null;
 		List contentReferencesToInstall = new ArrayList();
 
 		//
@@ -360,7 +358,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		consumer.close();
 
 	}
-	
+
 	/*
 	 * @see IFeature#remove(IProgressMonitor) throws CoreException
 	 */
@@ -371,7 +369,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		ContentReference[] references = null;
 		// get the plugins from the feature
 		IPluginEntry[] pluginsToRemove = SiteManager.getLocalSite().getUnusedPluginEntries(this);
-		
+
 		//finds the contentReferences for this IPluginEntry
 		for (int i = 0; i < pluginsToRemove.length; i++) {
 			IContentConsumer pluginConsumer = consumer.opens(pluginsToRemove[i]);
@@ -381,14 +379,14 @@ public abstract class Feature extends FeatureModel implements IFeature {
 			}
 			pluginConsumer.close();
 		}
-		
+
 		//finds the contentReferences for this IFeature
 		references = getFeatureContentProvider().getFeatureEntryContentReferences();
 		for (int i = 0; i < references.length; i++) {
 			consumer.remove(references[i], monitor);
 		}
-		
-		consumer.close();		
+
+		consumer.close();
 	}
 
 	/*
@@ -467,7 +465,6 @@ public abstract class Feature extends FeatureModel implements IFeature {
 		featureContentProvider.setFeature(this);
 	}
 
-
 	/*
 	 * @see IFeature#setContentConsumer(IContentConsumer)
 	 */
@@ -522,13 +519,15 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/*
 	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
 	 */
-	public void store(IPluginEntry entry, String name, InputStream inStream,IProgressMonitor monitor) throws CoreException {
+	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+		getSite().store(entry,name,inStream,monitor);
 	}
 
 	/*
 	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
 	 */
-	public void remove(IPluginEntry entry,IProgressMonitor monitor) throws CoreException {
+	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
+		getSite().remove(entry,monitor);		
 	}
 
 }

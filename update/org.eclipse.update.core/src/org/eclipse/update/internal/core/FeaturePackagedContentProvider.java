@@ -493,14 +493,14 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	 */
 	public ContentReference[] getFeatureEntryArchiveReferences() throws CoreException {
 		String[] archiveIDs = getFeatureEntryArchiveID();
+		ContentReference[] references = new ContentReference[archiveIDs.length];		
 		try {
-		ContentReference[] references = new ContentReference[archiveIDs.length];
-		for (int i = 0; i < archiveIDs.length; i++) {
-			URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]);
-			ContentReference currentReference = new ContentReference(archiveIDs[i],url);
-			currentReference = asLocalReference(currentReference,null);
-			references[i] = currentReference;
-		}
+			for (int i = 0; i < archiveIDs.length; i++) {
+				URL url = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDs[i]);
+				ContentReference currentReference = new ContentReference(archiveIDs[i],url);
+				currentReference = asLocalReference(currentReference,null);
+				references[i] = currentReference;
+			}
 		} catch (IOException e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving feature Entry Archive Reference :" + feature.getURL().toExternalForm(), e);

@@ -1,6 +1,6 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.core;
 /*
- * (c) Copyright IBM Corp. 2000, 2001.
+ * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
 
@@ -8,6 +8,7 @@ import org.eclipse.update.core.IPluginContainer;
 import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.core.model.PluginEntryModel;
+import org.eclipse.update.internal.core.*;
 
 
 public class PluginEntry extends PluginEntryModel implements IPluginEntry {

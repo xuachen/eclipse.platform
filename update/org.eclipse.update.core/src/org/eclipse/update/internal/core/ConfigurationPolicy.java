@@ -215,6 +215,7 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 					ContentReference[] featureContentReference = feature.getFeatureContentProvider().getPluginEntryArchiveReferences(entry);				
 
 					ContentReference siteContentReference = site.getSiteContentProvider().getArchivesReferences(archiveID);
+					
 					URL url =  siteContentReference.asFile().toURL();
 					if (url!=null){
 						// make it relative to teh site
