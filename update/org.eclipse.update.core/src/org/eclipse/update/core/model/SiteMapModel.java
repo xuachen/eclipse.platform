@@ -6,10 +6,7 @@ package org.eclipse.update.core.model;
  */ 
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * An object which represents a site map.
@@ -25,7 +22,7 @@ public class SiteMapModel extends ModelObject {
 	private URLEntryModel description;
 	private List /*of FeatureReferenceModel*/ featureReferences;
 	private List /*of ArchiveReferenceModel*/ archiveReferences;
-	private List /*of SiteCategoryModel*/ categories;
+	private Set /*of SiteCategoryModel*/ categories;
 	
 	/**
 	 * Creates an uninitialized model object.
@@ -125,8 +122,10 @@ public class SiteMapModel extends ModelObject {
 		assertIsWriteable();
 		if (categories == null)
 			this.categories = null;
-		else
-			this.categories = new ArrayList(Arrays.asList(categories));
+		else{
+			this.categories = new TreeSet(SiteCategoryModel.getComparator());
+			this.categories.addAll(Arrays.asList(categories));
+		}
 	}
 
 	/**
@@ -157,7 +156,7 @@ public class SiteMapModel extends ModelObject {
 	public void addCategoryModel(SiteCategoryModel category) {
 		assertIsWriteable();
 		if (this.categories == null)
-			this.categories = new ArrayList();
+			this.categories = new TreeSet(SiteCategoryModel.getComparator());
 		if (!this.categories.contains(category))
 			this.categories.add(category);
 	}

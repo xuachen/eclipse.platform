@@ -11,7 +11,9 @@ import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.SiteCategoryModel;
 import org.eclipse.update.core.model.SiteMapModel;
+import org.eclipse.update.core.model.*;
 import org.xml.sax.SAXException;
 
 public abstract class Site extends SiteMapModel implements ISite, IWritable {
@@ -33,65 +35,20 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 
 	public static final String SITE_FILE = "site";
 	public static final String SITE_XML = SITE_FILE + ".xml";
-	private boolean isManageable = false;
-	private boolean isInitialized = false;
 	private SiteParser parser;
-
-	/**
-	 * the tool will create the directories on the file 
-	 * system if needed.
-	 */
-	public static boolean CREATE_PATH = true;
 
 	private ListenersList listeners = new ListenersList();
 	private URL siteURL;
 	private URL infoURL;
-	private List features;
-	private Set categories;
-	private List archives;
-
 	/**
 	 * Constructor for AbstractSite
 	 */
 	public Site(URL siteReference) throws CoreException, InvalidSiteTypeException {
 		super();
 		this.siteURL = siteReference;
-		initializeSite();
 	}
 
-	/**
-	 * Initializes the site by reading the site.xml file
-	 * 
-	 */
-	private void initializeSite() throws CoreException, InvalidSiteTypeException {
-		try {
-			URL siteXml = new URL(siteURL, SITE_XML);
-			parser = new SiteParser(siteXml.openStream(), this);
-			isManageable = true;
-		} catch (FileNotFoundException e) {
-			//attempt to parse the site if possible
-			parseSite();
-			// log not manageable site
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug(siteURL.toExternalForm() + " is not manageable by Update Manager: Couldn't find the site.xml file.");
-			}
-		} catch (Exception e) {
 
-			// is is an InvalidSiteTypeException meaning the type of the site is wrong ?
-			if (e instanceof SAXException) {
-				SAXException exception = (SAXException) e;
-				if (exception.getException() instanceof InvalidSiteTypeException) {
-					throw ((InvalidSiteTypeException) exception.getException());
-				}
-			}
-
-			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error during parsing of the site XML", e);
-			throw new CoreException(status);
-		} finally {
-			isInitialized = true;
-		}
-	}
 
 	/**
 	 * Saves the site into the site.xml
@@ -108,16 +65,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Cannot save site into " + file.getAbsolutePath(), e);
 			throw new CoreException(status);
 		}
-	}
-
-	/**
-	 * Logs that an attempt to read a non initialize variable has been made
-	 */
-	private void logNotInitialized() {
-		Exception trace = new Exception("Attempt to read uninitialized variable");
-		String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-		IStatus status = new Status(IStatus.WARNING, id, IStatus.OK, "the program is reading a variable of Site before loading it", trace);
-		UpdateManagerPlugin.getPlugin().getLog().log(status);
 	}
 
 	/**
@@ -161,7 +108,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 */
 	public void remove(IFeature feature, IProgressMonitor monitor) throws CoreException {
 
-		((Feature)feature).remove(monitor);
+		((Feature) feature).remove(monitor);
 
 		// remove feature reference
 		IFeatureReference[] featureReferences = getFeatureReferences();
@@ -169,17 +116,17 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 			for (int indexRef = 0; indexRef < featureReferences.length; indexRef++) {
 				IFeatureReference element = featureReferences[indexRef];
 				if (element.getURL().equals(feature.getURL())) {
-					features.remove(element);
+					removeFeatureReferenceModel((FeatureReferenceModel)element);
 					break;
 				}
 			}
 		}
 
 		// notify listeners
-		
+
 		Object[] siteListeners = listeners.getListeners();
 		for (int i = 0; i < siteListeners.length; i++) {
-			((ISiteChangedListener)siteListeners[i]).featureUninstalled(feature);
+			((ISiteChangedListener) siteListeners[i]).featureUninstalled(feature);
 		}
 
 	}
@@ -198,7 +145,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * removes Feature files/ Feature info from the Site
 	 */
 	protected abstract void removeFeatureInfo(VersionedIdentifier featureIdentifier) throws CoreException;
-
 
 	/**
 	 * return the URL of the archive ID
@@ -255,10 +201,10 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @return Returns a IFeatureReference[]
 	 */
 	public IFeatureReference[] getFeatureReferences() {
-		IFeatureReference[] result = new IFeatureReference[0];
-		if (!(features == null || features.isEmpty())) {
-			result = new IFeatureReference[features.size()];
-			features.toArray(result);
+		int length = getFeatureReferenceModels().length;
+		IFeatureReference[] result = new IFeatureReference[length];
+		if (length>0){
+			result = (IFeatureReference[])getFeatureReferenceModels();
 		}
 		return result;
 	}
@@ -269,22 +215,17 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @param feature The feature to add
 	 */
 	public void addFeatureReference(IFeatureReference feature) {
-		if (features == null) {
-			features = new ArrayList(0);
-		}
-		this.features.add(feature);
+		addFeatureReferenceModel((FeatureReferenceModel)feature);
 	}
 
 	/**
 	 * @see ISite#getArchives()
 	 */
 	public IURLEntry[] getArchives() {
-		IURLEntry[] result = new IURLEntry[0];
-		if (archives == null && !isInitialized)
-			logNotInitialized();
-		if (!(archives == null || archives.isEmpty())) {
-			result = new IURLEntry[archives.size()];
-			archives.toArray(result);
+		int length = getArchiveReferenceModels().length;
+		IURLEntry[] result = new IURLEntry[length];
+		if (length>0) {
+			result = (IURLEntry[])getArchiveReferenceModels();
 		}
 		return result;
 	}
@@ -299,14 +240,13 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		URL result = null;
 		boolean found = false;
 
-		if (!(archiveId == null || archiveId.equals("") || archives == null || archives.isEmpty())) {
-			Iterator iter = archives.iterator();
-			IURLEntry info;
-			while (iter.hasNext() && !found) {
-				info = (IURLEntry) iter.next();
-				if (archiveId.trim().equalsIgnoreCase(info.getAnnotation())) {
-					result = info.getURL();
+		int length = getArchiveReferenceModels().length;
+		if (length>0) {
+			for (int i = 0; i < length; i++) {
+				if (archiveId.trim().equalsIgnoreCase(getArchiveReferenceModels()[i].getPath())) {
+					result = getArchiveReferenceModels()[i].getURL();
 					found = true;
+					break;
 				}
 			}
 		}
@@ -330,16 +270,13 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @param archive The archive to add
 	 */
 	public void addArchive(IURLEntry archive) {
-		if (archives == null) {
-			archives = new ArrayList(0);
-		}
 		if (getArchiveURLfor(archive.getAnnotation()) != null) {
 			// DEBUG:		
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
 				UpdateManagerPlugin.getPlugin().debug("The Archive with ID:" + archive.getAnnotation() + " already exist on the site.");
 			}
 		} else {
-			this.archives.add(archive);
+			addArchiveReferenceModel((ArchiveReferenceModel)archive);
 		}
 	}
 
@@ -359,10 +296,6 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see ISite#getInfoURL()
 	 */
 	public URL getInfoURL() {
-		if (isManageable) {
-			if (infoURL == null && !isInitialized)
-				logNotInitialized();
-		}
 		return infoURL;
 	}
 
@@ -378,14 +311,10 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @see ISite#getCategories()
 	 */
 	public ICategory[] getCategories() {
-		ICategory[] result = new ICategory[0];
-		if (isManageable) {
-			if (categories == null && !isInitialized)
-				logNotInitialized();
-			if (!categories.isEmpty()) {
-				result = new ICategory[categories.size()];
-				categories.toArray(result);
-			}
+		int length = getCategoryModels().length;
+		ICategory[] result = new ICategory[length];
+		if (length > 0) {
+			result = (ICategory[]) getCategoryModels();
 		}
 		return result;
 	}
@@ -395,10 +324,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	 * @param category The category to add
 	 */
 	public void addCategory(ICategory category) {
-		if (this.categories == null) {
-			this.categories = new TreeSet(Category.getComparator());
-		}
-		this.categories.add(category);
+		addCategoryModel((SiteCategoryModel) category);
 	}
 
 	/**
@@ -407,27 +333,20 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	public ICategory getCategory(String key) {
 		ICategory result = null;
 		boolean found = false;
+		int length = getCategoryModels().length;
 
-		if (isManageable) {
-			if (categories == null)
-				logNotInitialized();
-			Iterator iter = categories.iterator();
-			ICategory currentCategory;
-			while (iter.hasNext() && !found) {
-				currentCategory = (ICategory) iter.next();
-				if (currentCategory.getName().equals(key)) {
-					result = currentCategory;
-					found = true;
-				}
+		for (int i = 0; i < length; i++) {
+			if (getCategoryModels()[i].getName().equals(key)) {
+				result = (ICategory) getCategoryModels()[i];
+				found = true;
+				break;
 			}
 		}
 
 		//DEBUG:
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS && !found) {
 			UpdateManagerPlugin.getPlugin().debug("Cannot find:" + key + " category in site:" + this.getURL().toExternalForm());
-			if (!isManageable)
-				UpdateManagerPlugin.getPlugin().debug("The Site is not manageable. Does not contain ste.xml");
-			if (categories == null || categories.isEmpty())
+			if (getCategoryModels().length <= 0)
 				UpdateManagerPlugin.getPlugin().debug("The Site does not contain any categories.");
 		}
 
@@ -507,37 +426,4 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 		return null;
 	}
 
-	/*
-	 * @see IPluginContainer#getPluginEntryCount()
-	 */
-	public int getPluginEntryCount() {
-		return 0;
-	}
-
-	/*
-	 * @see IPluginContainer#getDownloadSize(IPluginEntry)
-	 */
-	public long getDownloadSize(IPluginEntry entry) {
-		return 0;
-	}
-
-	/*
-	 * @see IPluginContainer#getInstallSize(IPluginEntry)
-	 */
-	public long getInstallSize(IPluginEntry entry) {
-		return 0;
-	}
-
-	/*
-	 * @see IPluginContainer#addPluginEntry(IPluginEntry)
-	 */
-	public void addPluginEntry(IPluginEntry pluginEntry) {
-	}
-
-	/*
-	 * @see IPluginContainer#store(IPluginEntry, String, InputStream)
-	 */
-	public void store(IPluginEntry entry, String name, InputStream inStream) throws CoreException {
-	}
-
-	}
+}
