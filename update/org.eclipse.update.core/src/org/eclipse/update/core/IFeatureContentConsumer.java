@@ -67,7 +67,7 @@ public interface IFeatureContentConsumer {
 	void close();	
 	
 	/**
-	 * sets the feature for this content provider
+	 * sets the feature for this content consumer
 	 * @param the IFeature 
 	 * @since 2.0
 	 */

@@ -25,12 +25,14 @@ public class SiteFileFactory extends BaseSiteFactory {
 		
 		try {		
 			ISiteContentProvider contentProvider = new SiteFileContentProvider(url);
-		
+			ISiteContentConsumer contentConsumer = new SiteFileContentConsumer();
+					
 			siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
 			SiteModelFactory factory = (SiteModelFactory) this;
 			site = (Site)factory.parseSite(siteStream);
 			
 			site.setSiteContentProvider(contentProvider);
+			site.setSiteContentConsumer(contentConsumer);			
 			
 			site.resolve(url, getResourceBundle(url));
 			site.markReadOnly();			

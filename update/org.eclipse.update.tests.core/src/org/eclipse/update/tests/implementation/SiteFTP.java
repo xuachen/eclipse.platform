@@ -152,16 +152,16 @@ public class SiteFTP implements ISite {
 	}
 
 	/*
-	 * @see ISite#getContentConsumer()
+	 * @see ISite#getSiteContentConsumer()
 	 */
-	public ISiteContentConsumer getContentConsumer() throws CoreException {
+	public ISiteContentConsumer getSiteContentConsumer() throws CoreException {
 		return null;
 	}
 
 	/*
-	 * @see ISite#setContentConsumer(ISiteContentConsumer)
+	 * @see ISite#setSiteContentConsumer(ISiteContentConsumer)
 	 */
-	public void setContentConsumer(ISiteContentConsumer contentConsumer) {
+	public void setSiteContentConsumer(ISiteContentConsumer contentConsumer) {
 	}
 
 	/*

@@ -18,6 +18,15 @@ import org.eclipse.core.runtime.CoreException;
 public interface ISiteContentProvider {
 	
 	/**
+	 * Returns the URL of this site
+	 * 
+	 * @return the site URL
+	 * @since 2.0
+	 */
+	
+	URL getURL();
+			
+	/**
 	 * Returns the site manifest reference or null if it doesn't exist
 	 * 
 	 * @return the site manifest

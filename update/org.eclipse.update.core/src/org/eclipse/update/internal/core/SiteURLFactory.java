@@ -26,7 +26,8 @@ public class SiteURLFactory extends BaseSiteFactory {
 		InputStream siteStream = null;
 		
 		try {		
-			ISiteContentProvider contentProvider = new SiteURLContentProvider(url);
+			ISiteContentProvider contentProvider = null;
+			//new SiteURLContentProvider(url);
 		
 			siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
 			SiteModelFactory factory = (SiteModelFactory) this;

@@ -258,14 +258,14 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/*
 	* @see ISite#setContentConsumer(ISiteContentConsumer)
 	*/
-	public void setContentConsumer(ISiteContentConsumer contentConsumer) {
+	public void setSiteContentConsumer(ISiteContentConsumer contentConsumer) {
 		this.contentConsumer = contentConsumer;
 	}
 
 	/*
 	 * @see ISite#getContentConsumer()
 	 */
-	public ISiteContentConsumer getContentConsumer() throws CoreException {
+	public ISiteContentConsumer getSiteContentConsumer() throws CoreException {
 		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "FeatureContentConsumer not set for site:" + getURL().toExternalForm(), null);

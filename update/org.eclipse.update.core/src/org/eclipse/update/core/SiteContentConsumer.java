@@ -14,8 +14,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @since 2.0
  */
 
-public abstract class SiteContentConsumer implements IFeatureContentConsumer {
+public abstract class SiteContentConsumer implements ISiteContentConsumer {
 	
-
+	protected ISite site;
+	
+	/*
+	 * @see ISiteContentConsumer#setSite(ISite)
+	 */
+	public void setSite(ISite feature) {
+		this.site = site;
+	}	
 
 }

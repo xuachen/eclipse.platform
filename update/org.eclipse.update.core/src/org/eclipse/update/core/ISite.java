@@ -143,13 +143,13 @@ public interface ISite extends IPluginContainer {
 	 * @throws CoreException when the Site does not allow storage.
 	 * @since 2.0
 	 */
-	ISiteContentConsumer getContentConsumer() throws CoreException;	
+	ISiteContentConsumer getSiteContentConsumer() throws CoreException;	
 
 	/**
 	 * Sets the ISiteContentConsumer for this site
 	 * @since 2.0
 	 */
-	void setContentConsumer(ISiteContentConsumer contentConsumer);	
+	void setSiteContentConsumer(ISiteContentConsumer contentConsumer);	
 	
 	/**
 	 * Sets the ISiteContentProvider for this feature

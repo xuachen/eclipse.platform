@@ -67,11 +67,11 @@ public interface ISiteContentConsumer {
 	void close();	
 	
 	/**
-	 * sets the feature for this content provider
-	 * @param the IFeature 
+	 * sets the Site for this content consumer
+	 * @param the ISite
 	 * @since 2.0
 	 */
-	void setFeature(IFeature feature);
+	void setSite(ISite Site);
 			
 }
 
