@@ -154,61 +154,14 @@ protected void addLibraries(IPluginDescriptor source, List destination) {
 }
 
 protected void readCustomURLs() {
-	customURLs = new ArrayList(10);
-	Properties urls = new Properties();
-	try {
-		IPath location = AntCorePlugin.getPlugin().getStateLocation().append(".urls");
-		urls.load(new FileInputStream(location.toOSString()));
-		for (Iterator iterator = urls.values().iterator(); iterator.hasNext();) {
-			String url = (String) iterator.next();
-			try {
-				customURLs.add(new URL(url));
-			} catch (MalformedURLException e) {
-				e.printStackTrace(); // FIXME
-			}
-		}
-	} catch (IOException e) {
-		e.printStackTrace(); // FIXME
-	}
 }
 
-/**
- * Param source is a Collection of IConfigurationElement.
- */
-protected void addPluginClassLoaders(Collection source, List destination) {
-	for (Iterator iterator = source.iterator(); iterator.hasNext();) {
-		IConfigurationElement element = (IConfigurationElement) iterator.next();
-		IPluginDescriptor descriptor = element.getDeclaringExtension().getDeclaringPluginDescriptor();
-		ClassLoader loader = descriptor.getPluginClassLoader();
-		if (!destination.contains(loader))
-			destination.add(loader);
-	}
-}
 
 protected void addPluginClassLoader(ClassLoader loader) {
 	if (!pluginClassLoaders.contains(loader))
 		pluginClassLoaders.add(loader);
 }
 
-/**
- * Param source is a Collection of IConfigurationElement.
- */
-protected void addURLs(Collection source, List destination) {
-	for (Iterator iterator = source.iterator(); iterator.hasNext();) {
-		IConfigurationElement element = (IConfigurationElement) iterator.next();
-		String library = element.getAttribute(AntCorePlugin.LIBRARY);
-		if (library == null)
-			continue; // FIXME: can it be null?
-		IPluginDescriptor descriptor = element.getDeclaringExtension().getDeclaringPluginDescriptor();
-		try {
-			URL url = Platform.asLocalURL(new URL(descriptor.getInstallURL(), library));
-			if (!destination.contains(url))
-				destination.add(url);
-		} catch (Exception e) {
-			e.printStackTrace(); // FIXME
-		}
-	}
-}
 
 
 public URL[] getURLs() {
@@ -277,15 +230,15 @@ public void addCustomURL(URL url) {
 }
 
 public void removeCustomTask(Task task) {
-	// FIXME:
+	customTasks.remove(task);
 }
 
 public void removeCustomType(Type type) {
-	// FIXME:
+	customTypes.remove(type);
 }
 
 public void removeCustomURL(URL url) {
-	// FIXME:
+	customURLs.remove(url);
 }
 
 /**
