@@ -153,7 +153,7 @@ class SearchAdapter extends MonitorAdapter {
 			}
 			IFeature feature = candidates[i];
 			String versionedLabel = feature.getLabel();
-			String version = feature.getIdentifier().getVersion().toString();
+			String version = feature.getVersionIdentifier().getVersion().toString();
 			versionedLabel += " "+version+":";
 			backgroundProgress.setTaskName(versionedLabel);
 			findUpdates(candidates[i]);
@@ -243,8 +243,8 @@ class SearchAdapter extends MonitorAdapter {
 	}
 	
 	private boolean isNewerVersion(IFeature feature, IFeature candidate) {
-		VersionedIdentifier fvi = feature.getIdentifier();
-		VersionedIdentifier cvi = candidate.getIdentifier();
+		VersionedIdentifier fvi = feature.getVersionIdentifier();
+		VersionedIdentifier cvi = candidate.getVersionIdentifier();
 		if (!fvi.getIdentifier().equals(cvi.getIdentifier())) return false;
 		Version fv = fvi.getVersion();
 		Version cv = cvi.getVersion();
