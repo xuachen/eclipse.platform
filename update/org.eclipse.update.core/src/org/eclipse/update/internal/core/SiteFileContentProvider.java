@@ -56,7 +56,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 	/**
 	 * Method parseSite.
 	 */
-	protected void parseSite() throws CoreException {
+	public Site parseSite() throws CoreException {
 
 		String path = UpdateManagerUtils.getPath(getURL());
 		String pluginPath = path + Site.DEFAULT_PLUGIN_PATH;
@@ -79,6 +79,8 @@ public class SiteFileContentProvider extends SiteContentProvider {
 		// FIXME: fragments
 		model = parsePlugins(fragmentPath);
 		addParsedPlugins(model.getFragments());
+		
+		return (Site)site;
 
 	}
 	
@@ -109,7 +111,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 					featureRef = new FeatureReference();
 					featureRef.setSite(site);
 					featureRef.setURL(featureURL);
-				//	addFeatureReference(featureRef);
+					site.addFeatureReference(featureRef);
 				}
 			} catch (MalformedURLException e) {
 				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -145,7 +147,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 					featureRef = new FeatureReference();
 					featureRef.setSite(site);
 					featureRef.setURL(featureURL);
-				//	addFeatureReference(featureRef);
+					site.addFeatureReference(featureRef);
 				}
 			} catch (MalformedURLException e) {
 				String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
@@ -206,7 +208,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 					info = new URLEntry();
 					info.setAnnotation(pluginID);
 					info.resolve(url,null);
-			//		this.addArchive(info);
+					site.addPlugins(info); // add parsed plugins in teh site
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -260,7 +262,7 @@ public class SiteFileContentProvider extends SiteContentProvider {
 							URLEntry info = new URLEntry();
 							info.setAnnotation(pluginID);
 							info.resolve(url,null);
-		//					this.addArchive(info);
+							site.addPlugins(info); // add parsed plugins in teh site
 						}
 					}
 				}

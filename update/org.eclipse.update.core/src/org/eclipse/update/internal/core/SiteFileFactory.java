@@ -24,12 +24,16 @@ public class SiteFileFactory extends BaseSiteFactory {
 		InputStream siteStream = null;
 		
 		try {		
-			ISiteContentProvider contentProvider = new SiteFileContentProvider(url);
-			ISiteContentConsumer contentConsumer = new SiteFileContentConsumer();
+			SiteFileContentProvider contentProvider = new SiteFileContentProvider(url);
+			SiteFileContentConsumer contentConsumer = new SiteFileContentConsumer();
 					
-			siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
-			SiteModelFactory factory = (SiteModelFactory) this;
-			site = (Site)factory.parseSite(siteStream);
+			try {
+				siteStream = contentProvider.getSiteManifestReference().asURL().openStream();
+				SiteModelFactory factory = (SiteModelFactory) this;
+				site = (Site)factory.parseSite(siteStream);		
+			} catch (IOException e) {
+				site = contentProvider.parseSite();
+			}
 			
 			site.setSiteContentProvider(contentProvider);
 			site.setSiteContentConsumer(contentConsumer);			
