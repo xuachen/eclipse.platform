@@ -50,8 +50,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 	 */
 	public ContentReference getFeatureManifestReference() throws CoreException {
 		if (generatedFeatureManifest == null) {
-			throwCoreException("Feature manifest is not available",null);
-			return null;
+			throw newCoreException("Feature manifest is not available",null);
 		}
 		else
 			return generatedFeatureManifest;
@@ -89,8 +88,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 		try {
 			return unpackNonPluginEntryContent(nonPluginEntry);
 		} catch(IOException e) {
-			throwCoreException("Unable to return content for non plugin entry "+nonPluginEntry.getIdentifier(),e);
-			return null;
+			throw newCoreException("Unable to return content for non plugin entry "+nonPluginEntry.getIdentifier(),e);
 		}
 	}
 
@@ -112,8 +110,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 		try {
 			return unpackPluginEntryContent(pluginEntry);
 		} catch(IOException e) {
-			throwCoreException("Unable to return content for plugin entry "+pluginEntry.getIdentifier(),e);
-			return null;
+			throw newCoreException("Unable to return content for plugin entry "+pluginEntry.getIdentifier(),e);
 		}
 	}
 
@@ -226,7 +223,7 @@ public class BuildZipContentProvider extends FeatureContentProvider implements I
 		return unpack(baseReference, selector, null/*ProgressMonitor*/);
 	}
 	
-	private void throwCoreException(String s, Throwable e) throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR,"org.eclipse.update.examples.buildzip",0,s,e));
+	private CoreException newCoreException(String s, Throwable e) throws CoreException {
+		return new CoreException(new Status(IStatus.ERROR,"org.eclipse.update.examples.buildzip",0,s,e));
 	}
 }

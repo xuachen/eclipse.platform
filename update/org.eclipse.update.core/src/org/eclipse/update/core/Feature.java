@@ -336,7 +336,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		//finds the contentReferences for this IPluginEntry
 		for (int i = 0; i < pluginsToInstall.length; i++) {
-			IFeatureContentConsumer pluginConsumer = consumer.opens(pluginsToInstall[i]);
+			IFeatureContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
 			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.store(references[j], monitor);
@@ -347,7 +347,7 @@ public class Feature extends FeatureModel implements IFeature {
 		// download and install non plugins bundles
 		INonPluginEntry[] nonPluginsContentReferencesToInstall = getNonPluginEntries();
 		for (int i = 0; i < nonPluginsContentReferencesToInstall.length; i++) {
-			IFeatureContentConsumer nonPluginConsumer = consumer.opens(nonPluginsContentReferencesToInstall[i]);
+			IFeatureContentConsumer nonPluginConsumer = consumer.open(nonPluginsContentReferencesToInstall[i]);
 			references = getFeatureContentProvider().getNonPluginEntryArchiveReferences(nonPluginsContentReferencesToInstall[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.store(references[j], monitor);
@@ -372,7 +372,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		//finds the contentReferences for this IPluginEntry
 		for (int i = 0; i < pluginsToRemove.length; i++) {
-			IFeatureContentConsumer pluginConsumer = consumer.opens(pluginsToRemove[i]);
+			IFeatureContentConsumer pluginConsumer = consumer.open(pluginsToRemove[i]);
 			references = getFeatureContentProvider().getPluginEntryContentReferences(pluginsToRemove[i]);
 			for (int j = 0; j < references.length; j++) {
 				consumer.remove(references[j], monitor);

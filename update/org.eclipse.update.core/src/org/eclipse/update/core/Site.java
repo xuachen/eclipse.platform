@@ -268,7 +268,7 @@ public abstract class Site extends SiteMapModel implements ISite, IWritable {
 	/*
 	 * @see ISite#getContentConsumer()
 	 */
-	public ISiteContentConsumer getSiteContentConsumer() throws CoreException {
+	public ISiteContentConsumer createSiteContentConsumer() throws CoreException {
 		if (contentConsumer == null) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "FeatureContentConsumer not set for site:" + getURL().toExternalForm(), null);

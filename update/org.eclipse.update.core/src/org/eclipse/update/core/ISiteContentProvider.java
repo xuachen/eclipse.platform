@@ -41,7 +41,7 @@ public interface ISiteContentProvider {
 	 * @since 2.0 
 	 */
 
-	ContentReference getArchivesReferences(String archiveID);
+	ContentReference getArchiveReference(String id);
 	
 	/**
 	 * Returns a ContentReference for this feature

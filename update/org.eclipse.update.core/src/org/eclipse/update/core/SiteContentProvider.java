@@ -62,7 +62,7 @@ public abstract class SiteContentProvider implements ISiteContentProvider {
 	/*
 	 * @see ISiteContentProvider#getArchivesReferences(String)
 	 */
-	public abstract ContentReference getArchivesReferences(String archiveID);
+	public abstract ContentReference getArchiveReference(String archiveID);
 
 	/*
 	 * @see ISiteContentProvider#getFeatureArchivesReferences(IFeature)
