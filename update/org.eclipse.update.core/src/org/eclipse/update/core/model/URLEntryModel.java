@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 public class URLEntryModel extends ModelObject {
 	
 	private String annotation;
+	private String localizedAnnotation;
 	private String urlString;
 	private URL url;
 	
@@ -39,6 +40,19 @@ public class URLEntryModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getAnnotation() {
+		if (localizedAnnotation != null)
+			return localizedAnnotation;
+		else
+			return annotation;
+	}
+		
+	/**
+	 * Returns annotation.
+	 *
+	 * @return text string, or <code>null</code>
+	 * @since 2.0
+	 */
+	public String getAnnotationNonLocalized() {
 		return annotation;
 	}
 
@@ -72,6 +86,7 @@ public class URLEntryModel extends ModelObject {
 	public void setAnnotation(String annotation) {
 		assertIsWriteable();
 		this.annotation = annotation;
+		this.localizedAnnotation = null;
 	}
 	
 	/**
@@ -92,7 +107,7 @@ public class URLEntryModel extends ModelObject {
 	 */
 	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		// resolve local elements
-		annotation = resolveNLString(bundle, annotation);
+		localizedAnnotation = resolveNLString(bundle, annotation);
 		url = resolveURL(base, bundle, urlString);
 	}
 }

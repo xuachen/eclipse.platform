@@ -127,6 +127,7 @@ public class Feature extends FeatureModel implements IFeature {
 		//	in case we throw a cancel exception
 		String pluginId = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 		IStatus cancelStatus = new Status(IStatus.ERROR, pluginId, IStatus.OK, "Install has been Cancelled", null);
+//		IStatus cancelStatus = new Status(IStatus.ERROR, "org.eclipse.update", IStatus.OK, "Install has been Cancelled", null);
 		CANCEL_EXCEPTION = new CoreException(cancelStatus);
 	}
 
@@ -402,7 +403,6 @@ public class Feature extends FeatureModel implements IFeature {
 			for (int i = 0; i < result.length; i++) {
 				result[i] = (IPluginEntry) getPluginEntryModels()[i];
 			}
-
 		}
 		return result;
 	}
@@ -432,7 +432,9 @@ public class Feature extends FeatureModel implements IFeature {
 		int length = getNonPluginEntryModels().length;
 		INonPluginEntry[] result = new INonPluginEntry[length];
 		if (length > 0) {
-			result = (INonPluginEntry[]) getNonPluginEntryModels();
+			for (int i = 0; i < result.length; i++) {
+				result[i] = (INonPluginEntry) getNonPluginEntryModels()[i];
+			}
 		}
 		return result;
 	}

@@ -26,7 +26,9 @@ public class FeatureModel extends ModelObject {
 	private String featureId;
 	private String featureVersion;
 	private String label;
+	private String localizedLabel;
 	private String provider;
+	private String localizedProvider;
 	private String imageURLString;
 	private URL imageURL;
 	private String os;
@@ -71,6 +73,16 @@ public class FeatureModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getLabel() {
+		if (localizedLabel != null)
+			return localizedLabel;
+		else
+			return label;
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	public String getLabelNonLocalized() {
 		return label;
 	}
 
@@ -78,6 +90,16 @@ public class FeatureModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public String getProvider() {
+		if (localizedProvider != null)
+			return localizedProvider;
+		else
+			return provider;
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	public String getProviderNonLocalized() {
 		return provider;
 	}
 
@@ -233,6 +255,7 @@ public class FeatureModel extends ModelObject {
 	public void setLabel(String label) {
 		assertIsWriteable();
 		this.label = label;
+		this.localizedLabel = null;
 	}
 
 	/**
@@ -241,6 +264,7 @@ public class FeatureModel extends ModelObject {
 	public void setProvider(String provider) {
 		assertIsWriteable();
 		this.provider = provider;
+		this.localizedProvider = null;
 	}
 
 	/**
@@ -499,8 +523,8 @@ public class FeatureModel extends ModelObject {
 	 */
 	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		// resolve local elements
-		label = resolveNLString(bundle, label);
-		provider = resolveNLString(bundle,provider);
+		localizedLabel = resolveNLString(bundle, label);
+		localizedProvider = resolveNLString(bundle,provider);
 		imageURL = resolveURL(base, bundle,imageURLString);
 
 		// delegate to references		

@@ -21,9 +21,9 @@ import java.net.URLConnection;
  */
 public class ContentReference {
 	
-	protected String id;
-	protected URL url;	// reference is either URL reference *OR*
-	protected File file;	//    local file reference
+	private String id;
+	private URL url;	// reference is either URL reference *OR*
+	private File file;	//    local file reference
 		
 	private URLConnection connection;
 	
@@ -38,8 +38,8 @@ public class ContentReference {
 	 * Constructor for ContentRef.
 	 */
 	public ContentReference(String id, URL url) {
-		this.id = id;
-		this.url = url;
+		this.id = (id==null ? "" : id);
+		this.url = url; // can be null
 		this.file = null;
 	}
 	
@@ -47,9 +47,18 @@ public class ContentReference {
 	 * Constructor for ContentRef.
 	 */
 	public ContentReference(String id, File file) {
-		this.id = id;
-		this.file = file;
+		this.id = (id==null ? "" : id);
+		this.file = file; // can be null
 		this.url = null;
+	}
+	
+	/**
+	 * Clone a new content reference of the same type
+	 * 
+	 * @since 2.0
+	 */
+	public ContentReference newContentReference(String id, File file) {
+		return new ContentReference(id, file);
 	}
 	
 	/**
@@ -65,11 +74,12 @@ public class ContentReference {
 	public InputStream getInputStream() throws IOException {
 		if (file != null)
 			return new FileInputStream(file);
-		else {
+		else if (url != null) {
 			if (connection == null)
 				connection = url.openConnection();
 			return connection.getInputStream();
-		}
+		} else
+			throw new IOException("Unable to create input stream");
 	}	
 	
 	/**
@@ -78,7 +88,7 @@ public class ContentReference {
 	public long getInputSize() {
 		if (file != null)
 			return file.length();
-		else {
+		else if (url != null) {
 			if (connection == null) {
 				try {
 			 		connection = url.openConnection();
@@ -88,7 +98,8 @@ public class ContentReference {
 			}
 			long size = connection.getContentLength();
 			return size == -1 ? ContentReference.UNKNOWN_SIZE : size;
-		}
+		} else
+			return ContentReference.UNKNOWN_SIZE;
 	}
 	
 	/**
@@ -97,45 +108,46 @@ public class ContentReference {
 	public boolean isLocalReference() {
 		if (file != null)
 			return true;
-		else
+		else if (url != null)
 			return url.getProtocol().equals("file");
+		else
+			return false;
 	}	
 		
 	/**
 	 * Returns a local file for the content reference.
-	 * Returns <code>null</code> if content reference cannot
+	 * Throws an exception if content reference cannot
 	 * be returned as a local file. Note, that this method
 	 * <b>does not</b> cause the file to be downloaded if it
 	 * is not already local.
 	 * 
 	 * @since 2.0
 	 */
-	public File asFile() {
+	public File asFile() throws IOException {
 		if (file != null)
 			return file;
 			
-		if (url.getProtocol().equals("file"))
+		if (url!=null && url.getProtocol().equals("file"))
 			return new File(url.getFile());
 			
-		return null;
+		throw new IOException("Unable to return reference "+(url==null ? "" : url.toExternalForm())+" as file");
 	}
 		
 	/**
 	 * Returns a URL for the content reference.
-	 * Returns <code>null</code> if content reference cannot
+	 * Throws an exception if content reference cannot
 	 * be returned as a URL.
 	 * 
 	 * @since 2.0
 	 */
-	public URL asURL() {
+	public URL asURL() throws IOException {
 		if (url != null)
 			return url;
 			
-		try {
+		if (file != null)
 			return file.toURL();
-		} catch(MalformedURLException e) {
-			return null;
-		}
+			
+		throw new IOException("Unable to return reference as URL");
 	}
 			
 	/**

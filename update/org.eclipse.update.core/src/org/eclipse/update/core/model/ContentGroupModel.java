@@ -26,6 +26,7 @@ public class ContentGroupModel extends ModelObject {
 
 	private String id;
 	private String label;
+	private String localizedLabel;
 	private boolean optional;
 	private URLEntryModel description;
 	private String[] includes;
@@ -55,6 +56,15 @@ public class ContentGroupModel extends ModelObject {
 	 * @since 2.0
 	 */	
 	public String getLabel() {
+		if (localizedLabel != null)
+			return localizedLabel;
+		else
+			return label;
+	}
+	/**
+	 * @since 2.0
+	 */	
+	public String getLabelNonLocalized() {
 		return label;
 	}
 
@@ -152,6 +162,7 @@ public class ContentGroupModel extends ModelObject {
 	public void setLabel(String label) {
 		assertIsWriteable();
 		this.label = label;
+		this.localizedLabel = null;
 	}
 
 	/**
@@ -323,7 +334,7 @@ public class ContentGroupModel extends ModelObject {
 	 */
 	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		// resolve local elements
-		label = resolveNLString(bundle, label);
+		localizedLabel = resolveNLString(bundle, label);
 		
 		// delegate to references
 		resolveReference(getDescriptionModel(), base, bundle);

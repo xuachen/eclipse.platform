@@ -24,6 +24,7 @@ public class SiteCategoryModel extends ModelObject {
 	
 	private String name;
 	private String label;
+	private String localizedLabel;
 	private URLEntryModel description;
 	private static Comparator comp;	
 	
@@ -47,6 +48,16 @@ public class SiteCategoryModel extends ModelObject {
 	 * @since 2.0
 	 */	
 	public String getLabel() {
+		if (localizedLabel != null)
+			return localizedLabel;
+		else
+			return label;
+	}
+
+	/**
+	 * @since 2.0
+	 */	
+	public String getLabelNonLocalized() {
 		return label;
 	}
 
@@ -63,6 +74,7 @@ public class SiteCategoryModel extends ModelObject {
 	public void setLabel(String label) {
 		assertIsWriteable();
 		this.label = label;
+		this.localizedLabel = null;
 	}
 
 	/**
@@ -93,7 +105,7 @@ public class SiteCategoryModel extends ModelObject {
 	 */
 	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		// resolve local elements
-		label = resolveNLString(bundle,label);
+		localizedLabel = resolveNLString(bundle,label);
 
 		// delegate to references
 		resolveReference(getDescriptionModel(), base, bundle);
