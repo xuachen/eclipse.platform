@@ -52,7 +52,7 @@ public String getTypeName() {
  * Sets the taskName.
  * @param taskName The taskName to set
  */
-public void setTaskName(String taskName) {
+public void setTypeName(String taskName) {
 	this.typeName = taskName;
 }
 }
