@@ -7,6 +7,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.IPluginEntry;
+import org.eclipse.update.core.*;
+import org.eclipse.update.core.*;
 
 public class SiteFTP implements ISite {
 
@@ -145,6 +147,32 @@ public class SiteFTP implements ISite {
 	 * @see IPluginContainer#remove(IPluginEntry)
 	 */
 	public void remove(IPluginEntry entry) throws CoreException {
+	}
+
+	/*
+	 * @see ISite#getContentConsumer()
+	 */
+	public IContentConsumer getContentConsumer() throws CoreException {
+		return null;
+	}
+
+	/*
+	 * @see ISite#setContentConsumer(IContentConsumer)
+	 */
+	public void setContentConsumer(IContentConsumer contentConsumer) {
+	}
+
+	/*
+	 * @see ISite#setSiteContentProvider(ISiteContentProvider)
+	 */
+	public void setSiteContentProvider(ISiteContentProvider siteContentProvider) {
+	}
+
+	/*
+	 * @see ISite#getSiteContentProvider()
+	 */
+	public ISiteContentProvider getSiteContentProvider() {
+		return null;
 	}
 
 }
