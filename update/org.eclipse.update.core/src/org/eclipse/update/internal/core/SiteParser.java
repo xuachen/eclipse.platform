@@ -182,7 +182,7 @@ public class SiteParser extends DefaultHandler {
 		String id = attributes.getValue("path");
 		String urlString = attributes.getValue("url");
 		URL url = UpdateManagerUtils.getURL(site.getURL(), urlString, null);
-		site.addArchive(new URLEntry(id, url));
+		//site.addArchive(new URLEntry(id, url));
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
@@ -230,7 +230,8 @@ public class SiteParser extends DefaultHandler {
 		String infoURL = attributes.getValue("url");
 		infoURL = UpdateManagerUtils.getResourceString(infoURL, bundle);
 		URL url = UpdateManagerUtils.getURL(site.getURL(), infoURL, null);
-		URLEntry inf = new URLEntry(url);
+		URLEntry inf = new URLEntry();
+		inf.resolve(url,null);
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {

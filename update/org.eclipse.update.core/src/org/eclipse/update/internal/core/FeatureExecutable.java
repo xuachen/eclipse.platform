@@ -175,7 +175,7 @@ public class FeatureExecutable extends DefaultFeature {
 			files.toArray(result);
 		} catch (Exception e){
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive names for:" + feature.getIdentifier().toString(), e);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive names for:" + feature.getVersionIdentifier().toString(), e);
 			throw new CoreException(status);
 		}
 		return result;

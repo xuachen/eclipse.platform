@@ -37,7 +37,7 @@ public interface IFeature extends IPluginContainer {
 	 * @since 2.0 
 	 */
 
-	VersionedIdentifier getIdentifier();
+	VersionedIdentifier getVersionIdentifier();
 	
 	/**
 	 * Returns the Site this DefaultFeature belongs to.

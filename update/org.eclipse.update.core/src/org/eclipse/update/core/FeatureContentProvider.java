@@ -61,7 +61,7 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	/*
 	 * @see IFeatureContentProvider#getFeatureManifest()
 	 */
-	public abstract ContentReference getFeatureManifest()
+	public abstract ContentReference getFeatureManifestReference()
 		throws CoreException;
 
 	/*
@@ -94,12 +94,6 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	public abstract ContentReference[] getFeatureEntryContentReferences()
 		throws CoreException;
 
-	/*
-	 * @see IFeatureContentProvider#getPluginEntryContentReferences(IPluginEntry)
-	 */
-	public abstract ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry)
-		throws CoreException;
-		
 	/*
 	 * @see IFeatureContentProvider#setFeature(IFeature)
 	 */

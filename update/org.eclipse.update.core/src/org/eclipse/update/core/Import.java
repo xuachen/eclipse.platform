@@ -1,4 +1,4 @@
-package org.eclipse.update.internal.core;
+package org.eclipse.update.core;
 /*
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
@@ -11,9 +11,9 @@ import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.core.model.ImportModel;
 
 /**
- * Defaurl implementation of IImport
+ * Default implementation of IImport
  */
-public class DefaultImport extends ImportModel implements IImport {
+public class Import extends ImportModel implements IImport {
 	
 	private static Map table;
 	

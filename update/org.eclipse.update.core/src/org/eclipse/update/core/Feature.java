@@ -14,7 +14,7 @@ import org.eclipse.update.internal.core.UpdateManagerPlugin;
  * Abstract Class that implements most of the behavior of a feature
  * A feature ALWAYS belongs to an ISite
  */
-public abstract class Feature extends FeatureModel implements IFeature {
+public class Feature extends FeatureModel implements IFeature {
 
 	/**
 	 * Delegating wrapper for IProgressMonitor used for feature
@@ -133,14 +133,13 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * Constructor
 	 */
-	public Feature(ISite targetSite) throws CoreException {
-		this.site = targetSite;
+	public Feature(){
 	}
 
 	/*
 	 * @see IFeature#getIdentifier()
 	 */
-	public VersionedIdentifier getIdentifier() {
+	public VersionedIdentifier getVersionIdentifier() {
 		return new VersionedIdentifier(getFeatureIdentifier(), getFeatureVersion());
 	}
 

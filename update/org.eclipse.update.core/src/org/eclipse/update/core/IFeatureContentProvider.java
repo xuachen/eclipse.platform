@@ -30,7 +30,7 @@ public interface IFeatureContentProvider {
 	 * @return the feature manifest
 	 * @since 2.0
 	 */
-	ContentReference getFeatureManifest() throws CoreException;
+	ContentReference getFeatureManifestReference() throws CoreException;
 
 	/**
 	 * Returns an array of content references for the whole DefaultFeature

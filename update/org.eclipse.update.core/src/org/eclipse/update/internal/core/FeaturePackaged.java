@@ -58,7 +58,7 @@ public class FeaturePackaged extends DefaultFeature {
 //				openFeature();
 				for (int j = 0; j < names.length; j++) {
 					if ((inStream = getInputStreamFor(this,names[j])) != null)
-						 tempSite.storeFeatureInfo(getIdentifier(), names[j], inStream);
+						 tempSite.storeFeatureInfo(getVersionIdentifier(), names[j], inStream);
 				}
 				closeFeature();
 			}
@@ -66,7 +66,7 @@ public class FeaturePackaged extends DefaultFeature {
 			// get the path to the DefaultFeature, which is now pon the file system
 			// <TempSite>/install/features/<id>_<ver>/
 			// add '/' as it is a directory
-			rootURL = UpdateManagerUtils.getURL(tempSite.getURL(),SiteFile.INSTALL_FEATURE_PATH+getIdentifier().toString()+"/",null);
+			rootURL = UpdateManagerUtils.getURL(tempSite.getURL(),SiteFile.INSTALL_FEATURE_PATH+getVersionIdentifier().toString()+"/",null);
 		}
 		return rootURL;
 	}
@@ -383,89 +383,4 @@ public class FeaturePackaged extends DefaultFeature {
 	
 	
 	
-		/**
-	 */
-	private void downloadArchivesLocally(ISite tempSite, String[] archiveIDToInstall, IProgressMonitor monitor) throws CoreException, IOException {
-
-		URL sourceURL;
-		String newFile;
-		URL newURL;
-
-		if (monitor != null) {
-			monitor.beginTask("Download archives bundles to Temporary Space", archiveIDToInstall.length);
 		}
-		for (int i = 0; i < archiveIDToInstall.length; i++) {
-
-			// transform the id by asking the site to map them to real URL inside the SITE
-			if (getSite() != null) {
-				sourceURL = getSite().getSiteContentProvider().getArchivesReferences(archiveIDToInstall[i]);
-				if (monitor != null) {
-					monitor.subTask("..." + archiveIDToInstall[i]);
-				}
-				// the name of the file in the temp directory
-				// should be the regular plugins/pluginID_ver as the Temp site is OUR site
-				newFile = Site.DEFAULT_PLUGIN_PATH + archiveIDToInstall[i];
-				newURL = UpdateManagerUtils.resolveAsLocal(sourceURL, newFile, monitor);
-
-				// transfer the possible mapping to the temp site						
-				 ((Site) tempSite).addArchive(new URLEntry(archiveIDToInstall[i], newURL));
-				if (monitor != null) {
-					monitor.worked(1);
-					if (monitor.isCanceled()) {
-						throw CANCEL_EXCEPTION;
-					}
-				}
-			}
-		}
-
-		// the site of this feature now becomes the TEMP directory
-		// FIXME: make sure there is no other issue
-		// like asking for stuff that hasn't been copied
-		// or reusing this feature
-		// of having an un-manageable temp site
-
-		this.setSite(tempSite);
-
-	}
-
-	/**
-	 */
-	private void downloadDataLocally(IFeature targetFeature, INonPluginEntry[] dataToInstall, IProgressMonitor monitor) throws CoreException, IOException {
-
-		URL sourceURL;
-		// any other data
-		INonPluginEntry[] entries = getNonPluginEntries();
-		if (entries != null) {
-			if (monitor != null) {
-				monitor.beginTask("Installing Other Data information", dataToInstall.length);
-				if (monitor.isCanceled()) {
-					throw CANCEL_EXCEPTION;
-				}
-			}
-
-			for (int j = 0; j < entries.length; j++) {
-				String name = dataToInstall[j].getIdentifier();
-				if (monitor != null) {
-					monitor.subTask("..." + name);
-				}
-
-				// the id is URL format with "/"
-				String dataEntryId = Site.DEFAULT_FEATURE_PATH + getIdentifier().toString() + "/" + name;
-				// transform the id by asking the site to map them to real URL inside the SITE
-				if (getSite() != null) {
-					sourceURL = getSite().getSiteContentProvider().getArchivesReferences(dataEntryId);
-					((Site) targetFeature.getSite()).storeFeatureInfo(getIdentifier(), name, sourceURL.openStream());
-					if (monitor != null) {
-						monitor.worked(1);
-						if (monitor.isCanceled()) {
-							throw CANCEL_EXCEPTION;
-						}
-					}
-				}// getSite==null
-			}
-		}
-	}
-	
-	
-	
-}

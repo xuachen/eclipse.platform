@@ -21,9 +21,9 @@ public abstract class DefaultFeature extends Feature {
 	 * Copy constructor
 	 */
 	public DefaultFeature(IFeature sourceFeature, ISite targetSite) throws CoreException {
-		super(targetSite);
+		this(targetSite);
 		this.setFeatureContentProvider(sourceFeature.getFeatureContentProvider());
-		this.setIdentifier(sourceFeature.getIdentifier());
+		this.setIdentifier(sourceFeature.getVersionIdentifier());
 		this.setLabel(sourceFeature.getLabel());
 		this.setUpdateSiteEntry(sourceFeature.getUpdateSiteEntry());
 		this.setDiscoverySiteEntries(sourceFeature.getDiscoverySiteEntries());
@@ -39,7 +39,8 @@ public abstract class DefaultFeature extends Feature {
 	 * Constructor
 	 */
 	public DefaultFeature(ISite targetSite) throws CoreException {
-		super(targetSite);
+		super();
+		this.setSite(targetSite);		
 	}	
 	
 	

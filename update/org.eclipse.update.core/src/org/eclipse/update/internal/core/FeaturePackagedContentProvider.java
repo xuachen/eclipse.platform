@@ -235,97 +235,10 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		}
 	}
 
-	/**
-	 */
-	private void downloadArchivesLocally(ISite tempSite, String[] archiveIDToInstall, IProgressMonitor monitor) throws CoreException, IOException {
-
-		URL sourceURL;
-		String newFile;
-		URL newURL;
-
-		if (monitor != null) {
-			monitor.beginTask("Download archives bundles to Temporary Space", archiveIDToInstall.length);
-		}
-		for (int i = 0; i < archiveIDToInstall.length; i++) {
-
-			// transform the id by asking the site to map them to real URL inside the SITE
-			if (feature.getSite() != null) {
-				sourceURL = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDToInstall[i]);
-				if (monitor != null) {
-					monitor.subTask("..." + archiveIDToInstall[i]);
-				}
-				// the name of the file in the temp directory
-				// should be the regular plugins/pluginID_ver as the Temp site is OUR site
-				newFile = Site.DEFAULT_PLUGIN_PATH + archiveIDToInstall[i];
-				newURL = UpdateManagerUtils.resolveAsLocal(sourceURL, newFile, monitor);
-
-				// transfer the possible mapping to the temp site						
-				 ((Site) tempSite).addArchive(new URLEntry(archiveIDToInstall[i], newURL));
-				if (monitor != null) {
-					monitor.worked(1);
-					if (monitor.isCanceled()) {
-						throw Feature.CANCEL_EXCEPTION;
-					}
-				}
-			}
-		}
-
-		// the site of this feature now becomes the TEMP directory
-		// FIXME: make sure there is no other issue
-		// like asking for stuff that hasn't been copied
-		// or reusing this feature
-		// of having an un-manageable temp site
-
-		feature.setSite(tempSite);
-
-	}
-
-	/**
-	 */
-	private void downloadDataLocally(IFeature targetFeature, INonPluginEntry[] dataToInstall, IProgressMonitor monitor) throws CoreException, IOException {
-
-		URL sourceURL;
-		// any other data
-		INonPluginEntry[] entries = feature.getNonPluginEntries();
-		if (entries != null) {
-			if (monitor != null) {
-				monitor.beginTask("Installing Other Data information", dataToInstall.length);
-				if (monitor.isCanceled()) {
-					throw Feature.CANCEL_EXCEPTION;
-				}
-			}
-
-			for (int j = 0; j < entries.length; j++) {
-				String name = dataToInstall[j].getIdentifier();
-				if (monitor != null) {
-					monitor.subTask("..." + name);
-				}
-
-				// the id is URL format with "/"
-				String dataEntryId = Site.DEFAULT_FEATURE_PATH + feature.getIdentifier().toString() + "/" + name;
-				// transform the id by asking the site to map them to real URL inside the SITE
-				if (feature.getSite() != null) {
-					sourceURL = feature.getSite().getSiteContentProvider().getArchivesReferences(dataEntryId);
-					IContentConsumer consumer = targetFeature.getSite().getContentConsumer();
-					consumer.store(new ContentReference(name,sourceURL),null);
-					consumer.close();
-					if (monitor != null) {
-						monitor.worked(1);
-						if (monitor.isCanceled()) {
-							throw Feature.CANCEL_EXCEPTION;
-						}
-					}
-				}// getSite==null
-			}
-		}
-	}
-	
-	
-	
 	/*
-	 * @see IFeatureContentProvider#getFeatureManifest()
+	 * @see IFeatureContentProvider#getFeatureManifestReference()
 	 */
-	public ContentReference getFeatureManifest() throws CoreException {
+	public ContentReference getFeatureManifestReference() throws CoreException {
 		ContentReference result = null;
 		try {
 		ContentReference[] featureContentReference = getFeatureEntryArchiveReferences();

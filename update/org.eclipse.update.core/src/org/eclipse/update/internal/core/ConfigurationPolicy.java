@@ -117,7 +117,7 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 
 		//Start UOW ?
 		ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_CONFIGURE);
-		activity.setLabel(feature.getFeature().getIdentifier().toString());
+		activity.setLabel(feature.getFeature().getVersionIdentifier().toString());
 		activity.setDate(new Date());
 
 		addConfiguredFeatureReference(feature);
@@ -158,7 +158,7 @@ public class ConfigurationPolicy implements IConfigurationPolicy {
 		if (unconfigure) {
 			//Start UOW ?
 			ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_UNCONFIGURE);
-			activity.setLabel(feature.getFeature().getIdentifier().toString());
+			activity.setLabel(feature.getFeature().getVersionIdentifier().toString());
 			activity.setDate(new Date());
 
 			addUnconfiguredFeatureReference(feature);

@@ -26,6 +26,21 @@ public class TestFeatureType extends UpdateManagerTestCase {
 	/**
 	 * @throws Exception
 	 */
+	public void testSimpleFeatureType() throws Exception{ 
+		FeatureTypeFactory factories = FeatureTypeFactory.getInstance();
+		IFeatureFactory factory = factories.getFactory("org.eclipse.update.core.jar");
+		
+		ISite site = SiteManager.getSite(SOURCE_FILE_SITE);
+		URL featureURL = new URL(SOURCE_FILE_SITE,"features/features2.jar ");
+		
+		IFeature anotherFeature = factory.createFeature(featureURL,site);
+		
+		//assertTrue("Factory doesn't create same feature",anotherFeature.getIdentifier().equals(anotherFeature.getIdentifier()));
+	}	
+	
+	/**
+	 * @throws Exception
+	 */
 	public void testFeatureType() throws Exception{ 
 		FeatureTypeFactory factories = FeatureTypeFactory.getInstance();
 		IFeatureFactory factory = factories.getFactory("org.eclipse.update.core.jar");
@@ -35,7 +50,7 @@ public class TestFeatureType extends UpdateManagerTestCase {
 		
 		IFeature anotherFeature = factory.createFeature(feature.getURL(),site);
 		
-		assertTrue("Factory doesn't create same feature",feature.getIdentifier().equals(anotherFeature.getIdentifier()));
+		assertTrue("Factory doesn't create same feature",feature.getVersionIdentifier().equals(anotherFeature.getVersionIdentifier()));
 	}
 	
 	
@@ -55,7 +70,7 @@ public class TestFeatureType extends UpdateManagerTestCase {
 
 		assertTrue(feature instanceof FeatureExecutable);		
 		assertTrue(((FeatureReference)ref).getFeatureType().equals("org.eclipse.update.tests.core.feature1"));		
-		assertTrue("Factory doesn't create same feature",feature.getIdentifier().equals(anotherFeature.getIdentifier()));
+		assertTrue("Factory doesn't create same feature",feature.getVersionIdentifier().equals(anotherFeature.getVersionIdentifier()));
 
 
 	}
@@ -75,7 +90,7 @@ public class TestFeatureType extends UpdateManagerTestCase {
 		
 		IFeature anotherFeature = factory.createFeature(feature.getURL(),site);
 		
-		assertTrue("Factory doesn't create same feature",feature.getIdentifier().equals(anotherFeature.getIdentifier()));
+		assertTrue("Factory doesn't create same feature",feature.getVersionIdentifier().equals(anotherFeature.getVersionIdentifier()));
 		assertTrue(feature instanceof FeaturePackaged);
 		assertTrue(((FeatureReference)ref).getFeatureType().equals("org.eclipse.update.core.jar"));
 		

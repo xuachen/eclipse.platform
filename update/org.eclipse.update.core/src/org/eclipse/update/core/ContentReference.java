@@ -114,7 +114,7 @@ public class ContentReference {
 			return url;
 			
 		try {
-			return new URL("file:"+file.getAbsolutePath());
+			return file.toURL();
 		} catch(MalformedURLException e) {
 			return null;
 		}

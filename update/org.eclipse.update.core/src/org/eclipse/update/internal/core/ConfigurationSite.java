@@ -152,7 +152,7 @@ public class ConfigurationSite implements IConfigurationSite, IWritable {
 		IFeatureReference installedFeature;
 		//Start UOW ?
 		ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_FEATURE_INSTALL);
-		activity.setLabel(feature.getIdentifier().toString());
+		activity.setLabel(feature.getVersionIdentifier().toString());
 		activity.setDate(new Date());
 
 		try {
@@ -227,7 +227,7 @@ public class ConfigurationSite implements IConfigurationSite, IWritable {
 					featureToUnconfigure.remove(element);
 					// log no feature to unconfigure
 					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-						String feature = element.getFeature().getIdentifier().toString();
+						String feature = element.getFeature().getVersionIdentifier().toString();
 						ISite site = element.getFeature().getSite();
 						String siteString = (site!=null)?site.getURL().toExternalForm():"NO SITE";
 						UpdateManagerPlugin.getPlugin().debug("Attempted to unconfigure the feature :" + feature + " on site :" + site + " but it cannot be found.");

@@ -107,9 +107,9 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 	}
 
 	/*
-	 * @see IFeatureContentProvider#getFeatureManifest()
+	 * @see IFeatureContentProvider#getFeatureManifestReference()
 	 */
-	public ContentReference getFeatureManifest() throws CoreException {
+	public ContentReference getFeatureManifestReference() throws CoreException {
 		ContentReference result = null;
 		try {
 			result = new ContentReference(null, new URL(rootURL, DefaultFeature.FEATURE_XML));
@@ -207,7 +207,7 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 			}
 		} catch (Exception e) {
 			String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive content references for:" + feature.getIdentifier().toString(), e);
+			IStatus status = new Status(IStatus.ERROR, id, IStatus.OK, "Error retrieving archive content references for:" + feature.getVersionIdentifier().toString(), e);
 			throw new CoreException(status);
 		}
 		return result;
