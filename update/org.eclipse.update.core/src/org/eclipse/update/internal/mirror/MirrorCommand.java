@@ -119,11 +119,9 @@ public class MirrorCommand extends ScriptedCommand {
 			if (toSiteDir != null) {
 				MirrorSiteFactory factory = new MirrorSiteFactory();
 				System.out.print("Analyzing features already mirrored ...");
-				try {
-					mirrorSite =
+				mirrorSite =
 						(MirrorSite) factory.createSite(new File(toSiteDir));
-				} catch (InvalidSiteTypeException iste) {
-				}
+				
 				System.out.println("  Done.");
 			}
 			if (mirrorSite == null) {

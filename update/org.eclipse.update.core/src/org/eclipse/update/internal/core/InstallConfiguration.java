@@ -70,7 +70,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 * Returns the list of configured sites or an empty array
 	 */
 	public IConfiguredSite[] getConfiguredSites() {
-		ConfiguredSiteModel[] result = getConfigurationSitesModel();
+		ConfiguredSite[] result = getConfigurationSitesModel();
 		if (result.length == 0)
 			return new IConfiguredSite[0];
 		else
@@ -95,7 +95,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		//create a config site around the site
 		// even if the site == null
 		BaseSiteLocalFactory factory = new BaseSiteLocalFactory();
-		ConfiguredSite configSite = (ConfiguredSite) factory.createConfigurationSiteModel((SiteModel) site, getDefaultPolicy());
+		ConfiguredSite configSite = (ConfiguredSite) factory.createConfigurationSiteModel((Site) site, getDefaultPolicy());
 
 		if (site != null && configSite.verifyUpdatableStatus().isOK()) {
 			configSite.setPlatformURLString(site.getURL().toExternalForm());
@@ -132,7 +132,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		//create a config site around the site
 		// even if the site == null
 		BaseSiteLocalFactory factory = new BaseSiteLocalFactory();
-		ConfiguredSite configSite = (ConfiguredSite) factory.createConfigurationSiteModel((SiteModel) site, getDefaultPolicy());
+		ConfiguredSite configSite = (ConfiguredSite) factory.createConfigurationSiteModel((Site) site, getDefaultPolicy());
 
 		if (!configSite.isExtensionSite()) {
 			String msg = Policy.bind("InstallConfiguration.NotAnExtensionSite");
@@ -197,7 +197,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_SITE_INSTALL);
 		activity.setLabel(site.getSite().getURL().toExternalForm());
 		activity.setDate(new Date());
-		ConfiguredSiteModel configSiteModel = (ConfiguredSiteModel) site;
+		ConfiguredSite configSiteModel = (ConfiguredSite) site;
 		addConfigurationSiteModel(configSiteModel);
 		configSiteModel.setInstallConfigurationModel(this);
 
@@ -218,7 +218,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 * @param activity
 	 */
 	public void addActivity(IActivity activity) {
-		addActivityModel((ConfigurationActivityModel)activity);
+		addActivityModel((ConfigurationActivity)activity);
 	}
 
 	/*
@@ -228,7 +228,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		if (!isCurrent() && isReadOnly())
 			return;
 
-		if (removeConfigurationSiteModel((ConfiguredSiteModel) site)) {
+		if (removeConfigurationSiteModel((ConfiguredSite) site)) {
 			// notify listeners
 			Object[] configurationListeners = listeners.getListeners();
 			for (int i = 0; i < configurationListeners.length; i++) {
@@ -307,7 +307,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 		// Write info  into platform for the next runtime
 		IPlatformConfiguration runtimeConfiguration = BootLoader.getCurrentPlatformConfiguration();
-		ConfiguredSiteModel[] configurationSites = getConfigurationSitesModel();
+		ConfiguredSite[] configurationSites = getConfigurationSitesModel();
 
 		// clean configured Entries from platform runtime
 		IPlatformConfiguration.IFeatureEntry[] configuredFeatureEntries = runtimeConfiguration.getConfiguredFeatureEntries();
@@ -479,7 +479,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 * Log if we are about to create a site that didn't exist before
 	 * in platform.cfg [16696].
 	 */
-	private void checkSites(ConfiguredSiteModel[] configurationSites, IPlatformConfiguration runtimeConfiguration) throws CoreException {
+	private void checkSites(ConfiguredSite[] configurationSites, IPlatformConfiguration runtimeConfiguration) throws CoreException {
 
 		// check all the sites we are about to write already existed
 		// they should have existed either because they were created by
@@ -545,7 +545,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 		// site configurations
 		if (getConfigurationSitesModel() != null) {
-			ConfiguredSiteModel[] sites = getConfigurationSitesModel();
+			ConfiguredSite[] sites = getConfigurationSitesModel();
 			for (int i = 0; i < sites.length; i++) {
 				ConfiguredSite element = (ConfiguredSite) sites[i];
 				((IWritable) element).write(indent + IWritable.INDENT, w);
@@ -554,7 +554,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 		// activities
 		if (getActivityModel() != null) {
-			ConfigurationActivityModel[] activities = getActivityModel();
+			ConfigurationActivity[] activities = getActivityModel();
 			for (int i = 0; i < activities.length; i++) {
 				ConfigurationActivity element = (ConfigurationActivity) activities[i];
 				((IWritable) element).write(indent + IWritable.INDENT, w);
@@ -627,7 +627,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			// in the current one, or they are the delta from the current one to the old one
 			Collection sites = newSitesMap.values();
 			if (sites != null && !sites.isEmpty()) {
-				ConfiguredSiteModel[] sitesModel = new ConfiguredSiteModel[sites.size()];
+				ConfiguredSite[] sitesModel = new ConfiguredSite[sites.size()];
 				sites.toArray(sitesModel);
 				setConfigurationSiteModel(sitesModel);
 			}

@@ -84,7 +84,7 @@ public class SearchCommand extends ScriptedCommand {
 		public void accept(IFeature feature) {
 			System.out.println(
 				"\""
-					+ feature.getLabel()
+					+ feature.getName()
 					+ "\" "
 					+ feature.getVersionedIdentifier().getIdentifier()
 					+ " "

@@ -55,4 +55,10 @@ public interface ICategory  extends IAdaptable{
 	 * @since 2.0 
 	 */
 	public IURLEntry getDescription();
+	
+	/**
+	 * Retrieves the feature under this category.
+	 * @return array of feature references; empty array if no features in this category
+	 */
+	public IFeatureReference[] getFeatureReferences();
 }

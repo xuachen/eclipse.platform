@@ -14,7 +14,6 @@ import java.net.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 
@@ -27,7 +26,7 @@ import org.eclipse.update.internal.core.*;
  * @see org.eclipse.update.core.model.SiteModel
  * @since 2.0
  */
-public class Site extends SiteModel implements ISite {
+public class Site extends Site implements ISite {
 
 	/**
 	 * Default installation path for features
@@ -127,7 +126,7 @@ public class Site extends SiteModel implements ISite {
 	 * @since 2.0
 	 */
 	public ICategory[] getCategories() {
-		CategoryModel[] result = getCategoryModels();
+		Category[] result = getCategoryModels();
 		if (result.length == 0)
 			return new ICategory[0];
 		else
@@ -173,7 +172,7 @@ public class Site extends SiteModel implements ISite {
 	 * @since 2.0
 	 */
 	public ISiteFeatureReference[] getRawFeatureReferences() {
-		FeatureReferenceModel[] result = getFeatureReferenceModels();
+		FeatureReference[] result = getFeatureReferenceModels();
 		if (result.length == 0)
 			return new ISiteFeatureReference[0];
 		else
@@ -255,7 +254,7 @@ public class Site extends SiteModel implements ISite {
 	 * @since 2.0
 	 */
 	public IArchiveReference[] getArchives() {
-		ArchiveReferenceModel[] result = getArchiveReferenceModels();
+		ArchiveReference[] result = getArchiveReferenceModels();
 		if (result.length == 0)
 			return new IArchiveReference[0];
 		else

@@ -24,21 +24,21 @@ public class MirrorSiteFactory extends BaseSiteFactory {
 	/*
 	 * @see SiteModelFactory#createSiteMapModel()
 	 */
-	public SiteModel createSiteMapModel() {
+	public Site createSiteMapModel() {
 		return new MirrorSite(this);
 	}
 	/*
 	 * @see ISiteFactory#createSite(URL)
 	 */
 	public ISite createSite(URL url)
-		throws CoreException, InvalidSiteTypeException {
+		throws CoreException {
 		return createSite(new File(url.getFile()));
 	}
 	/*
 	 * @see ISiteFactory#createSite(URL)
 	 */
 	public ISite createSite(File siteLocation)
-		throws CoreException, InvalidSiteTypeException {
+		throws CoreException {
 
 		InputStream siteStream = null;
 
@@ -65,7 +65,7 @@ public class MirrorSiteFactory extends BaseSiteFactory {
 					new FileInputStream(new File(siteLocation, Site.SITE_XML));
 			} catch (FileNotFoundException fnfe) {
 			}
-			site = (MirrorSite) parseSite(siteStream);
+			site = (MirrorSite) createSiteModel(siteStream);
 			try {
 				if (siteStream != null)
 					siteStream.close();
@@ -134,7 +134,7 @@ public class MirrorSiteFactory extends BaseSiteFactory {
 
 					if (ref != null) {
 						PluginEntry entry =
-							new DefaultPluginParser().parse(
+							new PluginParser().parse(
 								ref.getInputStream());
 						site.addDownloadedPluginEntry(entry);
 
@@ -188,7 +188,7 @@ public class MirrorSiteFactory extends BaseSiteFactory {
 					} else {
 						featureURL = currentFeatureFile.toURL();
 						featureRef = createFeatureReferenceModel();
-						featureRef.setSiteModel(site);
+						featureRef.setSite(site);
 						featureRef.setURLString(featureURL.toExternalForm());
 						featureRef.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
 						featureRef.setFeatureIdentifier(

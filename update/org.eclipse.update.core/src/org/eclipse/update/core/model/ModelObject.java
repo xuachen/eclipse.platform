@@ -221,13 +221,13 @@ public abstract class ModelObject extends PlatformObject {
 		if (first != null) {
 			IPath rest = getExpandedPath(path.removeFirstSegments(1));
 			if (first.equals("$ws$")) {
-				path = new Path(SiteManager.getWS()).append(rest);
+				path = new Path(UpdateManagerUtils.getWS()).append(rest);
 			} else if (first.equals("$os$")) {
-				path = new Path(SiteManager.getOS()).append(rest);
+				path = new Path(UpdateManagerUtils.getOS()).append(rest);
 			} else if (first.equals("$nl$")) {
-				path = new Path(SiteManager.getNL()).append(rest);
+				path = new Path(UpdateManagerUtils.getNL()).append(rest);
 			} else if (first.equals("$arch$")) {
-				path = new Path(SiteManager.getOSArch()).append(rest);
+				path = new Path(UpdateManagerUtils.getOSArch()).append(rest);
 			}
 		}
 		return path;

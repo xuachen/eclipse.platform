@@ -54,12 +54,12 @@ public class InstallConfigurationModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public ConfiguredSiteModel[] getConfigurationSitesModel() {
+	public ConfiguredSite[] getConfigurationSitesModel() {
 		if (!initialized) initialize();
 		if (configurationSites == null)
-			return new ConfiguredSiteModel[0];
+			return new ConfiguredSite[0];
 	
-		return (ConfiguredSiteModel[]) configurationSites.toArray(arrayTypeFor(configurationSites));
+		return (ConfiguredSite[]) configurationSites.toArray(arrayTypeFor(configurationSites));
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class InstallConfigurationModel extends ModelObject {
 	 * in this case we do not want to create a new activity, so we do not want t call
 	 * addConfigurationSite()
 	 */
-	public void addConfigurationSiteModel(ConfiguredSiteModel site) {
+	public void addConfigurationSiteModel(ConfiguredSite site) {
 		if (configurationSites == null) {
 			configurationSites = new ArrayList();
 		}
@@ -77,7 +77,7 @@ public class InstallConfigurationModel extends ModelObject {
 		}
 	}
 
-	public void setConfigurationSiteModel(ConfiguredSiteModel[] sites) {
+	public void setConfigurationSiteModel(ConfiguredSite[] sites) {
 		configurationSites = null;
 		for (int i = 0; i < sites.length; i++) {
 			addConfigurationSiteModel(sites[i]);
@@ -87,7 +87,7 @@ public class InstallConfigurationModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public boolean removeConfigurationSiteModel(ConfiguredSiteModel site) {
+	public boolean removeConfigurationSiteModel(ConfiguredSite site) {
 		if (!initialized) initialize();
 
 		if (configurationSites != null) {
@@ -117,17 +117,17 @@ public class InstallConfigurationModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public ConfigurationActivityModel[] getActivityModel() {
+	public ConfigurationActivity[] getActivityModel() {
 		if (!initialized) initialize();
 		if (activities == null)
-			return new ConfigurationActivityModel[0];
-		return (ConfigurationActivityModel[]) activities.toArray(arrayTypeFor(activities));
+			return new ConfigurationActivity[0];
+		return (ConfigurationActivity[]) activities.toArray(arrayTypeFor(activities));
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public void addActivityModel(ConfigurationActivityModel activity) {
+	public void addActivityModel(ConfigurationActivity activity) {
 		if (activities == null)
 			activities = new ArrayList();
 		if (!activities.contains(activity)) {

@@ -87,19 +87,19 @@ public class InstallHandlerProxy implements IInstallHandler {
 			handler.initialize(type, feature, entry, monitor);
 		} catch (ClassNotFoundException e) {
 			handleExceptionInInit(
-				Policy.bind("InstallHandler.notFound", feature.getLabel()),
+				Policy.bind("InstallHandler.notFound", feature.getName()),
 				e);
 			//$NON-NLS-1$
 		} catch (ClassCastException e) {
 			handleExceptionInInit(
-				Policy.bind("InstallHandler.invalidHandler", feature.getLabel()),
+				Policy.bind("InstallHandler.invalidHandler", feature.getName()),
 				e);
 			//$NON-NLS-1$
 		} catch (CoreException e) {
 			handleExceptionInInit(null, e);
 		} catch (Exception e) {
 			handleExceptionInInit(
-				Policy.bind("InstallHandler.unableToCreateHandler", feature.getLabel()),
+				Policy.bind("InstallHandler.unableToCreateHandler", feature.getName()),
 				e);
 			//$NON-NLS-1$
 		}
@@ -397,7 +397,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 		else
 			ce =
 				Utilities.newCoreException(
-					Policy.bind("InstallHandler.callException", feature.getLabel()),
+					Policy.bind("InstallHandler.callException", feature.getName()),
 					e);
 		//$NON-NLS-1$
 		
@@ -445,7 +445,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 			base = baseRef.asURL();
 		if (base == null)
 			throw Utilities.newCoreException(
-				Policy.bind("InstallHandler.unableToCreateHandler", this.feature.getLabel()),
+				Policy.bind("InstallHandler.unableToCreateHandler", this.feature.getName()),
 				null);
 		//$NON-NLS-1$
 
@@ -495,7 +495,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 			reg.getConfigurationElementsFor(EXT_PLUGIN, EXT_POINT, name);
 		if (handlerExtension == null || handlerExtension.length <= 0)
 			throw Utilities.newCoreException(
-				Policy.bind("InstallHandler.unableToCreateHandler", this.feature.getLabel()),
+				Policy.bind("InstallHandler.unableToCreateHandler", this.feature.getName()),
 				null);
 		//$NON-NLS-1$	
 

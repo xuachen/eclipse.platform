@@ -145,7 +145,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IURLEntry[] getDiscoverySiteEntries() {
-		URLEntryModel[] result = getDiscoverySiteEntryModels();
+		URLEntry[] result = getDiscoverySiteEntryModels();
 		if (result.length == 0)
 			return new IURLEntry[0];
 		else
@@ -209,7 +209,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IImport[] getRawImports() {
-		ImportModel[] result = getImportModels();
+		Import[] result = getImportModels();
 		if (result.length == 0)
 			return new IImport[0];
 		else
@@ -301,7 +301,7 @@ public class Feature extends FeatureModel implements IFeature {
 					targetSitePluginEntries);
 			INonPluginEntry[] nonPluginsToInstall = getNonPluginEntries();
 
-			IFeatureReference[] children = getIncludedFeatureReferences();
+			IFeatureReference[] children = getIncludedFeatures();
 			if (optionalfeatures != null) {
 				children =
 					UpdateManagerUtils.optionalChildrenToInstall(
@@ -526,13 +526,13 @@ public class Feature extends FeatureModel implements IFeature {
 			// and an error occured during abort
 			if (originalException != null) {
 				throw Utilities.newCoreException(
-					Policy.bind("InstallHandler.error", this.getLabel()),
+					Policy.bind("InstallHandler.error", this.getName()),
 					originalException);
 			}
 
 			if (newException != null)
 				throw Utilities.newCoreException(
-					Policy.bind("InstallHandler.error", this.getLabel()),
+					Policy.bind("InstallHandler.error", this.getName()),
 					newException);
 
 			if (abortedException != null) {
@@ -550,7 +550,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public IPluginEntry[] getRawPluginEntries() {
-		PluginEntryModel[] result = getPluginEntryModels();
+		PluginEntry[] result = getPluginEntryModels();
 		if (result.length == 0)
 			return new IPluginEntry[0];
 		else
@@ -596,7 +596,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public INonPluginEntry[] getRawNonPluginEntries() {
-		NonPluginEntryModel[] result = getNonPluginEntryModels();
+		NonPluginEntry[] result = getNonPluginEntryModels();
 		if (result.length == 0)
 			return new INonPluginEntry[0];
 		else
@@ -646,7 +646,7 @@ public class Feature extends FeatureModel implements IFeature {
 			INonPluginEntry[] nonPlugins = getNonPluginEntries();
 			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
 
-			IFeatureReference[] children = getIncludedFeatureReferences();
+			IFeatureReference[] children = getIncludedFeatures();
 			for (int i = 0; i < children.length; i++) {
 				plugins = children[i].getFeature(null).getPluginEntries();
 				allPluginEntries.addAll(Arrays.asList(plugins));
@@ -671,7 +671,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		} catch (CoreException e) {
 			UpdateCore.warn(null, e);
-			return ContentEntryModel.UNKNOWN_SIZE;
+			return ContentEntry.UNKNOWN_SIZE;
 		}
 	}
 
@@ -691,7 +691,7 @@ public class Feature extends FeatureModel implements IFeature {
 			INonPluginEntry[] nonPlugins = getNonPluginEntries();
 			allNonPluginEntries.addAll(Arrays.asList(nonPlugins));
 
-			IFeatureReference[] children = getIncludedFeatureReferences();
+			IFeatureReference[] children = getIncludedFeatures();
 			for (int i = 0; i < children.length; i++) {
 				plugins = children[i].getFeature(null).getPluginEntries();
 				allPluginEntries.addAll(Arrays.asList(plugins));
@@ -716,7 +716,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		} catch (CoreException e) {
 			UpdateCore.warn(null, e);
-			return ContentEntryModel.UNKNOWN_SIZE;
+			return ContentEntry.UNKNOWN_SIZE;
 		}
 	}
 
@@ -797,7 +797,7 @@ public class Feature extends FeatureModel implements IFeature {
 				URLString,
 				getVersionedIdentifier().toString());
 		//$NON-NLS-1$
-		String label = getLabel() == null ? "" : getLabel();
+		String label = getName() == null ? "" : getName();
 		return verString + " [" + label + "]";
 	}
 
@@ -861,9 +861,9 @@ public class Feature extends FeatureModel implements IFeature {
 							IncludedFeatureReference newRef =
 								new IncludedFeatureReference(refs[ref]);
 							newRef.isOptional(include.isOptional());
-							if (include instanceof FeatureReferenceModel)
+							if (include instanceof FeatureReference)
 								newRef.setLabel(
-									((FeatureReferenceModel) include)
+									((FeatureReference) include)
 										.getLabel());
 							newRef.setMatchingRule(include.getMatch());
 							newRef.setSearchLocation(
@@ -1030,7 +1030,7 @@ public class Feature extends FeatureModel implements IFeature {
 				return;
 			if ("file".equals(url.getProtocol())) {
 				IFeatureReference[] included =
-					feature.getIncludedFeatureReferences();
+					feature.getIncludedFeatures();
 				for (int i = 0; i < included.length; i++) {
 					reinitializeFeature(included[i]);
 				}
@@ -1043,7 +1043,7 @@ public class Feature extends FeatureModel implements IFeature {
 	/**
 	 * @see org.eclipse.update.core.IFeature#getRawIncludedFeatureReferences()
 	 */
-	public IIncludedFeatureReference[] getIncludedFeatureReferences()
+	public IIncludedFeatureReference[] getIncludedFeatures()
 		throws CoreException {
 		return filterFeatures(getRawIncludedFeatureReferences());
 	}

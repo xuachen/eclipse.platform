@@ -186,7 +186,7 @@ public class FeatureHierarchyElement {
 	private String getFeatureLabel(IFeatureReference featureRef)
 		throws CoreException {
 		IFeature feature = featureRef.getFeature(null);
-		return feature.getLabel()
+		return feature.getName()
 			+ " "
 			+ feature.getVersionedIdentifier().getVersion().toString();
 	}
@@ -433,7 +433,7 @@ public class FeatureHierarchyElement {
 
 	public static Object[] getIncludedFeatures(IFeature feature) {
 		try {
-			return feature.getIncludedFeatureReferences();
+			return feature.getIncludedFeatures();
 		} catch (CoreException e) {
 		}
 		return new Object[0];

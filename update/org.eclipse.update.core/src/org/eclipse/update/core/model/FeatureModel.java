@@ -47,21 +47,16 @@ public class FeatureModel extends ModelObject {
 	private String primaryPluginID;
 	private String application;
 	private String affinity;
-	private InstallHandlerEntryModel installHandler;
-	private URLEntryModel description;
-	private URLEntryModel copyright;
-	private URLEntryModel license;
-	private URLEntryModel updateSiteInfo;
-	private List /*of InfoModel*/
-	discoverySiteInfo;
-	private List /*of ImportModel*/
-	imports;
-	private List /*of PluginEntryModel*/
-	pluginEntries;
-	private List /*of IncludedFeatureReferenceModel */
-	featureIncludes;
-	private List /*of NonPluginEntryModel*/
-	nonPluginEntries;
+	private InstallHandlerEntry installHandler;
+	private URLEntry description;
+	private URLEntry copyright;
+	private URLEntry license;
+	private URLEntry updateSiteInfo;
+	private List /*of InfoModel*/	discoverySiteInfo;
+	private List /*of ImportModel*/	imports;
+	private List /*of PluginEntryModel*/pluginEntries;
+	private List /*of IncludedFeatureReferenceModel */	featureIncludes;
+	private List /*of NonPluginEntryModel*/	nonPluginEntries;
 
 	// performance
 	private URL bundleURL;
@@ -124,7 +119,7 @@ public class FeatureModel extends ModelObject {
 	 * @return displayable label, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public String getLabel() {
+	public String getName() {
 		delayedResolve();
 		if (localizedLabel != null)
 			return localizedLabel;
@@ -283,7 +278,7 @@ public class FeatureModel extends ModelObject {
 	 * none was specified
 	 * @since 2.0
 	 */
-	public InstallHandlerEntryModel getInstallHandlerModel() {
+	public InstallHandlerEntry getInstallHandlerModel() {
 		//delayedResolve(); no delay
 		return installHandler;
 	}
@@ -294,7 +289,7 @@ public class FeatureModel extends ModelObject {
 	 * @return feature rescription, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntryModel getDescriptionModel() {
+	public URLEntry getDescriptionModel() {
 		//delayedResolve(); no delay
 		return description;
 	}
@@ -305,7 +300,7 @@ public class FeatureModel extends ModelObject {
 	 * @return copyright information, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntryModel getCopyrightModel() {
+	public URLEntry getCopyrightModel() {
 		//delayedResolve(); no delay
 		return copyright;
 	}
@@ -316,7 +311,7 @@ public class FeatureModel extends ModelObject {
 	 * @return feature license, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntryModel getLicenseModel() {
+	public URLEntry getLicenseModel() {
 		//delayedResolve(); no delay;
 		return license;
 	}
@@ -328,7 +323,7 @@ public class FeatureModel extends ModelObject {
 	 * @return update site entry, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public URLEntryModel getUpdateSiteEntryModel() {
+	public URLEntry getUpdateSiteEntryModel() {
 		//delayedResolve(); no delay;
 		return updateSiteInfo;
 	}
@@ -341,12 +336,12 @@ public class FeatureModel extends ModelObject {
 	 * @since 2.0 
 	 * @since 2.0
 	 */
-	public URLEntryModel[] getDiscoverySiteEntryModels() {
+	public URLEntry[] getDiscoverySiteEntryModels() {
 		//delayedResolve(); no delay;
 		if (discoverySiteInfo == null)
-			return new URLEntryModel[0];
+			return new URLEntry[0];
 
-		return (URLEntryModel[]) discoverySiteInfo.toArray(arrayTypeFor(discoverySiteInfo));
+		return (URLEntry[]) discoverySiteInfo.toArray(arrayTypeFor(discoverySiteInfo));
 	}
 
 	/**
@@ -355,12 +350,12 @@ public class FeatureModel extends ModelObject {
 	 * @return the list of required plug-in dependencies, or an empty array.
 	 * @since 2.0
 	 */
-	public ImportModel[] getImportModels() {
+	public Import[] getImportModels() {
 		//delayedResolve(); no delay;
 		if (imports == null)
-			return new ImportModel[0];
+			return new Import[0];
 
-		return (ImportModel[]) imports.toArray(arrayTypeFor(imports));
+		return (Import[]) imports.toArray(arrayTypeFor(imports));
 	}
 
 	/**
@@ -369,11 +364,11 @@ public class FeatureModel extends ModelObject {
 	 * @return an erray of plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public PluginEntryModel[] getPluginEntryModels() {
+	public PluginEntry[] getPluginEntryModels() {
 		if (pluginEntries == null)
-			return new PluginEntryModel[0];
+			return new PluginEntry[0];
 
-		return (PluginEntryModel[]) pluginEntries.toArray(arrayTypeFor(pluginEntries));
+		return (PluginEntry[]) pluginEntries.toArray(arrayTypeFor(pluginEntries));
 	}
 
 	/**
@@ -419,11 +414,11 @@ public class FeatureModel extends ModelObject {
 	 * @return an erray of non-plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
-	public NonPluginEntryModel[] getNonPluginEntryModels() {
+	public NonPluginEntry[] getNonPluginEntryModels() {
 		if (nonPluginEntries == null)
-			return new NonPluginEntryModel[0];
+			return new NonPluginEntry[0];
 
-		return (NonPluginEntryModel[]) nonPluginEntries.toArray(arrayTypeFor(nonPluginEntries));
+		return (NonPluginEntry[]) nonPluginEntries.toArray(arrayTypeFor(nonPluginEntries));
 	}
 
 	/**
@@ -433,7 +428,7 @@ public class FeatureModel extends ModelObject {
 	 * @param featureId feature identifier
 	 * @since 2.0
 	 */
-	public void setFeatureIdentifier(String featureId) {
+	 void setFeatureIdentifier(String featureId) {
 		assertIsWriteable();
 		this.featureId = featureId;
 	}
@@ -445,7 +440,7 @@ public class FeatureModel extends ModelObject {
 	 * @param featureVersion feature version
 	 * @since 2.0
 	 */
-	public void setFeatureVersion(String featureVersion) {
+	void setFeatureVersion(String featureVersion) {
 		assertIsWriteable();
 		this.featureVersion = featureVersion;
 	}
@@ -457,7 +452,7 @@ public class FeatureModel extends ModelObject {
 	 * @param label displayable label
 	 * @since 2.0
 	 */
-	public void setLabel(String label) {
+	void setLabel(String label) {
 		assertIsWriteable();
 		this.label = label;
 		this.localizedLabel = null;
@@ -470,7 +465,7 @@ public class FeatureModel extends ModelObject {
 	 * @param provider provider displayable label
 	 * @since 2.0
 	 */
-	public void setProvider(String provider) {
+	void setProvider(String provider) {
 		assertIsWriteable();
 		this.provider = provider;
 		this.localizedProvider = null;
@@ -483,7 +478,7 @@ public class FeatureModel extends ModelObject {
 	 * @param imageURLString unresolved URL string
 	 * @since 2.0
 	 */
-	public void setImageURLString(String imageURLString) {
+	void setImageURLString(String imageURLString) {
 		assertIsWriteable();
 		this.imageURLString = imageURLString;
 		this.imageURL = null;
@@ -497,7 +492,7 @@ public class FeatureModel extends ModelObject {
 	 * @param os operating system specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public void setOS(String os) {
+	void setOS(String os) {
 		assertIsWriteable();
 		this.os = os;
 	}
@@ -510,7 +505,7 @@ public class FeatureModel extends ModelObject {
 	 * @param ws windowing system specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public void setWS(String ws) {
+	void setWS(String ws) {
 		assertIsWriteable();
 		this.ws = ws;
 	}
@@ -522,7 +517,7 @@ public class FeatureModel extends ModelObject {
 	 * @param nl locale specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public void setNL(String nl) {
+	void setNL(String nl) {
 		assertIsWriteable();
 		this.nl = nl;
 	}
@@ -535,7 +530,7 @@ public class FeatureModel extends ModelObject {
 	 * @param arch system architecture specification as a comma-separated list
 	 * @since 2.0
 	 */
-	public void setArch(String arch) {
+	void setArch(String arch) {
 		assertIsWriteable();
 		this.arch = arch;
 	}
@@ -549,7 +544,7 @@ public class FeatureModel extends ModelObject {
 	 * 
 	 * @since 2.0
 	 */
-	public void setPrimary(boolean primary) {
+	void setPrimary(boolean primary) {
 		assertIsWriteable();
 		this.primary = primary;
 	}
@@ -564,7 +559,7 @@ public class FeatureModel extends ModelObject {
 	 * 
 	 * @since 2.1
 	 */
-	public void setExclusive(boolean exclusive) {
+	void setExclusive(boolean exclusive) {
 		assertIsWriteable();
 		this.exclusive = exclusive;
 	}
@@ -576,7 +571,7 @@ public class FeatureModel extends ModelObject {
 	 * @param application feature application identifier
 	 * @since 2.0
 	 */
-	public void setApplication(String application) {
+	void setApplication(String application) {
 		assertIsWriteable();
 		this.application = application;
 	}
@@ -589,7 +584,7 @@ public class FeatureModel extends ModelObject {
 	 * @param affinity the identifier of the Feature
 	 * @since 2.0
 	 */
-	public void setAffinityFeature(String affinity) {
+	void setAffinityFeature(String affinity) {
 		assertIsWriteable();
 		this.affinity = affinity;
 	}
@@ -601,7 +596,7 @@ public class FeatureModel extends ModelObject {
 	 * @param installHandler install handler entry
 	 * @since 2.0
 	 */
-	public void setInstallHandlerModel(InstallHandlerEntryModel installHandler) {
+	void setInstallHandlerModel(InstallHandlerEntry installHandler) {
 		assertIsWriteable();
 		this.installHandler = installHandler;
 	}
@@ -613,7 +608,7 @@ public class FeatureModel extends ModelObject {
 	 * @param description feature description information
 	 * @since 2.0
 	 */
-	public void setDescriptionModel(URLEntryModel description) {
+	void setDescriptionModel(URLEntry description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -625,7 +620,7 @@ public class FeatureModel extends ModelObject {
 	 * @param copyright feature copyright information
 	 * @since 2.0
 	 */
-	public void setCopyrightModel(URLEntryModel copyright) {
+	void setCopyrightModel(URLEntry copyright) {
 		assertIsWriteable();
 		this.copyright = copyright;
 	}
@@ -637,7 +632,7 @@ public class FeatureModel extends ModelObject {
 	 * @param license feature license information
 	 * @since 2.0
 	 */
-	public void setLicenseModel(URLEntryModel license) {
+	void setLicenseModel(URLEntry license) {
 		assertIsWriteable();
 		this.license = license;
 	}
@@ -649,7 +644,7 @@ public class FeatureModel extends ModelObject {
 	 * @param updateSiteInfo feature update site reference
 	 * @since 2.0
 	 */
-	public void setUpdateSiteEntryModel(URLEntryModel updateSiteInfo) {
+	void setUpdateSiteEntryModel(URLEntry updateSiteInfo) {
 		assertIsWriteable();
 		this.updateSiteInfo = updateSiteInfo;
 	}
@@ -661,7 +656,7 @@ public class FeatureModel extends ModelObject {
 	 * @param discoverySiteInfo additional update site references
 	 * @since 2.0
 	 */
-	public void setDiscoverySiteEntryModels(URLEntryModel[] discoverySiteInfo) {
+	void setDiscoverySiteEntryModels(URLEntry[] discoverySiteInfo) {
 		assertIsWriteable();
 		if (discoverySiteInfo == null)
 			this.discoverySiteInfo = null;
@@ -676,7 +671,7 @@ public class FeatureModel extends ModelObject {
 	 * @param imports feature plug-in dependency information
 	 * @since 2.0
 	 */
-	public void setImportModels(ImportModel[] imports) {
+	void setImportModels(Import[] imports) {
 		assertIsWriteable();
 		if (imports == null)
 			this.imports = null;
@@ -691,7 +686,7 @@ public class FeatureModel extends ModelObject {
 	 * @param pluginEntries feature plug-in references
 	 * @since 2.0
 	 */
-	public void setPluginEntryModels(PluginEntryModel[] pluginEntries) {
+	void setPluginEntryModels(PluginEntry[] pluginEntries) {
 		assertIsWriteable();
 		if (pluginEntries == null)
 			this.pluginEntries = null;
@@ -706,7 +701,7 @@ public class FeatureModel extends ModelObject {
 	 * @param nonPluginEntries feature non-plug-in data references
 	 * @since 2.0
 	 */
-	public void setNonPluginEntryModels(NonPluginEntryModel[] nonPluginEntries) {
+	void setNonPluginEntries(NonPluginEntry[] nonPluginEntries) {
 		assertIsWriteable();
 		if (nonPluginEntries == null)
 			this.nonPluginEntries = null;
@@ -721,7 +716,7 @@ public class FeatureModel extends ModelObject {
 	 * @param discoverySiteInfo update site reference
 	 * @since 2.0
 	 */
-	public void addDiscoverySiteEntryModel(URLEntryModel discoverySiteInfo) {
+	void addDiscoverySiteEntryModel(URLEntry discoverySiteInfo) {
 		assertIsWriteable();
 		if (this.discoverySiteInfo == null)
 			this.discoverySiteInfo = new ArrayList();
@@ -736,7 +731,7 @@ public class FeatureModel extends ModelObject {
 	 * @param importEntry plug-in dependency entry
 	 * @since 2.0
 	 */
-	public void addImportModel(ImportModel importEntry) {
+	void addImportModel(Import importEntry) {
 		assertIsWriteable();
 		if (this.imports == null)
 			this.imports = new ArrayList();
@@ -751,7 +746,7 @@ public class FeatureModel extends ModelObject {
 	 * @param pluginEntry plug-in reference
 	 * @since 2.0
 	 */
-	public void addPluginEntryModel(PluginEntryModel pluginEntry) {
+	void addPluginEntry(PluginEntry pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries == null)
 			this.pluginEntries = new ArrayList();
@@ -768,7 +763,7 @@ public class FeatureModel extends ModelObject {
 	 * @param options the options associated with the nested feature
 	 * @since 2.1
 	 */
-	public void addIncludedFeatureReferenceModel(IncludedFeatureReferenceModel include) {
+	void addIncludedFeatureReferenceModel(IncludedFeatureReferenceModel include) {
 		assertIsWriteable();
 		if (this.featureIncludes == null)
 			this.featureIncludes = new ArrayList();
@@ -784,7 +779,7 @@ public class FeatureModel extends ModelObject {
 	 * @param nonPluginEntry non-plug-in data reference
 	 * @since 2.0
 	 */
-	public void addNonPluginEntryModel(NonPluginEntryModel nonPluginEntry) {
+	void addNonPluginEntry(NonPluginEntry nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries == null)
 			this.nonPluginEntries = new ArrayList();
@@ -800,7 +795,7 @@ public class FeatureModel extends ModelObject {
 	 * @param discoverySiteInfo update site reference
 	 * @since 2.0
 	 */
-	public void removeDiscoverySiteEntryModel(URLEntryModel discoverySiteInfo) {
+	void removeDiscoverySiteEntryModel(URLEntry discoverySiteInfo) {
 		assertIsWriteable();
 		if (this.discoverySiteInfo != null)
 			this.discoverySiteInfo.remove(discoverySiteInfo);
@@ -813,7 +808,7 @@ public class FeatureModel extends ModelObject {
 	 * @param importEntry plug-in dependency entry
 	 * @since 2.0
 	 */
-	public void removeImportModel(ImportModel importEntry) {
+	void removeImportModel(Import importEntry) {
 		assertIsWriteable();
 		if (this.imports != null)
 			this.imports.remove(importEntry);
@@ -826,7 +821,7 @@ public class FeatureModel extends ModelObject {
 	 * @param pluginEntry plug-in reference
 	 * @since 2.0
 	 */
-	public void removePluginEntryModel(PluginEntryModel pluginEntry) {
+	void removePluginEntryModel(PluginEntry pluginEntry) {
 		assertIsWriteable();
 		if (this.pluginEntries != null)
 			this.pluginEntries.remove(pluginEntry);
@@ -839,7 +834,7 @@ public class FeatureModel extends ModelObject {
 	 * @param nonPluginEntry non-plug-in data reference
 	 * @since 2.0
 	 */
-	public void removeNonPluginEntryModel(NonPluginEntryModel nonPluginEntry) {
+	void removeNonPluginEntryModel(NonPluginEntry nonPluginEntry) {
 		assertIsWriteable();
 		if (this.nonPluginEntries != null)
 			this.nonPluginEntries.remove(nonPluginEntry);
@@ -914,7 +909,7 @@ public class FeatureModel extends ModelObject {
 	 * Method setPrimaryPlugin.
 	 * @param plugin
 	 */
-	public void setPrimaryPluginID(String plugin) {
+	void setPrimaryPluginID(String plugin) {
 		if (primary && primaryPluginID == null) {
 			primaryPluginID = featureId;
 		}
@@ -934,7 +929,7 @@ public class FeatureModel extends ModelObject {
 	 * @return boolean
 	 */
 	public boolean isPatch() {
-		ImportModel[] imports = getImportModels();
+		Import[] imports = getImportModels();
 
 		for (int i = 0; i < imports.length; i++) {
 			if (imports[i].isPatch())

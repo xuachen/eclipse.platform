@@ -66,7 +66,7 @@ public class SiteSearchCategory extends BaseSearchCategory {
 							IFeature feature = ref.getFeature(null);
 							if (filter.accept(feature))
 								collector.accept(feature);
-							monitor.subTask(feature.getLabel());
+							monitor.subTask(feature.getName());
 						}
 					}
 				} catch (CoreException e) {

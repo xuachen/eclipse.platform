@@ -53,27 +53,6 @@ public interface IFeatureReference extends IAdaptable,IPlatformEnvironment {
 
 
 	/**
-	 * Returns the referenced feature.
-	 * This is a factory method that creates the full feature object.
-	 * 
-	 * @return the referenced feature
-	 * @deprecated use getFeature(IProgressMonitor) instead
-	 * @since 2.0 
-	 */
-	public IFeature getFeature() throws CoreException;
-
-	/**
-	 * Returns the referenced feature.
-	 * This is a factory method that creates the full feature object.
-	 * 
-	 * @param monitor the progress monitor
-	 * @return the referenced feature
-	 * @since 2.1 
-	 */
-	public IFeature getFeature(IProgressMonitor monitor) throws CoreException;
-
-
-	/**
 	 * Returns the feature identifier.
 	 * 
 	 * @return the feature identifier.
@@ -83,32 +62,11 @@ public interface IFeatureReference extends IAdaptable,IPlatformEnvironment {
 	public VersionedIdentifier getVersionedIdentifier() throws CoreException;
 
 	/**
-	 * Sets the feature reference URL.
-	 * This is typically performed as part of the feature reference creation
-	 * operation. Once set, the url should not be reset.
-	 * 
-	 * @param url reference URL
-	 * @since 2.0 
-	 */
-	public void setURL(URL url) throws CoreException;
-
-	/**
-	 * Associates a site with the feature reference.
-	 * This is typically performed as part of the feature reference creation
-	 * operation. Once set, the site should not be reset.
-	 * 
-	 * @param site site for the feature reference
-	 * @since 2.0 
-	 */
-	public void setSite(ISite site);
-	
-	/**
 	 * Returns <code>true</code> if this feature is patching another feature,
 	 * <code>false</code> otherwise
 	 * @return boolean
 	 * @since 2.1
 	 */
 	public boolean isPatch();
-	
 	
 }

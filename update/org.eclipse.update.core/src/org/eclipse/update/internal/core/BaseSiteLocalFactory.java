@@ -24,13 +24,13 @@ public class BaseSiteLocalFactory {
 	/*
 	 * 
 	 */
-	public ConfigurationActivityModel createConfigurationActivityModel() {
+	public ConfigurationActivity createConfigurationActivityModel() {
 		return new ConfigurationActivity();
 	}
 	/*
 	 * 
 	 */
-	public ConfiguredSiteModel createConfigurationSiteModel() {
+	public ConfiguredSite createConfigurationSiteModel() {
 		return new ConfiguredSite();
 	}
 	/*
@@ -42,9 +42,9 @@ public class BaseSiteLocalFactory {
 	/**
 	 * 
 	 */
-	public ConfiguredSiteModel createConfigurationSiteModel(SiteModel site, int policy) {
+	public ConfiguredSite createConfigurationSiteModel(Site site, int policy) {
 		//create config site
-		ConfiguredSiteModel configSite = this.createConfigurationSiteModel();
+		ConfiguredSite configSite = this.createConfigurationSiteModel();
 		configSite.setSiteModel(site);
 		ConfigurationPolicyModel policyModel = this.createConfigurationPolicyModel();
 		policyModel.setPolicy(policy);

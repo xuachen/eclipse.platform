@@ -67,14 +67,4 @@ public interface IPluginEntry extends IPlatformEnvironment,IAdaptable {
 	 */
 	public long getInstallSize();
 
-	/** 
-	 * Sets the identifier of this plugin entry. 
-	 * This is typically performed as part of the plug-in entry creation
-	 * operation. Once set, the identifier should not be reset.
-	 * 
-	 * @param identifier plugin entry identifier
-	 * @since 2.0 
-	 */
-	public void setVersionedIdentifier(VersionedIdentifier identifier);
-
 }

@@ -87,7 +87,7 @@ public class InstallOperation
 						String message =
 							UpdateUtils.getFormattedMessage(
 								KEY_OLD,
-								oldFeature.getLabel());
+								oldFeature.getName());
 						IStatus status =
 							new Status(
 								IStatus.ERROR,

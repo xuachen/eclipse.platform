@@ -289,16 +289,16 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 
 		// if both are null or empty, return UNKNOWN size
 		if ((pluginEntries == null || pluginEntries.length == 0) && (nonPluginEntries == null || nonPluginEntries.length == 0)) {
-			return ContentEntryModel.UNKNOWN_SIZE;
+			return ContentEntry.UNKNOWN_SIZE;
 		}
 
 		// loop on plugin entries
 		long size = 0;
 		if (pluginEntries != null)
 			for (int i = 0; i < pluginEntries.length; i++) {
-				size = ((PluginEntryModel) pluginEntries[i]).getDownloadSize();
-				if (size == ContentEntryModel.UNKNOWN_SIZE) {
-					return ContentEntryModel.UNKNOWN_SIZE;
+				size = ((PluginEntry) pluginEntries[i]).getDownloadSize();
+				if (size == ContentEntry.UNKNOWN_SIZE) {
+					return ContentEntry.UNKNOWN_SIZE;
 				}
 				result += size;
 			}
@@ -306,9 +306,9 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		// loop on non plugin entries
 		if (nonPluginEntries != null)
 			for (int i = 0; i < nonPluginEntries.length; i++) {
-				size = ((NonPluginEntryModel) nonPluginEntries[i]).getDownloadSize();
-				if (size == ContentEntryModel.UNKNOWN_SIZE) {
-					return ContentEntryModel.UNKNOWN_SIZE;
+				size = ((NonPluginEntry) nonPluginEntries[i]).getDownloadSize();
+				if (size == ContentEntry.UNKNOWN_SIZE) {
+					return ContentEntry.UNKNOWN_SIZE;
 				}
 				result += size;
 			}
@@ -326,16 +326,16 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 
 		// if both are null or empty, return UNKNOWN size
 		if ((pluginEntries == null || pluginEntries.length == 0) && (nonPluginEntries == null || nonPluginEntries.length == 0)) {
-			return ContentEntryModel.UNKNOWN_SIZE;
+			return ContentEntry.UNKNOWN_SIZE;
 		}
 
 		// loop on plugin entries
 		long size = 0;
 		if (pluginEntries != null)
 			for (int i = 0; i < pluginEntries.length; i++) {
-				size = ((PluginEntryModel) pluginEntries[i]).getInstallSize();
-				if (size == ContentEntryModel.UNKNOWN_SIZE) {
-					return ContentEntryModel.UNKNOWN_SIZE;
+				size = ((PluginEntry) pluginEntries[i]).getInstallSize();
+				if (size == ContentEntry.UNKNOWN_SIZE) {
+					return ContentEntry.UNKNOWN_SIZE;
 				}
 				result += size;
 			}
@@ -343,9 +343,9 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 		// loop on non plugin entries
 		if (nonPluginEntries != null)
 			for (int i = 0; i < nonPluginEntries.length; i++) {
-				size = ((NonPluginEntryModel) nonPluginEntries[i]).getInstallSize();
-				if (size == ContentEntryModel.UNKNOWN_SIZE) {
-					return ContentEntryModel.UNKNOWN_SIZE;
+				size = ((NonPluginEntry) nonPluginEntries[i]).getInstallSize();
+				if (size == ContentEntry.UNKNOWN_SIZE) {
+					return ContentEntry.UNKNOWN_SIZE;
 				}
 				result += size;
 			}

@@ -27,11 +27,11 @@ public class SiteFileFactory extends BaseSiteFactory {
 	/*
 	 * @see ISiteFactory#createSite(URL,boolean)
 	 */
-	public ISite createSite(URL url) throws CoreException, InvalidSiteTypeException {
+	public ISite createSite(URL url) throws CoreException{
 	
 		Site site = null;
 		InputStream siteStream = null;
-		SiteModelFactory factory = this;
+		SiteFactory factory = this;
 	
 		try {
 			// if url points to a directory
@@ -46,7 +46,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 	
 				if (new File(siteLocation, Site.SITE_XML).exists()) {
 					siteStream = new FileInputStream(new File(siteLocation, Site.SITE_XML));
-					site = (Site) factory.parseSite(siteStream);
+					site = (Site) factory.createSiteModel(siteStream);
 				} else {
 					// parse siteLocation
 					site = parseSite(siteLocation);
@@ -57,7 +57,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 				try {
 					URL resolvedURL = URLEncoder.encode(url);
 					siteStream = openStream(resolvedURL);
-					site = (Site) factory.parseSite(siteStream);
+					site = (Site) factory.createSiteModel(siteStream);
 				} catch (IOException e) {
 	
 					// attempt to parse parent directory
@@ -158,10 +158,10 @@ public class SiteFileFactory extends BaseSiteFactory {
 						//SiteFileFactory archiveFactory = new SiteFileFactory();
 						featureURL = currentFeatureDir.toURL();
 						featureRef = createFeatureReferenceModel();
-						featureRef.setSiteModel(site);
+						featureRef.setSite(site);
 						featureRef.setURLString(featureURL.toExternalForm());
 						featureRef.setType(ISite.DEFAULT_INSTALLED_FEATURE_TYPE);
-						((Site) site).addFeatureReferenceModel(featureRef);
+						((Site) site).addFeatureReference(featureRef);
 					}
 				}
 			} catch (MalformedURLException e) {
@@ -207,7 +207,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 						// PERF: remove code
 						//SiteFileFactory archiveFactory = new SiteFileFactory();
 						featureRef = createFeatureReferenceModel();
-						featureRef.setSiteModel(site);
+						featureRef.setSite(site);
 						featureRef.setURLString(featureURL.toExternalForm());
 						featureRef.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
 						site.addFeatureReferenceModel(featureRef);
@@ -235,7 +235,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 		try {
 			if (dir.exists() && dir.isDirectory()) {
 				File[] files = dir.listFiles();
-				DefaultPluginParser parser = new DefaultPluginParser();
+				PluginParser parser = new PluginParser();
 				for (int i = 0; i < files.length; i++) {
 					if (files[i].isDirectory()) {
 
@@ -280,13 +280,13 @@ public class SiteFileFactory extends BaseSiteFactory {
 				// the id of the archiveRef is plugins\<pluginid>_<ver>.jar as per the specs
 				// PERF: remove code
 				//SiteFileFactory archiveFactory = new SiteFileFactory();				
-				ArchiveReferenceModel archive = createArchiveReferenceModel();
+				ArchiveReference archive = createArchiveReferenceModel();
 				String id = (entry.getVersionedIdentifier().toString());
 				String pluginID = Site.DEFAULT_PLUGIN_PATH + id + FeaturePackagedContentProvider.JAR_EXTENSION;
 				archive.setPath(pluginID);
 				location = file.toURL().toExternalForm();
 				archive.setURLString(location);
-				((Site) site).addArchiveReferenceModel(archive);
+				((Site) site).addArchiveReference(archive);
 
 				// TRACE				
 				if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_PARSING) {
@@ -323,7 +323,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 					refString = (ref == null) ? null : ref.asURL().toExternalForm();
 
 					if (ref != null) {
-						PluginEntry entry = new DefaultPluginParser().parse(ref.getInputStream());
+						PluginEntry entry = new PluginParser().parse(ref.getInputStream());
 						addParsedPlugin(entry,file);
 					} //ref!=null
 				} //for
@@ -341,15 +341,8 @@ public class SiteFileFactory extends BaseSiteFactory {
 	/*
 	 * @see SiteModelFactory#createSiteMapModel()
 	 */
-	public SiteModel createSiteMapModel() {
+	public Site createSiteMapModel() {
 		return new SiteFile();
-	}
-
-	/*
-	 * @see SiteModelFactory#canParseSiteType(String)
-	 */
-	public boolean canParseSiteType(String type) {
-		return (super.canParseSiteType(type) || SiteFileContentProvider.SITE_TYPE.equalsIgnoreCase(type));
 	}
 
 }

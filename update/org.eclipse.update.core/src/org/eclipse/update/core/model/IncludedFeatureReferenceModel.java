@@ -57,7 +57,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * @since 2.1
 	 */
 	public IncludedFeatureReferenceModel(IncludedFeatureReferenceModel includedFeatureRef) {
-		super((FeatureReferenceModel)includedFeatureRef);
+		super((FeatureReference)includedFeatureRef);
 		isOptional(includedFeatureRef.isOptional());
 		setLabel(includedFeatureRef.getLabel());
 		setMatchingRule(includedFeatureRef.getMatch());
@@ -72,7 +72,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * @param featureReference
 	 */
 	public IncludedFeatureReferenceModel(IFeatureReference featureReference) {
-		super((FeatureReferenceModel)featureReference);
+		super((FeatureReference)featureReference);
 		isOptional(false);
 		setMatchingRule(IImport.RULE_PERFECT);
 		setSearchLocation(IUpdateConstants.SEARCH_ROOT);
@@ -141,7 +141,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * Sets the matchingRule.
 	 * @param matchingRule The matchingRule to set
 	 */
-	public void setMatchingRule(int matchingRule) {
+	void setMatchingRule(int matchingRule) {
 		this.matchingRule = matchingRule;
 	}
 
@@ -149,7 +149,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * Sets the searchLocation.
 	 * @param searchLocation The searchLocation to set
 	 */
-	public void setSearchLocation(int searchLocation) {
+	void setSearchLocation(int searchLocation) {
 		this.searchLocation = searchLocation;
 	}
 
@@ -181,7 +181,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * Sets the arch.
 	 * @param arch The arch to set
 	 */
-	public void setArch(String arch) {
+	void setArch(String arch) {
 		this.arch = arch;
 	}
 
@@ -189,7 +189,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * Sets the os.
 	 * @param os The os to set
 	 */
-	public void setOS(String os) {
+	void setOS(String os) {
 		this.os = os;
 	}
 
@@ -197,7 +197,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * Sets the ws.
 	 * @param ws The ws to set
 	 */
-	public void setWS(String ws) {
+	void setWS(String ws) {
 		this.ws = ws;
 	}
 
@@ -213,7 +213,7 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 * Sets the nl.
 	 * @param nl The nl to set
 	 */
-	public void setNL(String nl) {
+	void setNL(String nl) {
 		this.nl = nl;
 	}
 

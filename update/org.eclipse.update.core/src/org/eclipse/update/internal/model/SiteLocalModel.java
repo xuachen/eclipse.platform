@@ -187,7 +187,7 @@ public class SiteLocalModel extends ModelObject {
 		this.currentConfiguration = currentConfiguration;
 		
 		//2.0.2 set the configuredSite of sites
-		ConfiguredSiteModel[] confSites = currentConfiguration.getConfigurationSitesModel();
+		ConfiguredSite[] confSites = currentConfiguration.getConfigurationSitesModel();
 		for (int i = 0; i < confSites.length; i++) {
 			confSites[i].getSiteModel().setConfiguredSiteModel(confSites[i]);
 		}

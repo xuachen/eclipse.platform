@@ -192,7 +192,7 @@ public class DuplicateConflictsValidator  {
 		throws CoreException {
 		addEntry(feature, csite, table);
 		IIncludedFeatureReference[] irefs =
-			feature.getIncludedFeatureReferences();
+			feature.getIncludedFeatures();
 		for (int i = 0; i < irefs.length; i++) {
 			IIncludedFeatureReference iref = irefs[i];
 			boolean add = true;

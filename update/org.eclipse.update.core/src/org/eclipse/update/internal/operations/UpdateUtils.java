@@ -221,7 +221,7 @@ public class UpdateUtils {
 	}
 	public static boolean hasOptionalFeatures(IFeature feature) {
 		try {
-			IIncludedFeatureReference[] irefs = feature.getIncludedFeatureReferences();
+			IIncludedFeatureReference[] irefs = feature.getIncludedFeatures();
 			for (int i = 0; i < irefs.length; i++) {
 				IIncludedFeatureReference iref = irefs[i];
 				if (iref.isOptional())
@@ -351,7 +351,7 @@ public class UpdateUtils {
 		ArrayList result)
 		throws CoreException {
 		IIncludedFeatureReference[] included =
-			feature.getIncludedFeatureReferences();
+			feature.getIncludedFeatures();
 		for (int i = 0; i < included.length; i++) {
 			IIncludedFeatureReference iref = included[i];
 
@@ -439,7 +439,7 @@ public class UpdateUtils {
 				for (int j = 0; refs != null && j < refs.length; j++) {
 					IFeature parent = refs[j].getFeature(null);
 					IFeatureReference[] children =
-						parent.getIncludedFeatureReferences();
+						parent.getIncludedFeatures();
 					for (int k = 0;
 						children != null && k < children.length;
 						k++) {
@@ -461,7 +461,7 @@ public class UpdateUtils {
 		// are unconfigured, and see if their patch 
 		// references are better than the original.
 		try {
-			IFeatureReference[] irefs = feature.getIncludedFeatureReferences();
+			IFeatureReference[] irefs = feature.getIncludedFeatures();
 			for (int i = 0; i < irefs.length; i++) {
 				IFeatureReference iref = irefs[i];
 				IFeature ifeature = iref.getFeature(null);
@@ -675,7 +675,7 @@ public class UpdateUtils {
 		}
 
 		// Download child features
-		IFeatureReference[] children = feature.getIncludedFeatureReferences();
+		IFeatureReference[] children = feature.getIncludedFeatures();
 
 		// TODO: check if they are optional, and if they should be installed [2.0.1]
 		for (int i = 0; i < children.length; i++) {

@@ -25,13 +25,13 @@ import org.eclipse.update.internal.standalone.*;
  */
 public class MirrorSite extends Site {
 	private final static String INDENT = "   ";
-	private SiteModelFactory factory;
+	private SiteFactory factory;
 	/**
 	 * plugin entries 
 	 */
 	private Collection downloadedPluginEntries = new ArrayList();
 	private Collection downloadedFeatureReferenceModels = new ArrayList();
-	public MirrorSite(SiteModelFactory factory) {
+	public MirrorSite(SiteFactory factory) {
 		this.factory = factory;
 	}
 
@@ -294,7 +294,7 @@ public class MirrorSite extends Site {
 		// add feature model to site model
 		SiteFeatureReferenceModel featureRef =
 			factory.createFeatureReferenceModel();
-		featureRef.setSiteModel(this);
+		featureRef.setSite(this);
 		//featureRef.setURLString(featureURL.toExternalForm());
 		featureRef.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
 		featureRef.setFeatureIdentifier(
@@ -490,7 +490,7 @@ public class MirrorSite extends Site {
 		// stored relative to site.xml
 		//writeIfDefined(indenta, writer, "url", getURL());
 		writer.println(">");
-		URLEntryModel description = getDescriptionModel();
+		URLEntry description = getDescriptionModel();
 		if (description != null) {
 			writer.println();
 			writeDescription(indent2, writer, description);
@@ -537,7 +537,7 @@ public class MirrorSite extends Site {
 		}
 	}
 	private void writeCategories(String indent, PrintWriter writer) {
-		CategoryModel[] categoryModels = getCategoryModels();
+		Category[] categoryModels = getCategoryModels();
 		if (categoryModels.length <= 0) {
 			return;
 		}
@@ -563,7 +563,7 @@ public class MirrorSite extends Site {
 	private void writeDescription(
 		String indent,
 		PrintWriter writer,
-		URLEntryModel urlEntryModel) {
+		URLEntry urlEntryModel) {
 		String url = urlEntryModel.getURLString();
 		String text = urlEntryModel.getAnnotationNonLocalized();
 		if (url == null && text == null && text.length() <= 0) {
@@ -651,7 +651,7 @@ public class MirrorSite extends Site {
 	private void updateDescription(ISite remoteSite) {
 		IURLEntry urlEntry = remoteSite.getDescription();
 		if (urlEntry != null) {
-			URLEntryModel newUrlEntryModel = new URLEntryModel();
+			URLEntry newUrlEntryModel = new URLEntry();
 			URL url = urlEntry.getURL();
 			newUrlEntryModel.setAnnotation(urlEntry.getAnnotation());
 			newUrlEntryModel.setURLString(url.toExternalForm());
@@ -683,9 +683,9 @@ public class MirrorSite extends Site {
 			ICategory remoteCategory = remoteSite.getCategory(name);
 			if (remoteCategory == null) {
 				// remote site does not define this category
-				CategoryModel oldCategory = null;
+				Category oldCategory = null;
 				try {
-					oldCategory = (CategoryModel) getCategory(name);
+					oldCategory = (Category) getCategory(name);
 				} catch (NullPointerException npe) {
 					// cannot reproduce npe anymore
 				}
@@ -698,8 +698,8 @@ public class MirrorSite extends Site {
 
 		}
 		setCategoryModels(
-			(CategoryModel[]) newCategoryModels.toArray(
-				new CategoryModel[newCategoryModels.size()]));
+			(Category[]) newCategoryModels.toArray(
+				new Category[newCategoryModels.size()]));
 
 	}
 	private void generateUpdatePolicy(String url) {

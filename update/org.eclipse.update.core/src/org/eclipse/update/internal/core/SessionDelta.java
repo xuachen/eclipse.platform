@@ -293,7 +293,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 	 */
 	private void disablePatchedFeature(IFeature patchToEnable, IConfiguredSite configSite) {
 		try {
-			IIncludedFeatureReference[] children = patchToEnable.getIncludedFeatureReferences();
+			IIncludedFeatureReference[] children = patchToEnable.getIncludedFeatures();
 			IFeature child = null;
 			for (int i = 0; i < children.length; i++) {
 				try {

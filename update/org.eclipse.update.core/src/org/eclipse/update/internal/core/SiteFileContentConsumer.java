@@ -258,7 +258,7 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 			return;
 	
 		// add the installed plugins directories as archives entry
-		ArchiveReferenceModel archive = null;
+		ArchiveReference archive = null;
 		IPluginEntry[] pluginEntries = localFeature.getPluginEntries();
 		for (int i = 0; i < pluginEntries.length; i++) {
 			String versionId = pluginEntries[i].getVersionedIdentifier().toString();

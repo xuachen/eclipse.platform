@@ -127,7 +127,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 				activity.setDate(new Date());
 			}
 
-			addConfiguredFeatureReference((FeatureReferenceModel) featureReference);
+			addConfiguredFeatureReference((FeatureReference) featureReference);
 
 			// everything done ok
 			if (activity != null) {
@@ -151,9 +151,9 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 				newException = t;
 			}
 			if (originalException != null) // original exception wins
-				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getLabel()), originalException);
+				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getName()), originalException);
 			if (newException != null)
-				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getLabel()), newException);
+				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getName()), newException);
 		}
 	}
 
@@ -224,7 +224,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			//if (validateNoConfiguredParents(feature)) {
 			if (handler != null)
 				handler.unconfigureInitiated();
-			addUnconfiguredFeatureReference((FeatureReferenceModel) featureReference);
+			addUnconfiguredFeatureReference((FeatureReference) featureReference);
 			if (handler != null)
 				handler.completeUnconfigure();
 
@@ -251,9 +251,9 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 				newException = t;
 			}
 			if (originalException != null) // original exception wins
-				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getLabel()), originalException);
+				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getName()), originalException);
 			if (newException != null)
-				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getLabel()), newException);
+				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getName()), newException);
 		}
 
 		if (!success) {
@@ -343,7 +343,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 * @since 2.0
 	 */
 	public IFeatureReference[] getConfiguredFeatures() {
-		FeatureReferenceModel[] result = getConfiguredFeaturesModel();
+		FeatureReference[] result = getConfiguredFeaturesModel();
 		if (result.length == 0)
 			return new IFeatureReference[0];
 		else
@@ -354,7 +354,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 * @since 2.0
 	 */
 	public IFeatureReference[] getUnconfiguredFeatures() {
-		FeatureReferenceModel[] result = getUnconfiguredFeaturesModel();
+		FeatureReference[] result = getUnconfiguredFeaturesModel();
 		if (result.length == 0)
 			return new IFeatureReference[0];
 		else
@@ -373,8 +373,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 * removes a feature reference
 	 */
 	public void removeFeatureReference(IFeatureReference featureRef) {
-		if (featureRef instanceof FeatureReferenceModel) {
-			removeFeatureReference((FeatureReferenceModel) featureRef);
+		if (featureRef instanceof FeatureReference) {
+			removeFeatureReference((FeatureReference) featureRef);
 		}
 	}
 

@@ -202,7 +202,7 @@ public class UpdatesSearchCategory extends BaseSearchCategory {
 		private boolean isMissingOptionalChildren(IFeature feature) {
 			try {
 				IIncludedFeatureReference[] children =
-					feature.getIncludedFeatureReferences();
+					feature.getIncludedFeatures();
 				for (int i = 0; i < children.length; i++) {
 					IIncludedFeatureReference ref = children[i];
 					try {
@@ -366,7 +366,7 @@ public class UpdatesSearchCategory extends BaseSearchCategory {
 			Candidate parent = array[i];
 			IFeature feature = parent.getFeature(null);
 			IFeatureReference[] included =
-				feature.getIncludedFeatureReferences();
+				feature.getIncludedFeatures();
 			for (int j = 0; j < included.length; j++) {
 				IFeatureReference fref = included[j];
 				Candidate child = findCandidate(candidates, fref);

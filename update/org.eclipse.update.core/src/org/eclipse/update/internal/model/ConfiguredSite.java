@@ -8,9 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.update.internal.core;
-
-
+package org.eclipse.update.internal.model;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -20,12 +18,20 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.model.*;
+import org.eclipse.update.core.model.Site;
+import org.eclipse.update.internal.core.*;
 
 /**
  * A Configured site manages the Configured and unconfigured features of a Site
  */
-public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSite, IWritable {
+public class ConfiguredSite extends ModelObject implements IConfiguredSite, IWritable{
+	private String[] previousPluginPath;
+
+	private Site site;
+	private String platformURLString;
+	private ConfigurationPolicyModel policy;
+	private InstallConfigurationModel installConfiguration;
+	private boolean installable = false;
 
 	private static final String PRODUCT_SITE_MARKER = ".eclipseproduct";
 	private static final String EXTENSION_SITE_MARKER = ".eclipseextension";
@@ -39,13 +45,14 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 
 	// transient: true if the site was just created so we can remove it
 	private transient boolean justCreated = false;
-
-	/*
-	 * Default Constructor
+	
+	/**
+	 * Constructor
 	 */
 	public ConfiguredSite() {
+		super();
 	}
-
+	
 	/*
 	 * Copy Constructor
 	 * As of now, configSite can only be of type ConfiguredSite
@@ -57,9 +64,151 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		setUpdatable(cSite.isUpdatable());
 		setEnabled(cSite.isEnabled());
 		setPreviousPluginPath(cSite.getPreviousPluginPath());
-		setPlatformURLString(cSite.getPlatformURLString());
+	}		
+
+	/**
+	 * returns the site
+	 * @return The ISite 
+	 * @since 2.0
+	 */
+	public Site getSiteModel() {
+		return site;
 	}
 
+	/**
+	 * Sets the site.
+	 * @param site The site to set
+	 */
+	public void setSiteModel(Site site) {
+		assertIsWriteable();
+		this.site = site;
+	}
+
+	/**
+	 * returns the policy
+	 */
+	public ConfigurationPolicyModel getConfigurationPolicyModel() {
+		return policy;
+	}
+
+	/**
+	 * 
+	 * @since 2.0
+	 */
+	public void setConfigurationPolicyModel(ConfigurationPolicyModel policy) {
+		assertIsWriteable();
+		this.policy = policy;
+		policy.setConfiguredSiteModel(this);
+	}
+
+	/**
+	 * @since
+	 */
+	public boolean isUpdatable() {
+		return installable;
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	public void setUpdatable(boolean installable) {
+		assertIsWriteable();
+		this.installable = installable;
+	}
+
+	/**
+	 * Gets the installConfiguration.
+	 * @return Returns a InstallConfigurationModel
+	 */
+	public InstallConfigurationModel getInstallConfigurationModel() {
+		return installConfiguration;
+	}
+
+	/**
+	 * Sets the installConfiguration.
+	 * @param installConfiguration The installConfiguration to set
+	 */
+	public void setInstallConfigurationModel(InstallConfigurationModel installConfiguration) {
+		assertIsWriteable();
+		this.installConfiguration = installConfiguration;
+	}
+
+	/**
+	 * Gets the platformURLString.
+	 * @return Returns a String
+	 */
+	public String getPlatformURLString() {
+		return platformURLString;
+	}
+
+	/**
+	 * Sets the platformURLString.
+	 * @param platformURLString The platformURLString to set
+	 */
+	public void setPlatformURLString(String platformURLString) {
+		this.platformURLString = platformURLString;
+	}
+
+	
+		/**
+	 * Gets the previousPluginPath. The list of plugins the platform had.
+	 * @return Returns a String[]
+	 */
+	public String[] getPreviousPluginPath() {
+		if (previousPluginPath == null)
+			previousPluginPath = new String[0];
+		return previousPluginPath;
+	}
+
+	/**
+	 * Sets the previousPluginPath.
+	 * @param previousPluginPath The previousPluginPath to set
+	 */
+	public void setPreviousPluginPath(String[] previousPluginPath) {
+		this.previousPluginPath = new String[previousPluginPath.length];
+		System.arraycopy(previousPluginPath, 0, this.previousPluginPath, 0, previousPluginPath.length);
+	}
+
+	/*
+	 * creates a Status
+	 */
+	protected IStatus createStatus(int statusType, String msg, Exception e){
+		if (statusType!=IStatus.OK) statusType = IStatus.ERROR;
+		return createStatus(statusType,IStatus.OK, msg.toString(), e);
+	}
+
+	/*
+	 * creates a Status
+	 */
+	protected IStatus createStatus(int statusSeverity, int statusCode, String msg, Exception e){
+		String id =
+			UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+	
+		StringBuffer completeString = new StringBuffer("");
+		if (msg!=null)
+			completeString.append(msg);
+		if (e!=null){
+			completeString.append("\r\n[");
+			completeString.append(e.toString());
+			completeString.append("]\r\n");
+		}
+		return new Status(statusSeverity, id, statusCode, completeString.toString(), e);
+	}
+	
+	/**
+	 * @see org.eclipse.update.configuration.IConfiguredSite#isEnabled()
+	 */
+	public boolean isEnabled() {
+		return getConfigurationPolicyModel().isEnabled();
+	}
+
+	/**
+	 * @see org.eclipse.update.configuration.IConfiguredSite#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean value) {
+		getConfigurationPolicyModel().setEnabled(value);
+	}
+	
 	/*
 	 *  Adds a listener
 	 */
@@ -264,7 +413,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 				// For non-UI application, throw error is feature is configured
 				if (getConfigurationPolicy().isConfigured(referenceToRemove)) {
 					IFeature featureToRemove = ((IFeatureReference) referenceToRemove).getFeature(null);
-					String featureLabel = (featureToRemove == null) ? null : featureToRemove.getLabel();
+					String featureLabel = (featureToRemove == null) ? null : featureToRemove.getName();
 					throw Utilities.newCoreException(Policy.bind("ConfiguredSite.UnableToRemoveConfiguredFeature"
 					//$NON-NLS-1$
 					, featureLabel), null);
@@ -317,7 +466,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			return;
 
 		// bottom up approach, same configuredSite
-		IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+		IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatures();
 		if (optionalFeatures != null) {
 			childrenRef = childrenToConfigure(childrenRef, optionalFeatures);
 		}
@@ -432,7 +581,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 				unconfigurePatches(feature);
 
 			// top down approach, same configuredSite
-			IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+			IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatures();
 			for (int i = 0; i < childrenRef.length; i++) {
 				try {
 					IFeature child = childrenRef[i].getFeature(true, null, null); // disable the exact feature

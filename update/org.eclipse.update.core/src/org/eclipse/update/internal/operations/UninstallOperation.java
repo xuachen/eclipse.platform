@@ -44,7 +44,7 @@ public class UninstallOperation extends FeatureOperation implements IUninstallFe
 				String message =
 					UpdateUtils.getFormattedMessage(
 						"OperationsManager.error.uninstall",
-						feature.getLabel());
+						feature.getName());
 				IStatus status =
 					new Status(
 						IStatus.ERROR,

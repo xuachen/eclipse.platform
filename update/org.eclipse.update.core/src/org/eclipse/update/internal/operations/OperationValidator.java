@@ -566,7 +566,7 @@ public class OperationValidator implements IOperationValidator {
 		// return specified base feature and all its children
 		features.add(feature);
 		IIncludedFeatureReference[] children =
-			feature.getIncludedFeatureReferences();
+			feature.getIncludedFeatures();
 		for (int i = 0; i < children.length; i++) {
 			try {
 				IFeature child;
@@ -861,7 +861,7 @@ public class OperationValidator implements IOperationValidator {
 		if (features == null)
 			return;
 		IIncludedFeatureReference[] irefs =
-			feature.getIncludedFeatureReferences();
+			feature.getIncludedFeatures();
 		for (int i = 0; i < irefs.length; i++) {
 			IIncludedFeatureReference iref = irefs[i];
 			IFeature ifeature = iref.getFeature(null);
@@ -891,7 +891,7 @@ public class OperationValidator implements IOperationValidator {
 							UpdateUtils.getFormattedMessage(
 								KEY_PATCH_REGRESSION,
 								new String[] {
-									ifeature.getLabel(),
+									ifeature.getName(),
 									version.toString()});
 						status.add(createStatus(feature, msg));
 
@@ -910,7 +910,7 @@ public class OperationValidator implements IOperationValidator {
 						UpdateUtils.getFormattedMessage(
 							KEY_PATCH_MISSING_TARGET,
 							new String[] {
-								ifeature.getLabel(),
+								ifeature.getName(),
 								version.toString()});
 					status.add(createStatus(feature, msg));
 				}
@@ -1309,7 +1309,7 @@ public class OperationValidator implements IOperationValidator {
 		boolean optionalOnly)
 		throws CoreException {
 		IIncludedFeatureReference[] refs =
-			candidate.getIncludedFeatureReferences();
+			candidate.getIncludedFeatures();
 		for (int i = 0; i < refs.length; i++) {
 			IIncludedFeatureReference child = refs[i];
 			VersionedIdentifier fvid = feature.getVersionedIdentifier();
@@ -1399,7 +1399,7 @@ public class OperationValidator implements IOperationValidator {
 				UpdateUtils.getFormattedMessage(
 					KEY_CHILD_MESSAGE,
 					new String[] {
-						feature.getLabel(),
+						feature.getName(),
 						version.toString(),
 						message });
 		}

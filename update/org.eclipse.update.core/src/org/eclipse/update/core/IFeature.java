@@ -14,7 +14,7 @@ package org.eclipse.update.core;
 import java.net.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.update.core.model.*;
+
 
 /**
  * Feature defines the packaging "container" for a group of related plug-ins,
@@ -35,7 +35,7 @@ import org.eclipse.update.core.model.*;
  * @see org.eclipse.update.core.Feature
  * @since 2.0
  */
-public interface IFeature extends IAdaptable, IPlatformEnvironment {
+public interface IFeature extends IFeatureReference {
 
 	/**
 	 * Indicates a 'happy' feature
@@ -104,39 +104,12 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 
 	
 	/**
-	 * Returns the feature identifier.
-	 * 
-	 * @return the feature identifier.
-	 * @since 2.0 
-	 */
-	public VersionedIdentifier getVersionedIdentifier();
-
-	/**
-	 * Returns the site this feature is associated with.
-	 * 
-	 * @return the site for this feature
-	 * @since 2.0 
-	 */
-	public ISite getSite();
-
-	/**
 	 * Returns the displayable label of the feature.
 	 * 
 	 * @return feature label, or <code>null</code>.
 	 * @since 2.0 
 	 */
-	public String getLabel();
-
-	/**
-	 * Returns the feature URL.
-	 * This is the URL that was used to create the feature. The interpretation
-	 * of the URL is dependent on the concrete feature implementation.  * 
-	 * 
-	 * @see IFeatureFactory#createFeature(URL, ISite)
-	 * @return feature URL
-	 * @since 2.0 
-	 */
-	public URL getURL();
+	public String getName();
 
 	/**
 	 * Returns an information entry referencing the location of the
@@ -243,42 +216,6 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 
 
 	/**
-	 * Install the contents of this feature into the specified target feature.
-	 * All optional features will be installed
-	 * 
-	 * @param targetFeature
-	 * @param verificationListener
-	 * @param monitor
-	 * @exception InstallAbortedException when the user cancels the install
-	 * @exception CoreException
-	 * @since 2.0
-	 */
-	public IFeatureReference install(
-		IFeature targetFeature,
-		IVerificationListener verificationListener,
-		IProgressMonitor monitor)
-		throws InstallAbortedException,CoreException;
-
-	/**
-	 * Install the contents of this feature into the specified target feature.
-	 * Only the listed optional features will be installed.
-	 * 
-	 * @param targetFeature
-	 * @param optionalFeatures the optional features to be installed
-	 * @param verificationListener
-	 * @param monitor
-	 * @exception InstallAbortedException when the user cancels the install
-	 * @exception CoreException
-	 * @since 2.0.1
-	 */
-	public IFeatureReference install(
-		IFeature targetFeature,
-		IFeatureReference[] optionalFeatures,
-		IVerificationListener verificationListener,
-		IProgressMonitor monitor)
-		throws InstallAbortedException,CoreException;
-
-	/**
 	 * Returns an array of feature references included by this feature
 	 * filtered by the operating system, windowing system and architecture system
 	 * set in <code>Sitemanager</code>
@@ -286,7 +223,7 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 	 * @return an erray of feature references, or an empty array.
 	 * @since 2.0
 	 */
-	public IIncludedFeatureReference[] getIncludedFeatureReferences() throws CoreException;
+	public IFeature[] getIncludedFeatures() throws CoreException;
 
 	/**
 	 * Returns an array of feature references included by this feature
@@ -295,7 +232,7 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 	 * @return an erray of feature references, or an empty array.
 	 * @since 2.0
 	 */
-	public IIncludedFeatureReference[] getRawIncludedFeatureReferences() throws CoreException;
+	public IFeature[] getRawIncludedFeatureReferences() throws CoreException;
 
 	/**
 	 * Returns an array of plug-in entries referenced by this feature
@@ -317,14 +254,6 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 	public IPluginEntry[] getRawPluginEntries();
 
 	/**
-	 * Returns the count of referenced plug-in entries.
-	 * 
-	 * @return plug-in entry count
-	 * @since 2.0
-	 */
-	public int getPluginEntryCount();
-
-	/**
 	 * Returns an array of non-plug-in entries referenced by this feature
 	 * filtered by the operating system, windowing system and architecture system
 	 * set in <code>Sitemanager</code>
@@ -343,13 +272,6 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 	 */
 	public INonPluginEntry[] getRawNonPluginEntries();
 
-	/**
-	 * Returns the count of referenced non-plug-in entries.
-	 * 
-	 * @return non-plug-in entry count
-	 * @since 2.0
-	 */
-	public int getNonPluginEntryCount();
 
 	/**
 	 * Returns the download size of the feature, if it can be determined.
@@ -423,54 +345,6 @@ public interface IFeature extends IAdaptable, IPlatformEnvironment {
 	 */
 	public IFeatureContentProvider getFeatureContentProvider()
 		throws CoreException;
-
-	/**
-	 * Returns the content consumer for this feature. A content consumer
-	 * is an abstraction of each feature internal packaging mechanism.
-	 * It allows content to be stored into a feature in a standard way
-	 * regardless of the packaging mechanism used. Only concrete features
-	 * that support storing need to implement a content consumer. The platform
-	 * implements at least one feature type supporting content consumer.
-	 * This is the feature type representing a locally-installed
-	 * feature.
-	 * 
-	 * @return feature content consumer
-	 * @exception CoreException
-	 * @exception UnsupportedOperationException
-	 * @since 2.0
-	 */
-	public IFeatureContentConsumer getFeatureContentConsumer()
-		throws CoreException;
-
-	/**
-	 * Sets the site for this feature. This is typically performed as part
-	 * of the feature creation operation. Once set, the site
-	 * should not be reset.
-	 * 
-	 * @param site the site
-	 * @throws CoreException site for this feature is already set
-	 * @since 2.0 
-	 */
-	public void setSite(ISite site) throws CoreException;
-
-	/**
-	 * Sets the content provider for this feature. This is typically
-	 * performed as part of the feature creation operation. Once set, the 
-	 * provider should not be reset.
-	 * 
-	 * @see IFeatureFactory#createFeature(URL, ISite)
-	 * @param featureContentProvider content provider
-	 * @since 2.0
-	 */
-	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider);
-
-	/**
-	 * Returns <code>true</code> if this feature is patching another feature,
-	 * <code>false</code> otherwise
-	 * @return boolean
-	 * @since 2.1
-	 */
-	public boolean isPatch();
 
 
 }

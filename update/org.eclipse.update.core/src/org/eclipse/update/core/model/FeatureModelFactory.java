@@ -31,7 +31,7 @@ import org.xml.sax.*;
 public class FeatureModelFactory {
 
 
-	private static DefaultFeatureParser parser = new DefaultFeatureParser();
+	private static FeatureParser parser = new FeatureParser();
 
 	/**
 	 * Creates a default model factory.
@@ -101,8 +101,8 @@ public class FeatureModelFactory {
 	 * @return install handler entry model
 	 * @since 2.0
 	 */
-	public InstallHandlerEntryModel createInstallHandlerEntryModel() {
-		return new InstallHandlerEntryModel();
+	public InstallHandlerEntry createInstallHandlerEntryModel() {
+		return new InstallHandlerEntry();
 	}
 
 	/**
@@ -112,8 +112,8 @@ public class FeatureModelFactory {
 	 * @return import dependency model
 	 * @since 2.0
 	 */
-	public ImportModel createImportModel() {
-		return new ImportModel();
+	public Import createImportModel() {
+		return new Import();
 	}
 
 	/**
@@ -123,8 +123,8 @@ public class FeatureModelFactory {
 	 * @return plug-in entry model
 	 * @since 2.0
 	 */
-	public PluginEntryModel createPluginEntryModel() {
-		return new PluginEntryModel();
+	public PluginEntry createPluginEntryModel() {
+		return new PluginEntry();
 	}
 
 	/**
@@ -134,8 +134,8 @@ public class FeatureModelFactory {
 	 * @return non-plug-in entry model
 	 * @since 2.0
 	 */
-	public NonPluginEntryModel createNonPluginEntryModel() {
-		return new NonPluginEntryModel();
+	public NonPluginEntry createNonPluginEntryModel() {
+		return new NonPluginEntry();
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class FeatureModelFactory {
 	 * @return annotated URL model
 	 * @since 2.0
 	 */
-	public URLEntryModel createURLEntryModel() {
-		return new URLEntryModel();
+	public URLEntry createURLEntryModel() {
+		return new URLEntry();
 	}
 }

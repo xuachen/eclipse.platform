@@ -38,7 +38,13 @@ public class UpdateManagerUtils {
 	private static Writer writer;
 	// manage URL to File
 	private static Map urlFileMap;
+	
+	private static String os;
+	private static String ws;
+	private static String arch;
+	private static String nl;
 
+	
 	/**
 	 * return the urlString if it is a absolute URL
 	 * otherwise, return the default URL if the urlString is null
@@ -442,7 +448,7 @@ public class UpdateManagerUtils {
 			try {
 				IFeature possibleParentFeature = possiblesParent[i].getFeature(null);
 				if (possibleParentFeature != null) {
-					children = possibleParentFeature.getIncludedFeatureReferences();
+					children = possibleParentFeature.getIncludedFeatures();
 					for (int j = 0; j < children.length; j++) {
 						try {
 							compareFeature = children[j].getFeature(true,null,null); // compare with the 'real' feature, not the best match
@@ -617,9 +623,9 @@ public class UpdateManagerUtils {
 		String os = candidate.getOS();
 		String ws = candidate.getWS();
 		String arch = candidate.getOSArch();
-		if (os!=null && isMatching(os, SiteManager.getOS())==false) return false;
-		if (ws!=null && isMatching(ws, SiteManager.getWS())==false) return false;
-		if (arch!=null && isMatching(arch, SiteManager.getOSArch())==false) return false;
+		if (os!=null && isMatching(os, UpdateManagerUtils.getOS())==false) return false;
+		if (ws!=null && isMatching(ws, UpdateManagerUtils.getWS())==false) return false;
+		if (arch!=null && isMatching(arch, UpdateManagerUtils.getOSArch())==false) return false;
 		return true;
 	}
 
@@ -755,5 +761,114 @@ public static class Writer {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Returns system architecture specification. A comma-separated list of arch
+	 * designators defined by the platform. 
+	 * 
+	 * This information is used as a hint by the installation and update
+	 * support.
+	 * 
+	 * @see BootLoader#ARCH_PA_RISC
+	 * @see BootLoader#ARCH_PPC
+	 * @see BootLoader#ARCH_SPARC
+	 * @see BootLoader#ARCH_X86
+	 * @return system architecture specification
+	 * @since 2.1
+	 */
+	public static String getOSArch() {
+		if (arch == null)
+			arch = BootLoader.getOSArch();
+		return arch;
+	}
+
+	/**
+	 * Returns operating system specification. A comma-separated list of os
+	 * designators defined by the platform.
+	 * 
+	 * This information is used as a hint by the installation and update
+	 * support.
+	 *
+	 * @see BootLoader#OS_AIX
+	 * @see BootLoader#OS_HPUX
+	 * @see BootLoader#OS_LINUX
+	 * @see BootLoader#OS_MACOSX
+	 * @see BootLoader#OS_QNX
+	 * @see BootLoader#OS_SOLARIS
+	 * @see BootLoader#OS_WIN32 
+	 * @return the operating system specification.
+	 * @since 2.1
+	 */
+	public static String getOS() {
+		if (os == null)
+			os = BootLoader.getOS();
+		return os;
+	}
+
+	/**
+	 * Returns system architecture specification. A comma-separated list of arch
+	 * designators defined by the platform. 
+	 * 
+	 * This information is used as a hint by the installation and update
+	 * support.
+	 * 
+	 * @see BootLoader#WS_CARBON
+	 * @see BootLoader#WS_GTK
+	 * @see BootLoader#WS_MOTIF
+	 * @see BootLoader#WS_PHOTON
+	 * @see BootLoader#WS_WIN32 
+	 * @return system architecture specification.
+	 * @since 2.1
+	 */
+	public static String getWS() {
+		if (ws == null)
+			ws = BootLoader.getWS();
+		return ws;
+	}
+
+	/**
+	 * Returns current locale
+	 * 
+	 * @see BootLoader#getNL()
+	 * @return the string name of the current locale or <code>null</code>
+	 * @since 2.1
+	 */
+	public static String getNL() {
+		if (nl == null)
+			nl = BootLoader.getNL();
+		return nl;
+	}
+
+	/**
+	 * Sets the arch.
+	 * @param arch The arch to set
+	 */
+	public static void setOSArch(String arch) {
+		UpdateManagerUtils.arch = arch;
+	}
+
+	/**
+	 * Sets the os.
+	 * @param os The os to set
+	 */
+	public static void setOS(String os) {
+		UpdateManagerUtils.os = os;
+	}
+
+	/**
+	 * Sets the ws.
+	 * @param ws The ws to set
+	 */
+	public static void setWS(String ws) {
+		UpdateManagerUtils.ws = ws;
+	}
+
+	/**
+	 * Sets the nl.
+	 * @param nl The nl to set
+	 */
+	public static void setNL(String nl) {
+		UpdateManagerUtils.nl = nl;
 	}
 }

@@ -21,7 +21,7 @@ public class SiteURLFactory extends BaseSiteFactory implements ISiteFactoryExten
 	/*
 	 * For backward compatibility.
 	 */
-	public ISite createSite(URL url) throws CoreException, InvalidSiteTypeException {
+	public ISite createSite(URL url) throws CoreException {
 		return createSite(url, null);
 	}
 	/*
@@ -43,7 +43,7 @@ public class SiteURLFactory extends BaseSiteFactory implements ISiteFactoryExten
 	 * 
 	 * 3 open the stream	 
 	 */
-	public ISite createSite(URL url, IProgressMonitor monitor) throws CoreException, InvalidSiteTypeException {
+	public ISite createSite(URL url, IProgressMonitor monitor) throws CoreException {
 		Site site = null;
 		InputStream siteStream = null;
 	
@@ -57,7 +57,7 @@ public class SiteURLFactory extends BaseSiteFactory implements ISiteFactoryExten
 			// the stream can be null if the user cancels the connection
 			if (siteStream==null) return null;
 
-			SiteModelFactory factory = this;
+			SiteFactory factory = this;
 			site = (Site) factory.parseSite(siteStream);
 	
 			site.setSiteContentProvider(contentProvider);

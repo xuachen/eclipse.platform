@@ -29,7 +29,7 @@ public class ConfigurationPolicyModel extends ModelObject {
 	private Map /* of FeatureReferenceModel */unconfiguredFeatureReferences;
 	
 	// since 2.0.2
-	private ConfiguredSiteModel configuredSiteModel;
+	private ConfiguredSite configuredSiteModel;
 	
 	// since 2.1
 	private boolean enable;
@@ -63,19 +63,19 @@ public class ConfigurationPolicyModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public FeatureReferenceModel[] getConfiguredFeaturesModel() {
+	public FeatureReference[] getConfiguredFeaturesModel() {
 		if (configuredFeatureReferences==null || configuredFeatureReferences.isEmpty())
-			return new FeatureReferenceModel[0];
-		return (FeatureReferenceModel[]) configuredFeatureReferences.keySet().toArray(arrayTypeFor(configuredFeatureReferences.keySet()));
+			return new FeatureReference[0];
+		return (FeatureReference[]) configuredFeatureReferences.keySet().toArray(arrayTypeFor(configuredFeatureReferences.keySet()));
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public FeatureReferenceModel[] getUnconfiguredFeaturesModel() {
+	public FeatureReference[] getUnconfiguredFeaturesModel() {
 	if (unconfiguredFeatureReferences==null || unconfiguredFeatureReferences.isEmpty())
-			return new FeatureReferenceModel[0];			
-		return (FeatureReferenceModel[]) unconfiguredFeatureReferences.keySet().toArray(arrayTypeFor(unconfiguredFeatureReferences.keySet()));		
+			return new FeatureReference[0];			
+		return (FeatureReference[]) unconfiguredFeatureReferences.keySet().toArray(arrayTypeFor(unconfiguredFeatureReferences.keySet()));		
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class ConfigurationPolicyModel extends ModelObject {
 	 * @return Returns a ConfiguredSiteModel
 	 * @since 2.0.2
 	 */
-	public ConfiguredSiteModel getConfiguredSiteModel() {
+	public ConfiguredSite getConfiguredSiteModel() {
 		return configuredSiteModel;
 	}
 
@@ -92,19 +92,19 @@ public class ConfigurationPolicyModel extends ModelObject {
 	 * @param configuredSiteModel The configuredSiteModel to set
 	 * @since 2.0.2
 	 */
-	public void setConfiguredSiteModel(ConfiguredSiteModel configuredSiteModel) {
+	public void setConfiguredSiteModel(ConfiguredSite configuredSiteModel) {
 		this.configuredSiteModel = configuredSiteModel;
 	}
 
 	/**
 	 * 
 	 */
-	private boolean remove(FeatureReferenceModel feature, Map list) {
+	private boolean remove(FeatureReference feature, Map list) {
 		URL featureURL = feature.getURL();
 		boolean found = false;
 		Iterator iter = list.keySet().iterator();
 		while (iter.hasNext() && !found) {
-			FeatureReferenceModel element = (FeatureReferenceModel) iter.next();
+			FeatureReference element = (FeatureReference) iter.next();
 			if (UpdateManagerUtils.sameURL(element.getURL(),featureURL)) {
 				list.remove(element);
 				found = true;
@@ -122,12 +122,12 @@ public class ConfigurationPolicyModel extends ModelObject {
 	/**
 	 * 
 	 */
-	private void add(FeatureReferenceModel feature, Map list) {
+	private void add(FeatureReference feature, Map list) {
 		URL featureURL = feature.getURL();
 		boolean found = false;
 		Iterator iter = list.keySet().iterator();
 		while (iter.hasNext() && !found) {
-			FeatureReferenceModel element = (FeatureReferenceModel) iter.next();
+			FeatureReference element = (FeatureReference) iter.next();
 			if (UpdateManagerUtils.sameURL(element.getURL(),featureURL)) {
 				found = true;
 			}
@@ -144,7 +144,7 @@ public class ConfigurationPolicyModel extends ModelObject {
 	 * adds a feature in the configuredReference list
 	 * also used by the parser to avoid creating another activity
 	 */
-	public void addConfiguredFeatureReference(FeatureReferenceModel feature) {
+	public void addConfiguredFeatureReference(FeatureReference feature) {
 		assertIsWriteable();
 		
 		if (configuredFeatureReferences == null)
@@ -172,7 +172,7 @@ public class ConfigurationPolicyModel extends ModelObject {
 	 * adds a feature in the list
 	 * also used by the parser to avoid creating another activity
 	 */
-	public void addUnconfiguredFeatureReference(FeatureReferenceModel feature) {
+	public void addUnconfiguredFeatureReference(FeatureReference feature) {
 		assertIsWriteable();
 		if (unconfiguredFeatureReferences == null)
 			this.unconfiguredFeatureReferences = new HashMap();
@@ -195,7 +195,7 @@ public class ConfigurationPolicyModel extends ModelObject {
 	/**
 	 * removes a feature from any list
 	 */
-	public void removeFeatureReference(FeatureReferenceModel feature) {
+	public void removeFeatureReference(FeatureReference feature) {
 		assertIsWriteable();
 		if (unconfiguredFeatureReferences!=null){
 			boolean success = remove(feature, unconfiguredFeatureReferences);

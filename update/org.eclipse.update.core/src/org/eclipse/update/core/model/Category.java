@@ -26,12 +26,13 @@ import org.eclipse.update.core.*;
  * @since 2.0
  */
 
-public class CategoryModel extends ModelObject {
+public class Category extends ModelObject implements ICategory {
 
 	private String name;
 	private String label;
 	private String localizedLabel;
-	private URLEntryModel description;
+	private URLEntry description;
+	private List featureReferences;
 	private static Comparator comp;
 
 	/**
@@ -39,7 +40,7 @@ public class CategoryModel extends ModelObject {
 	 * 
 	 * @since 2.0
 	 */
-	public CategoryModel() {
+	public Category() {
 		super();
 	}
 
@@ -78,23 +79,13 @@ public class CategoryModel extends ModelObject {
 	}
 
 	/**
-	 * Retrieve the detailed category description
-	 * 
-	 * @return category description, or <code>null</code>.
-	 * @since 2.0
-	 */
-	public URLEntryModel getDescriptionModel() {
-		return description;
-	}
-
-	/**
 	 * Sets the category displayable label.
 	 * Throws a runtime exception if this object is marked read-only.
 	 * 
 	 * @param label displayable label, or resource key
 	 * @since 2.0
 	 */
-	public void setLabel(String label) {
+	void setLabel(String label) {
 		assertIsWriteable();
 		this.label = label;
 		this.localizedLabel = null;
@@ -107,7 +98,7 @@ public class CategoryModel extends ModelObject {
 	 * @param name category name
 	 * @since 2.0
 	 */
-	public void setName(String name) {
+	void setName(String name) {
 		assertIsWriteable();
 		this.name = name;
 	}
@@ -119,7 +110,7 @@ public class CategoryModel extends ModelObject {
 	 * @param description category description
 	 * @since 2.0
 	 */
-	public void setDescriptionModel(URLEntryModel description) {
+	void setDescription(URLEntry description) {
 		assertIsWriteable();
 		this.description = description;
 	}
@@ -131,7 +122,7 @@ public class CategoryModel extends ModelObject {
 	 */
 	public void markReadOnly() {
 		super.markReadOnly();
-		markReferenceReadOnly(getDescriptionModel());
+		markReferenceReadOnly((URLEntry)getDescription());
 	}
 
 	/**
@@ -152,7 +143,7 @@ public class CategoryModel extends ModelObject {
 		localizedLabel = resolveNLString(bundleURL, label);
 
 		// delegate to references
-		resolveReference(getDescriptionModel(),base, bundleURL);
+		resolveReference((URLEntry)getDescription(),base, bundleURL);
 	}
 
 	/**
@@ -163,8 +154,8 @@ public class CategoryModel extends ModelObject {
 	 */
 	public boolean equals(Object obj) {
 		boolean result = false;
-		if (obj instanceof CategoryModel) {
-			CategoryModel otherCategory = (CategoryModel) obj;
+		if (obj instanceof Category) {
+			Category otherCategory = (Category) obj;
 			result = getName().equalsIgnoreCase(otherCategory.getName());
 		}
 		return result;
@@ -197,8 +188,8 @@ public class CategoryModel extends ModelObject {
 				 */
 				public int compare(Object o1, Object o2) {
 
-					CategoryModel cat1 = (CategoryModel) o1;
-					CategoryModel cat2 = (CategoryModel) o2;
+					Category cat1 = (Category) o1;
+					Category cat2 = (Category) o2;
 
 					if (cat1.equals(cat2))
 						return 0;
@@ -215,4 +206,51 @@ public class CategoryModel extends ModelObject {
 	protected String getPropertyName() {
 		return Site.SITE_FILE;
 	}	
+	
+	/**
+	 * Retrieve the detailed category description
+	 * @see ICategory#getDescription()
+	 */
+	public IURLEntry getDescription() {
+		return description;
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.update.core.ICategory#getFeatures()
+	 */
+	public IFeatureReference[] getFeatureReferences() {
+		if (featureReferences == null)
+			return new FeatureReference[0];
+		return (FeatureReference[]) featureReferences.toArray(arrayTypeFor(featureReferences));
+	}
+
+	/**
+	 * Adds a feature reference model to category.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param featureReference feature reference model
+	 * @since 2.0
+	 */
+	void addFeatureReference(FeatureReference featureReference) {
+		assertIsWriteable();
+		if (this.featureReferences == null)
+			this.featureReferences = new ArrayList();
+		// PERF: do not check if already present 
+		//if (!this.featureReferences.contains(featureReference))
+			this.featureReferences.add(featureReference);
+	}
+	
+
+	/**
+	 * Removes a feature reference model from category.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param featureReference feature reference model
+	 * @since 2.0
+	 */
+	void removeFeatureReference(FeatureReference featureReference) {
+		assertIsWriteable();
+		if (this.featureReferences != null)
+			this.featureReferences.remove(featureReference);
+	}
+
 }

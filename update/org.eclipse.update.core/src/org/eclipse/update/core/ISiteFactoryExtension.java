@@ -44,10 +44,8 @@ public interface ISiteFactoryExtension {
 	 * @param monitor a progress monitor that can be canceled
 	 * @return site object
 	 * @exception CoreException
-	 * @exception InvalidSiteTypeException the referenced site type is
-	 * not a supported type for this factory 
 	 * @since 2.0 
 	 */
 	public ISite createSite(URL url, IProgressMonitor monitor)
-		throws CoreException, InvalidSiteTypeException;
+		throws CoreException;
 }

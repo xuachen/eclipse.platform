@@ -74,7 +74,7 @@ public class SiteStatusAnalyzer {
 		ISite featureSite = feature.getSite();
 		if (featureSite == null) {
 			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION)
-				UpdateCore.debug("Cannot determine status of feature:" + feature.getLabel() + ". Site is NULL.");
+				UpdateCore.debug("Cannot determine status of feature:" + feature.getName() + ". Site is NULL.");
 			String msg = Policy.bind("SiteLocal.UnableToDetermineFeatureStatusSiteNull", new Object[] { feature.getURL()});
 			return createStatus(IStatus.ERROR, IFeature.STATUS_AMBIGUOUS, msg, null);
 		}
@@ -83,7 +83,7 @@ public class SiteStatusAnalyzer {
 		ConfiguredSite cSite = (ConfiguredSite) featureSite.getCurrentConfiguredSite();
 		if (cSite == null) {
 			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION)
-				UpdateCore.warn("Cannot determine status of feature: " + feature.getLabel() + ". Configured Site is NULL.");
+				UpdateCore.warn("Cannot determine status of feature: " + feature.getName() + ". Configured Site is NULL.");
 			String msg = Policy.bind("SiteLocal.UnableToDetermineFeatureStatusConfiguredSiteNull", new Object[] { feature.getURL()});
 			return createStatus(IStatus.ERROR, IFeature.STATUS_AMBIGUOUS, msg, null);
 		}
@@ -102,7 +102,7 @@ public class SiteStatusAnalyzer {
 		IStatus status = cSite.getBrokenStatus(feature);
 		if (status.getSeverity() != IStatus.OK) {
 			if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_CONFIGURATION)
-				UpdateCore.debug("Feature broken:" + feature.getLabel() + ".Site:" + cSite.toString());
+				UpdateCore.debug("Feature broken:" + feature.getName() + ".Site:" + cSite.toString());
 			return status;
 		}
 
@@ -123,7 +123,7 @@ public class SiteStatusAnalyzer {
 		IFeature childFeature = null;
 		IStatus childStatus;
 
-		IFeatureReference[] children = feature.getIncludedFeatureReferences();
+		IFeatureReference[] children = feature.getIncludedFeatures();
 
 		// consider disable
 		// check the current feature
@@ -169,7 +169,7 @@ public class SiteStatusAnalyzer {
 						if (childStatus.getCode() == IFeature.STATUS_DISABLED) {
 							VersionedIdentifier versionID = childFeature.getVersionedIdentifier();
 							String featureVer = (versionID == null) ? "" : versionID.getVersion().toString();
-							String msg1 = Policy.bind("SiteLocal.NestedFeatureDisable", childFeature.getLabel(), featureVer);
+							String msg1 = Policy.bind("SiteLocal.NestedFeatureDisable", childFeature.getName(), featureVer);
 							multiTemp.add(createStatus(IStatus.ERROR, childStatus.getCode(), msg1, null));
 							if (IFeature.STATUS_UNHAPPY > code)
 								code = IFeature.STATUS_UNHAPPY;
@@ -177,7 +177,7 @@ public class SiteStatusAnalyzer {
 						if (childStatus.getSeverity() != IStatus.OK) {
 							VersionedIdentifier versionID = childFeature.getVersionedIdentifier();
 							String featureVer = (versionID == null) ? "" : versionID.getVersion().toString();
-							String msg1 = Policy.bind("SiteLocal.NestedFeatureUnHappy", childFeature.getLabel(), featureVer);
+							String msg1 = Policy.bind("SiteLocal.NestedFeatureUnHappy", childFeature.getName(), featureVer);
 							multiTemp.add(createStatus(IStatus.ERROR, childStatus.getCode(), msg1, null));
 							if (childStatus.getCode() > code)
 								code = childStatus.getCode();
@@ -248,7 +248,7 @@ public class SiteStatusAnalyzer {
 							Object[] values = new Object[] { pluginName, featureID.getVersion(), compareID.getVersion()};
 							msg = Policy.bind("SiteLocal.TwoVersionSamePlugin1", values);
 						} else {
-							String label = feature.getLabel();
+							String label = feature.getName();
 							String version = feature.getVersionedIdentifier().getVersion().toString();
 							Object[] values = new Object[] { pluginName, featureID.getVersion(), compareID.getVersion(), label, version };
 							msg = Policy.bind("SiteLocal.TwoVersionSamePlugin2", values);

@@ -43,7 +43,7 @@ public class FeaturePackagedFactory extends BaseFeatureFactory {
 			// if there is no update URL for the Feature
 			// use the Site URL
 			if (feature.getUpdateSiteEntry()==null){
-				URLEntryModel entryModel = createURLEntryModel();
+				URLEntry entryModel = createURLEntryModel();
 				URL siteUrl = site.getURL();
 				if (siteUrl!=null){
 					entryModel.setURLString(siteUrl.toExternalForm());

@@ -138,7 +138,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 				//site policy
 				IPlatformConfiguration.ISitePolicy sitePolicy = currentSiteEntry.getSitePolicy();
-				ConfiguredSite configSite = (ConfiguredSite) new BaseSiteLocalFactory().createConfigurationSiteModel((SiteModel) site, sitePolicy.getType());
+				ConfiguredSite configSite = (ConfiguredSite) new BaseSiteLocalFactory().createConfigurationSiteModel((Site) site, sitePolicy.getType());
 				configSite.setPlatformURLString(currentSiteEntry.getURL().toExternalForm());
 				configSite.setPreviousPluginPath(currentSiteEntry.getSitePolicy().getList());
 				configSite.setUpdatable(currentSiteEntry.isUpdateable());
@@ -170,7 +170,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		// add Activity reconciliation
 		BaseSiteLocalFactory siteLocalFactory = new BaseSiteLocalFactory();
-		ConfigurationActivityModel activity = siteLocalFactory.createConfigurationActivityModel();
+		ConfigurationActivity activity = siteLocalFactory.createConfigurationActivityModel();
 		activity.setAction(IActivity.ACTION_RECONCILIATION);
 		activity.setDate(new Date());
 		activity.setLabel(siteLocal.getLocationURLString());
@@ -478,7 +478,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// create a copy of the ConfigSite based on old ConfigSite
 		// this is not a clone, do not copy any features
 		ConfiguredSite cSiteToReconcile = (ConfiguredSite) oldConfiguredSiteToReconcile;
-		SiteModel siteModel = cSiteToReconcile.getSiteModel();
+		Site siteModel = cSiteToReconcile.getSiteModel();
 		int policy = cSiteToReconcile.getConfigurationPolicy().getPolicy();
 
 		// copy values of the old ConfigSite that should be preserved except Features
@@ -771,7 +771,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		for (int i = 0; i < list.length; i++) {
 			IIncludedFeatureReference[] children = null;
 			try {
-				children = list[i].getIncludedFeatureReferences();
+				children = list[i].getIncludedFeatures();
 			} catch (CoreException e) {
 				UpdateCore.warn("", e);
 			}
@@ -852,7 +852,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// add nested children to the list
 		IIncludedFeatureReference[] children = null;
 		try {
-			children = feature.getIncludedFeatureReferences();
+			children = feature.getIncludedFeatures();
 		} catch (CoreException e) {
 			UpdateCore.warn("", e);
 			return;
@@ -1184,7 +1184,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// add nested children to the list
 		IIncludedFeatureReference[] children = null;
 		try {
-			children = feature.getIncludedFeatureReferences();
+			children = feature.getIncludedFeatures();
 		} catch (CoreException e) {
 			UpdateCore.warn("", e);
 			return;

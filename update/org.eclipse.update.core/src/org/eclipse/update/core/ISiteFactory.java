@@ -41,10 +41,8 @@ public interface ISiteFactory {
 	 * @param url URL interpreted by the site
 	 * @return site object
 	 * @exception CoreException
-	 * @exception InvalidSiteTypeException the referenced site type is
-	 * not a supported type for this factory 
 	 * @since 2.0 
 	 */
 	public ISite createSite(URL url)
-		throws CoreException, InvalidSiteTypeException;
+		throws CoreException;
 }

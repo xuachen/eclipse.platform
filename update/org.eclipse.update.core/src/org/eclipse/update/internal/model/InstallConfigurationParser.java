@@ -33,7 +33,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 	private InputStream siteStream;
 	private URL siteURL;
 	private InstallConfigurationModel config;
-	private ConfiguredSiteModel configSite;
+	private ConfiguredSite configSite;
 	public static final String CONFIGURATION = "configuration"; //$NON-NLS-1$
 	public static final String CONFIGURATION_SITE = "site"; //$NON-NLS-1$
 	public static final String FEATURE = "feature"; //$NON-NLS-1$
@@ -134,7 +134,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 
 		// configuration site
 		BaseSiteLocalFactory factory = new BaseSiteLocalFactory();
-		configSite = factory.createConfigurationSiteModel((SiteModel) site, policy);
+		configSite = factory.createConfigurationSiteModel((Site) site, policy);
 
 		//platform url
 		String platformURLString = attributes.getValue("platformURL"); //$NON-NLS-1$
@@ -218,7 +218,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 		int action = Integer.parseInt(actionString);
 
 		// create
-		ConfigurationActivityModel activity =
+		ConfigurationActivity activity =
 			new BaseSiteLocalFactory().createConfigurationActivityModel();
 		activity.setAction(action);
 

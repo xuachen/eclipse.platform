@@ -12,6 +12,8 @@ package org.eclipse.update.core.model;
 
 import java.net.*;
 
+import org.eclipse.update.core.*;
+
 /**
  * Install handler entry model object.
  * An object which represents the definition of a custom install handler
@@ -23,7 +25,7 @@ import java.net.*;
  * @see org.eclipse.update.core.InstallHandlerEntry
  * @since 2.0
  */
-public class InstallHandlerEntryModel extends ModelObject {
+public class InstallHandlerEntry extends ModelObject implements IInstallHandlerEntry{
 
 	private String urlString;
 	private URL url;
@@ -35,7 +37,7 @@ public class InstallHandlerEntryModel extends ModelObject {
 	 * 
 	 * @since 2.0
 	 */
-	public InstallHandlerEntryModel() {
+	public InstallHandlerEntry() {
 		super();
 	}
 
@@ -86,7 +88,7 @@ public class InstallHandlerEntryModel extends ModelObject {
 	 * @param urlString trigget page URL string, may be <code>null</code>.
 	 * @since 2.0
 	 */
-	public void setURLString(String urlString) {
+	void setURLString(String urlString) {
 		assertIsWriteable();
 		this.urlString = urlString;
 		this.url = null;
@@ -99,7 +101,7 @@ public class InstallHandlerEntryModel extends ModelObject {
 	 * @param library name, may be <code>null</code>.
 	 * @since 2.0
 	 */
-	public void setLibrary(String library) {
+	void setLibrary(String library) {
 		assertIsWriteable();
 		this.library = library;
 	}
@@ -111,7 +113,7 @@ public class InstallHandlerEntryModel extends ModelObject {
 	 * @param name name of the install handler, may be <code>null</code>.
 	 * @since 2.0
 	 */
-	public void setHandlerName(String name) {
+	void setHandlerName(String name) {
 		assertIsWriteable();
 		this.name = name;
 	}

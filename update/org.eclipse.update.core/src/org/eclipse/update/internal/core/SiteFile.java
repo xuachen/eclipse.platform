@@ -151,7 +151,7 @@ public class SiteFile extends Site {
 			IPluginEntry[] pluginsToRemove = getPluginEntriesOnlyReferencedBy(feature);
 
 			if (monitor != null) {
-				monitor.beginTask(Policy.bind("SiteFile.Removing") + feature.getLabel(), pluginsToRemove.length + 1);
+				monitor.beginTask(Policy.bind("SiteFile.Removing") + feature.getName(), pluginsToRemove.length + 1);
 				//$NON-NLS-1$
 			}
 
@@ -161,7 +161,7 @@ public class SiteFile extends Site {
 				for (int indexRef = 0; indexRef < featureReferences.length; indexRef++) {
 					IFeatureReference element = featureReferences[indexRef];
 					if (element.getVersionedIdentifier().equals(feature.getVersionedIdentifier())) {
-						removeFeatureReferenceModel((FeatureReferenceModel) element);
+						removeFeatureReferenceModel((FeatureReference) element);
 						break;
 					}
 				}
@@ -192,7 +192,7 @@ public class SiteFile extends Site {
 			}
 
 			// remove any children feature
-			IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+			IFeatureReference[] childrenRef = feature.getIncludedFeatures();
 			for (int i = 0; i < childrenRef.length; i++) {
 				IFeature childFeature = null;
 				try {
@@ -227,10 +227,10 @@ public class SiteFile extends Site {
 				newException = t;
 			}
 			if (originalException != null) // original exception wins
-				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getLabel()), originalException);
+				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getName()), originalException);
 			//$NON-NLS-1$
 			if (newException != null)
-				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getLabel()), newException);
+				throw Utilities.newCoreException(Policy.bind("InstallHandler.error", feature.getName()), newException);
 			//$NON-NLS-1$
 		}
 	}
@@ -258,7 +258,7 @@ public class SiteFile extends Site {
 			result = feature.getFeatureContentProvider().getDownloadSizeFor(entriesToInstall, nonPluginEntriesToInstall);
 		} catch (CoreException e) {
 			UpdateCore.warn(null, e);
-			result = ContentEntryModel.UNKNOWN_SIZE;
+			result = ContentEntry.UNKNOWN_SIZE;
 		}
 		return result;
 	}
@@ -282,7 +282,7 @@ public class SiteFile extends Site {
 
 			// get all the plugins [17304]
 			pluginsToInstall.addAll(Arrays.asList(feature.getPluginEntries()));
-			IFeatureReference[] children = feature.getIncludedFeatureReferences();
+			IFeatureReference[] children = feature.getIncludedFeatures();
 			IFeature currentFeature = null;
 			for (int i = 0; i < children.length; i++) {
 				currentFeature = children[i].getFeature(null);
@@ -306,7 +306,7 @@ public class SiteFile extends Site {
 			result = feature.getFeatureContentProvider().getInstallSizeFor(entriesToInstall, nonPluginEntriesToInstall);
 		} catch (CoreException e) {
 			UpdateCore.warn(null, e);
-			result = ContentEntryModel.UNKNOWN_SIZE;
+			result = ContentEntry.UNKNOWN_SIZE;
 		}
 
 		return result;
@@ -433,7 +433,7 @@ public class SiteFile extends Site {
 		}
 
 		// call recursively for each children	 
-		IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+		IFeatureReference[] childrenRef = feature.getIncludedFeatures();
 		IFeature childFeature = null;
 		for (int i = 0; i < childrenRef.length; i++) {
 			try {

@@ -21,7 +21,7 @@ import org.eclipse.update.core.model.*;
  * @see org.eclipse.update.core.model.NonPluginEntryModel
  * @since 2.0
  */
-public class NonPluginEntry
+public class 
 	extends NonPluginEntryModel
 	implements INonPluginEntry {
 

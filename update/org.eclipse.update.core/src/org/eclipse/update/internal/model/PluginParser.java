@@ -15,6 +15,7 @@ import java.io.*;
 import javax.xml.parsers.*;
 
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -23,7 +24,7 @@ import org.xml.sax.helpers.*;
  * Parse default feature.xml
  */
 
-public class DefaultPluginParser extends DefaultHandler {
+public class PluginParser extends DefaultHandler {
 	private final static SAXParserFactory parserFactory =
 		SAXParserFactory.newInstance();
 	private SAXParser parser;
@@ -43,7 +44,7 @@ public class DefaultPluginParser extends DefaultHandler {
 	/**
 	 * Constructor for DefaultFeatureParser
 	 */
-	public DefaultPluginParser() {
+	public PluginParser() {
 		super();
 		try {
 			parserFactory.setNamespaceAware(true);
