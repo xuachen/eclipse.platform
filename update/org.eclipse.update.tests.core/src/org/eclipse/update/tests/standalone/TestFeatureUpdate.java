@@ -28,6 +28,7 @@ public class TestFeatureUpdate extends StandaloneManagerTestCase {
 	}
 
 	public void umSetUp() {
+		super.umSetUp();
 		System.out.println("looking at configured sites available....");
 		checkConfiguredSites();
 		

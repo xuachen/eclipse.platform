@@ -50,7 +50,7 @@ public class StandaloneManagerTestCase extends UpdateManagerTestCase {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	protected void umSetUp() throws Exception {
+	protected void umSetUp() {
 		// setup cache site to true
 		oldCache = InternalSiteManager.globalUseCache;
 		InternalSiteManager.globalUseCache = true;
@@ -60,7 +60,7 @@ public class StandaloneManagerTestCase extends UpdateManagerTestCase {
 	 * Tears down the fixture, for example, close a network connection.
 	 * This method is called after a test is executed.
 	 */
-	protected void umTearDown() throws Exception {
+	protected void umTearDown() {
 		// do nothing.
 		InternalSiteManager.globalUseCache = oldCache;
 	}
