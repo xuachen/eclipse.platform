@@ -33,8 +33,8 @@ public class JarContentReference extends ContentReference {
 	 * NOTE: java.util.jar/zip do not allow the File object to be
 	 * 		extracted from JarFile/ ZipFile. So both the JarFile
 	 * 		and its corresponding File need to be passed into
-	 * 		the costructor in order for the reference to function
-	 * 		correctly.
+	 * 		the costructor in order for the JarContentReference
+	 * 		to function correctly.
 	 */
 	public JarContentReference(String id, JarFile jarFile, JarEntry entry, File file) {
 		super(id, file);
