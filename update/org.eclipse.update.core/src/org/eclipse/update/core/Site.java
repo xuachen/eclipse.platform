@@ -61,7 +61,7 @@ public class Site extends SiteMapModel implements ISite, IWritable {
 	/**
 	 * Constructor for Site
 	 */
-	public Site() throws CoreException, InvalidSiteTypeException {
+	public Site() {
 		super();
 	}
 

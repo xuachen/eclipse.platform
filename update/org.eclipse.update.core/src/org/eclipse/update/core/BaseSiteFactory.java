@@ -45,4 +45,10 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 		return bundle;
 	}
 
+	/*
+	 * @see SiteModelFactory#createSiteMapModel()
+	 */
+	public SiteMapModel createSiteMapModel() {
+		return new Site();
+	}
 }

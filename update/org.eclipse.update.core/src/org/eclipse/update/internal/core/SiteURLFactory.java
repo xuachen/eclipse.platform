@@ -9,10 +9,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.InvalidSiteTypeException;
 import org.eclipse.update.core.model.SiteModelFactory;
-import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.core.obsolete.*;
 
 public class SiteURLFactory extends BaseSiteFactory {
 
@@ -30,7 +27,7 @@ public class SiteURLFactory extends BaseSiteFactory {
 			ISiteContentProvider contentProvider = null;
 			//new SiteURLContentProvider(url);
 		
-			siteXML = new URL(contentProvider.getURL(),Site.SITE_XML);
+			siteXML = new URL(url,Site.SITE_XML);
 			siteStream = siteXML.openStream();
 			SiteModelFactory factory = (SiteModelFactory) this;
 			site = (Site)factory.parseSite(siteStream);
