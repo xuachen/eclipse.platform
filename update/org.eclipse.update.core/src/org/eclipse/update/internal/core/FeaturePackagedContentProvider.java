@@ -26,53 +26,6 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 	public static final String JAR_EXTENSION = ".jar";
 
-	public static final FilenameFilter filter = new FilenameFilter(){
-		 public boolean accept(File dir, String name){
-		 	return name.endsWith(FeaturePackaged.JAR_EXTENSION);
-		 }
-	};
-
-	/**
-	 * @see IFeature#getRootURL()
-	 * In general, the Root URL is the URL of teh DefaultFeature
-	 * 
-	 * The RootURL is used to calculate relative URL for teh feature
-	 * In case of a file feature, you can just append teh relative path
-	 * to the URL of teh feature
-	 * 
-	 * In case of a JAR file, you cannot *just* append the file 
-	 * You have to transfrom the URL
-	 * 
-	 */
-	public URL getRootURL() throws MalformedURLException, IOException, CoreException {
-		
-		// Extract the JAR file in the TEMP drive
-		// and return the URL
-		
-		if (rootURL == null) {
-			// install the DefaultFeature info into the TEMP drive
-			// extract teh JAR file
-			SiteFile tempSite = (SiteFile)SiteManager.getTempSite();
-			
-			InputStream inStream = null;
-			String[] names = getStorageUnitNames(this);
-			if (names != null) {
-				openFeature();
-				for (int j = 0; j < names.length; j++) {
-					if ((inStream = getInputStreamFor(this,names[j])) != null)
-						 tempSite.storeFeatureInfo(getIdentifier(), names[j], inStream);
-				}
-				closeFeature();
-			}
-
-			// get the path to the DefaultFeature, which is now pon the file system
-			// <TempSite>/install/features/<id>_<ver>/
-			// add '/' as it is a directory
-			rootURL = UpdateManagerUtils.getURL(tempSite.getURL(),SiteFile.INSTALL_FEATURE_PATH+getIdentifier().toString()+"/",null);
-		}
-		return rootURL;
-	}
-
 	/**
 	 * Constructor 
 	 */
@@ -80,10 +33,10 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		super(url);
 	}
 
-	/**
-	 * @see AbstractFeature#getContentReferenceToInstall(IPluginEntry[])
+	/*
+	 * @see Feature#getContentReferenceToInstall(IPluginEntry[])
 	 */
-	public String[] getContentReferenceToInstall(IPluginEntry[] pluginsToInstall) {
+	private String[] getContentReferenceToInstall(IPluginEntry[] pluginsToInstall) {
 		String[] names = null;
 		if (pluginsToInstall != null) {
 			names = new String[pluginsToInstall.length];
@@ -103,7 +56,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		try {
 			// check if the site.xml had a coded URL for this plugin or if we
 			// should look in teh default place to find it: <site>+/plugins/+archiveId
-			String filePath = UpdateManagerUtils.getPath(((Site) getSite()).getURL(getPluginEntryArchiveID(pluginEntry)));						
+			String filePath = UpdateManagerUtils.getPath(feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry)));						
 			open(filePath);
 			if (!(new File(filePath)).exists())
 				throw new IOException("The File:" + filePath + "does not exist.");
@@ -124,7 +77,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 		// try to obtain the URL of the JAR file that contains the plugin entry from teh site.xml
 		// if it doesn't exist, use the default one
-		URL jarURL = ((Site) getSite()).getURL(getPluginEntryArchiveID(pluginEntry));
+		URL jarURL =feature.getSite().getSiteContentProvider().getArchivesReferences(getPluginEntryArchiveID(pluginEntry));
 		String path = UpdateManagerUtils.getPath(jarURL);					
 		String[] result = getJAREntries(path);
 
@@ -134,7 +87,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	/**
 	 * return the archive ID for a plugin
 	 */
-	public String getPluginEntryArchiveID(IPluginEntry entry) {
+	private String getPluginEntryArchiveID(IPluginEntry entry) {
 		String type = (entry.isFragment())?Site.DEFAULT_FRAGMENT_PATH:Site.DEFAULT_PLUGIN_PATH;
 		return type+entry.getIdentifier().toString() + JAR_EXTENSION;
 	}
@@ -189,7 +142,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	protected String[] getStorageUnitNames(IFeature feature) throws CoreException {
 
 		// make sure the feature archive has been transfered locally
-		transferLocally();
+
 
 		// get the URL of the feature JAR file 
 		// must exist as we tranfered it locally
@@ -283,80 +236,6 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 	}
 
 	/**
-	 * return the appropriate resource bundle for this feature
-	 * Need to override as opening the JAR keeps it locked
-	 * 
-	 * baseclass + "_" + language1 + "_" + country1 + "_" + variant1 
-	 * baseclass + "_" + language1 + "_" + country1 + "_" + variant1 + ".properties" 
-	 * baseclass + "_" + language1 + "_" + country1 
-	 * baseclass + "_" + language1 + "_" + country1 + ".properties" 
-	 * baseclass + "_" + language1 
-	 * baseclass + "_" + language1 + ".properties" 
-	 * baseclass + "_" + language2 + "_" + country2 + "_" + variant2 
-	 * baseclass + "_" + language2 + "_" + country2 + "_" + variant2 + ".properties" 
-	 * baseclass + "_" + language2 + "_" + country2 
-	 * baseclass + "_" + language2 + "_" + country2 + ".properties" 
-	 * baseclass + "_" + language2 
-	 * baseclass + "_" + language2 + ".properties" 
-	 * baseclass 
-	 * baseclass + ".properties" 
-	 */
-	public ResourceBundle getResourceBundle() throws IOException, CoreException {
-
-		ResourceBundle result = null;
-		String[] names = getStorageUnitNames(this);
-		String base = FEATURE_FILE;
-
-		// retrive names in teh JAR that starts with the basename
-		// remove FEATURE_XML file
-		List baseNames = new ArrayList();
-		for (int i = 0; i < names.length; i++) {
-			if (names[i].startsWith(base))
-				baseNames.add(names[i]);
-		}
-		baseNames.remove(FEATURE_XML);
-
-		// is there any file		
-		if (!baseNames.isEmpty()) {
-
-			Locale locale = Locale.getDefault();
-			String lang1 = locale.getLanguage();
-			String country1 = locale.getCountry();
-			String variant1 = locale.getVariant();
-			String[] attempt =
-				new String[] {
-					base + "_" + lang1 + "_" + country1 + "_" + variant1,
-					base + "_" + lang1 + "_" + country1 + "_" + variant1 + ".properties",
-					base + "_" + lang1 + "_" + country1,
-					base + "_" + lang1 + "_" + country1 + ".properties",
-					base + "_" + lang1,
-					base + "_" + lang1 + ".properties",
-					base,
-					base + ".properties" };
-
-			boolean found = false;
-			int index = 0;
-			while (!found && index < attempt.length) {
-				if (baseNames.contains(attempt[index])) {
-					result = new PropertyResourceBundle(getInputStreamFor(this,attempt[index]));
-					found = true;
-				}
-				index++;
-			}
-
-		} // baseNames is empty
-
-		if (result == null) {
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS) {
-				UpdateManagerPlugin.getPlugin().debug("Cannot find resourceBundle for:" + base + " - " + Locale.getDefault().toString() + ":" + this.getURL().toExternalForm());
-			}
-		}
-		return result;
-	}
-	
-	
-	
-		/**
 	 */
 	private void downloadArchivesLocally(ISite tempSite, String[] archiveIDToInstall, IProgressMonitor monitor) throws CoreException, IOException {
 
@@ -370,8 +249,8 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		for (int i = 0; i < archiveIDToInstall.length; i++) {
 
 			// transform the id by asking the site to map them to real URL inside the SITE
-			if (getSite() != null) {
-				sourceURL = getSite().getSiteContentProvider().getArchivesReferences(archiveIDToInstall[i]);
+			if (feature.getSite() != null) {
+				sourceURL = feature.getSite().getSiteContentProvider().getArchivesReferences(archiveIDToInstall[i]);
 				if (monitor != null) {
 					monitor.subTask("..." + archiveIDToInstall[i]);
 				}
@@ -385,7 +264,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 				if (monitor != null) {
 					monitor.worked(1);
 					if (monitor.isCanceled()) {
-						throw CANCEL_EXCEPTION;
+						throw Feature.CANCEL_EXCEPTION;
 					}
 				}
 			}
@@ -397,7 +276,7 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 		// or reusing this feature
 		// of having an un-manageable temp site
 
-		this.setSite(tempSite);
+		feature.setSite(tempSite);
 
 	}
 
@@ -407,12 +286,12 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 
 		URL sourceURL;
 		// any other data
-		INonPluginEntry[] entries = getNonPluginEntries();
+		INonPluginEntry[] entries = feature.getNonPluginEntries();
 		if (entries != null) {
 			if (monitor != null) {
 				monitor.beginTask("Installing Other Data information", dataToInstall.length);
 				if (monitor.isCanceled()) {
-					throw CANCEL_EXCEPTION;
+					throw Feature.CANCEL_EXCEPTION;
 				}
 			}
 
@@ -423,15 +302,17 @@ public class FeaturePackagedContentProvider  extends FeatureContentProvider {
 				}
 
 				// the id is URL format with "/"
-				String dataEntryId = Site.DEFAULT_FEATURE_PATH + getIdentifier().toString() + "/" + name;
+				String dataEntryId = Site.DEFAULT_FEATURE_PATH + feature.getIdentifier().toString() + "/" + name;
 				// transform the id by asking the site to map them to real URL inside the SITE
-				if (getSite() != null) {
-					sourceURL = getSite().getSiteContentProvider().getArchivesReferences(dataEntryId);
-					((Site) targetFeature.getSite()).storeFeatureInfo(getIdentifier(), name, sourceURL.openStream());
+				if (feature.getSite() != null) {
+					sourceURL = feature.getSite().getSiteContentProvider().getArchivesReferences(dataEntryId);
+					IContentConsumer consumer = targetFeature.getSite().getContentConsumer();
+					consumer.store(new ContentReference(name,sourceURL),null);
+					consumer.close();
 					if (monitor != null) {
 						monitor.worked(1);
 						if (monitor.isCanceled()) {
-							throw CANCEL_EXCEPTION;
+							throw Feature.CANCEL_EXCEPTION;
 						}
 					}
 				}// getSite==null

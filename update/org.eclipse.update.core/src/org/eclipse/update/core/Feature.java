@@ -92,7 +92,7 @@ public abstract class Feature extends FeatureModel implements IFeature {
 	/**
 	 * 
 	 */
-	protected static CoreException CANCEL_EXCEPTION;
+	public static CoreException CANCEL_EXCEPTION;
 
 	/**
 	 * 

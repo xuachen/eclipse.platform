@@ -29,7 +29,7 @@ public class TestInstall extends UpdateManagerTestCase {
 		 */
 		public void featureInstalled(IFeature feature) {
 			notified = true;
-			System.out.println("Notified Feature Installed");
+			System.out.println("Notified DefaultFeature Installed");
 		}
 
 		/*

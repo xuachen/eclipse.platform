@@ -9,6 +9,7 @@ import org.eclipse.update.core.*;
 import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.core.*;
 
 public class SiteFTP implements ISite {
 
@@ -173,6 +174,38 @@ public class SiteFTP implements ISite {
 	 */
 	public ISiteContentProvider getSiteContentProvider() {
 		return null;
+	}
+
+	/*
+	 * @see ISite#getDefaultExecutableFeatureType()
+	 */
+	public String getDefaultExecutableFeatureType() {
+		return null;
+	}
+
+	/*
+	 * @see ISite#getDefaultInstallableFeatureType()
+	 */
+	public String getDefaultInstallableFeatureType() {
+		return null;
+	}
+
+	/*
+	 * @see ISite#store(IFeature, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IFeature feature, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#store(IPluginEntry, String, InputStream, IProgressMonitor)
+	 */
+	public void store(IPluginEntry entry, String name, InputStream inStream, IProgressMonitor monitor) throws CoreException {
+	}
+
+	/*
+	 * @see IPluginContainer#remove(IPluginEntry, IProgressMonitor)
+	 */
+	public void remove(IPluginEntry entry, IProgressMonitor monitor) throws CoreException {
 	}
 
 }

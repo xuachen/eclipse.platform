@@ -42,20 +42,6 @@ public class FeatureExecutable extends DefaultFeature {
 	}
 
 	/**
-	 * @see AbstractFeature#getContentReferenceToInstall(IPluginEntry[])
-	 */
-	public String[] getContentReferenceToInstall(IPluginEntry[] pluginsToInstall) {
-		String[] names = null;
-		if (pluginsToInstall != null) {
-			names = new String[pluginsToInstall.length];
-			for (int i = 0; i < pluginsToInstall.length; i++) {
-				names[i] = getArchiveID(pluginsToInstall[i]);
-			}
-		}
-		return names;
-	}
-
-	/**
 	 * @see AbstractFeature#getInputStreamFor(IPluginEntry,String)
 	 */
 	public InputStream getInputStreamFor(IPluginEntry pluginEntry, String name) throws CoreException {
@@ -97,25 +83,13 @@ public class FeatureExecutable extends DefaultFeature {
 	}
 
 	/**
-	 * @see AbstractFeature#getContentReferences()
-	 */
-	public String[] getArchiveID(IFeature feature) {
-		String[] names = new String[getPluginEntryCount()];
-		IPluginEntry[] entries = getPluginEntries();
-		for (int i = 0; i < getPluginEntryCount(); i++) {
-			names[i] = getArchiveID(entries[i]);
-		}
-		return names;
-	}
-	
-	/**
 	 * return the path for a pluginEntry
 	 */
 	private String getPath(IPluginEntry pluginEntry) throws Exception {
 		String result = null;
 				
  		// get the URL of the Archive file that contains the plugin entry
-		URL fileURL = ((Site) getSite()).getURL(getArchiveID(pluginEntry));
+		URL fileURL = getSite().getSiteContentProvider().getArchivesReferences(getArchiveID(pluginEntry));
 		result = UpdateManagerUtils.getPath(fileURL);		
 
 		// return the list of all subdirectories
@@ -125,6 +99,18 @@ public class FeatureExecutable extends DefaultFeature {
 			throw new IOException("The File:" + result + "does not exist.");
 			
  		return result;
+	}
+
+	/**
+	 * return the archive ID for a plugin
+	 * The id is based on the feature
+	 * the default ID is plugins/pluginId_pluginVer or
+	 * the default ID is fragments/pluginId_pluginVer or
+		*/
+	public String getArchiveID(IPluginEntry entry) {
+		//FIXME: fragments
+		String type = (entry.isFragment()) ? Site.DEFAULT_FRAGMENT_PATH : Site.DEFAULT_PLUGIN_PATH;
+		return type + entry.getIdentifier().toString();
 	}
 
 	/**
