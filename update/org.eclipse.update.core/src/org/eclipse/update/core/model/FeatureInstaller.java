@@ -68,7 +68,7 @@ public class FeatureInstaller {
 				sourceFeature.getInstallHandler(),
 				(InstallMonitor)monitor);
 		   
-		IFeature targetFeature;
+		IFeature targetFeature = null;
 		boolean success = false;
 		Throwable originalException = null;
 		abortedException = null;
@@ -266,8 +266,7 @@ public class FeatureInstaller {
 	   }
 			
 // TODO need to refresh the targetfeature and the installed site one installation is complete
-		//return targetFeature;
-	   return null;
+		return targetFeature;
 	}
 	
 	private void verifyReferences(
@@ -324,7 +323,7 @@ public class FeatureInstaller {
 		try {
 			VersionedIdentifier featureIdentifier = sourceFeature.getVersionedIdentifier();
 			String path = Site.DEFAULT_INSTALLED_FEATURE_PATH + featureIdentifier.toString() + File.separator;
-			URL newURL = new URL(sourceFeature.getSite().getURL(), path);
+			URL newURL = new URL(targetSite.getURL(), path);
 			featurePath = newURL.getFile();
 		} catch (MalformedURLException e) {
 			throw Utilities.newCoreException(Policy.bind("SiteFileContentConsumer.UnableToCreateURL") + e.getMessage(), e);

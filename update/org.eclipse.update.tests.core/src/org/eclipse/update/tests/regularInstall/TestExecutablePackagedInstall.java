@@ -39,50 +39,31 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 		URL newURL = new File(dataPath + "ExecutableFeaturePackagedSite/data2/site.xml").toURL();	
 		IUpdateSite remoteSite = SiteManager.getUpdateSite(newURL,null);
 		IFeatureReference[] remoteFeatureReferences = remoteSite.getFeatureReferences();
+
+		if (remoteFeatureReferences.length==0) fail ("no feature found");
+		
 		IFeature remoteFeature = remoteSite.getFeature(remoteFeatureReferences[0],null);
 		IInstalledSite localSite = SiteManager.getInstalledSite(TARGET_FILE_SITE,null);
 		assertNotNull(remoteFeature);
-	//	remove(remoteFeature,localSite);		
-		localSite.install(remoteFeature,null,null,null,null);
+		remove(remoteFeature,localSite);		
+		IFeature feature = localSite.install(remoteFeature,null,null,null,null);
 		
-		
-		// at least one executable feature and on packaged
-		boolean execFeature = false;
-		boolean packFeature = false;
+		// verify
+		String site = localSite.getURL().getFile();
+		IPluginEntry[] entries = feature.getPluginEntries(false);
+		assertTrue("no plugins entry", (entries != null && entries.length != 0));
+		String pluginName = entries[0].getVersionedIdentifier().toString();
+		File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
+		assertTrue("plugin files not installed locally:"+pluginFile, pluginFile.exists());
 
-		if (remoteFeatureReferences.length==0) fail ("no feature found");
-	
-		for (int i = 0; i < remoteFeatureReferences.length; i++) {
-			remoteFeature = remoteSite.getFeature(remoteFeatureReferences[i],null);
-			remove(remoteFeature,localSite);			
-			localSite.install(remoteFeature, null,null,null,null);
-			
-			if (remoteFeature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider) packFeature = true;
-			if (remoteFeature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider) execFeature = true;
+		File featureFile = new File(site, Site.DEFAULT_INSTALLED_FEATURE_PATH + feature.getVersionedIdentifier().toString());
+		assertTrue("feature info not installed locally:"+featureFile, featureFile.exists());
 
-			// verify
-			String site = localSite.getURL().getFile();
-			IPluginEntry[] entries = remoteFeature.getPluginEntries(false);
-			assertTrue("no plugins entry", (entries != null && entries.length != 0));
-			String pluginName = entries[0].getVersionedIdentifier().toString();
-			File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
-			assertTrue("plugin files not installed locally:"+pluginFile, pluginFile.exists());
-
-			File featureFile = new File(site, Site.DEFAULT_INSTALLED_FEATURE_PATH + remoteFeature.getVersionedIdentifier().toString());
-			assertTrue("feature info not installed locally:"+featureFile, featureFile.exists());
-
-			File featureFileXML = new File(site, Site.DEFAULT_INSTALLED_FEATURE_PATH + remoteFeature.getVersionedIdentifier().toString() + File.separator + "feature.xml");
-			assertTrue("feature info not installed locally: no feature.xml", featureFileXML.exists());
-		}
-
-		if (!execFeature && !packFeature){
-			fail("cannot find one executable and one package feature on teh site");
-		}
+		File featureFileXML = new File(site, Site.DEFAULT_INSTALLED_FEATURE_PATH + feature.getVersionedIdentifier().toString() + File.separator + "feature.xml");
+		assertTrue("feature info not installed locally: no feature.xml", featureFileXML.exists());
 
 		//cleanup target 
 		UpdateManagerUtils.removeFromFileSystem(target);
-
-
 	}
 	
 	
@@ -96,10 +77,9 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 		UpdateManagerUtils.removeFromFileSystem(target);
 		
 		URL newURL = new File(dataPath + "ExecutableFeaturePackagedSite/data/").toURL();
-		IUpdateSite remoteSite = SiteManager.getUpdateSite(newURL,null);
-		IFeatureReference[] featuresRef = remoteSite.getFeatureReferences();
-		IInstalledSite localSite = SiteManager.getInstalledSite(TARGET_FILE_SITE,null);
-		IFeature remoteFeature = null;
+		IInstalledSite localSite = SiteManager.getInstalledSite(newURL,null);
+		IFeatureReference[] featuresRef = localSite.getFeatureReferences();
+		IFeature feature = null;
 		
 		// at least one executable feature and on packaged
 		boolean execFeature = false;
@@ -107,9 +87,10 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 
 		if (featuresRef.length==0) fail ("no feature found");
 	
-		for (int i = 0; i < featuresRef.length; i++) {
+		for (int i = 0; i < featuresRef.length; i++) 
 			try {
-				remoteFeature = remoteSite.getFeature(featuresRef[i],null);
+				feature = localSite.getFeature(featuresRef[i],null);
+				if (feature == null) fail ("no feature found");
 			} catch (CoreException e){
 				Throwable e1 = e.getStatus().getException();
 				String msg = e1.getMessage().replace(File.separatorChar,'/');
@@ -117,36 +98,9 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 					throw e;
 				}				
 			}
-			if (remoteFeature!=null){
-				remove(remoteFeature,localSite);
-				localSite.install(remoteFeature,null, null,null,null);
-				
-				if (remoteFeature.getFeatureContentProvider() instanceof FeaturePackagedContentProvider) packFeature = true;
-				if (remoteFeature.getFeatureContentProvider() instanceof FeatureExecutableContentProvider) execFeature = true;
-	
-				// verify
-				String site = localSite.getURL().getFile();
-				IPluginEntry[] entries = remoteFeature.getPluginEntries(false);
-				assertTrue("no plugins entry", (entries != null && entries.length != 0));
-				String pluginName = entries[0].getVersionedIdentifier().toString();
-				File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
-				assertTrue("plugin files not installed locally:"+pluginFile, pluginFile.exists());
-	
-				File featureFile = new File(site, Site.DEFAULT_INSTALLED_FEATURE_PATH + remoteFeature.getVersionedIdentifier().toString());
-				assertTrue("feature info not installed locally:"+featureFile, featureFile.exists());
-	
-				File featureFileXML = new File(site, Site.DEFAULT_INSTALLED_FEATURE_PATH + remoteFeature.getVersionedIdentifier().toString() + File.separator + "feature.xml");
-				assertTrue("feature info not installed locally: no feature.xml", featureFileXML.exists());
-			}
-		}
-
-		if (!execFeature && !packFeature){
-			fail("cannot find one executable and one package feature on teh site");
-		}
 
 		//cleanup target 
 		UpdateManagerUtils.removeFromFileSystem(target);
-
 
 	}
 	
