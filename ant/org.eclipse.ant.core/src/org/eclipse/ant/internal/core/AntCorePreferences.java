@@ -83,11 +83,11 @@ public URL[] getURLs() {
 	if (customURLs != null);
 		result.addAll(customURLs);
 	// look for places that can provide more URLs
-//	Map[] places = new Map[] { defaultTasks, defaultObjects, defaultTypes };
-//	for (int i = 0; i < places.length; i++) {
-//		if (places[i] != null)
-//			addURLs(places[i].values(), result);
-//	}
+	Map[] places = new Map[] { defaultTasks, defaultObjects, defaultTypes };
+	for (int i = 0; i < places.length; i++) {
+		if (places[i] != null)
+			addURLs(places[i].values(), result);
+	}
 	return (URL[]) result.toArray(new URL[result.size()]);
 
 //	URL[] urls = null;
