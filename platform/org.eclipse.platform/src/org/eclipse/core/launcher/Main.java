@@ -370,7 +370,7 @@ public class Main {
 	 * @param base the base location
 	 * @exception MalformedURLException if a problem occurs computing the class path
 	 */
-	private URL[] getDevPath(URL base) throws MalformedURLException {
+	private URL[] getDevPath(URL base) throws IOException {
 		String devBase = base.toExternalForm();
 		ArrayList result = new ArrayList(5);
 		if (inDevelopmentMode)
@@ -380,8 +380,15 @@ public class Main {
 		return (URL[]) result.toArray(new URL[result.size()]);
 	}
 
-	private void addBaseJars(String devBase, ArrayList result) throws MalformedURLException {
-		String baseJarList = System.getProperty(CFG_CLASSPATH, "core.jar, console.jar, osgi.jar, resolver.jar, defaultAdaptor.jar, eclipseAdaptor.jar");
+	private void addBaseJars(String devBase, ArrayList result) throws IOException {
+		String baseJarList = System.getProperty(CFG_CLASSPATH);
+		if (baseJarList == null) {
+			Properties defaults = loadProperties(new URL(devBase + "eclipse.properties"));
+			baseJarList = defaults.getProperty(CFG_CLASSPATH);
+			if (baseJarList == null)
+				throw new IOException("Unable to initialize " + CFG_CLASSPATH);
+			System.getProperties().put(CFG_CLASSPATH, baseJarList);
+		}
 		String[] baseJars = getArrayFromList(baseJarList);
 		for (int i = 0; i < baseJars.length; i++) {
 			String string = baseJars[i];
@@ -418,25 +425,27 @@ public class Main {
 	 * @param base the base location
 	 * @exception MalformedURLException if a problem occurs computing the class path
 	 */
-	private URL[] getBootPath(String base) throws MalformedURLException {
+	private URL[] getBootPath(String base) throws IOException {
 		URL url = null;
 		if (base != null) {
 			url = new URL(base);
-			if (debug)
-				System.out.println("Boot URL: " + url.toExternalForm()); //$NON-NLS-1$
-			return getDevPath(url);
+		} else {
+			// search in the root location
+			url = new URL(installLocation);
+			String path = url.getFile() + "/plugins"; //$NON-NLS-1$
+			path = searchFor(framework, path);
+			if (path == null)
+				throw new RuntimeException("Could not find framework"); //$NON-NLS-1$
+			// add on any dev path elements
+			url = new URL(url.getProtocol(), url.getHost(), url.getPort(), path);
 		}
-
-		// search in the root location
-		URL[] result = null;
-		url = new URL(installLocation);
-		String path = url.getFile() + "/plugins"; //$NON-NLS-1$
-		path = searchFor(framework, path);
-		// add on any dev path elements
-		url = new URL(url.getProtocol(), url.getHost(), url.getPort(), path);
-		result = getDevPath(url);
+		if (System.getProperty(CFG_FRAMEWORK) == null)
+			System.getProperties().put(CFG_FRAMEWORK, url.toExternalForm());
+		if (debug) 
+			System.out.println("Framework located:\n    " + url.toExternalForm());
+		URL[] result = getDevPath(url);
 		if (debug) {
-			System.out.println("Boot URL:"); //$NON-NLS-1$
+			System.out.println("Framework classpath:"); //$NON-NLS-1$
 			for (int i = 0; i < result.length; i++)
 				System.out.println("    " + result[i].toExternalForm()); //$NON-NLS-1$
 		}
@@ -457,30 +466,30 @@ public class Main {
 				return candidate.isDirectory() && (candidate.getName().equals(target) || candidate.getName().startsWith(target + "_")); //$NON-NLS-1$
 			}
 		};
-		File[] boots = new File(start).listFiles(filter); //$NON-NLS-1$
-		if (boots == null)
-			throw new RuntimeException("Could not find bootstrap code. Check location of boot plug-in or specify -boot."); //$NON-NLS-1$
+		File[] candidates = new File(start).listFiles(filter); //$NON-NLS-1$
+		if (candidates == null)
+			return null;
 		String result = null;
 		Object maxVersion = null;
-		for (int i = 0; i < boots.length; i++) {
-			String name = boots[i].getName();
+		for (int i = 0; i < candidates.length; i++) {
+			String name = candidates[i].getName();
 			String version = ""; //$NON-NLS-1$ // Note: directory with version suffix is always > than directory without version suffix
 			int index = name.indexOf('_');
 			if (index != -1)
 				version = name.substring(index + 1);
 			Object currentVersion = getVersionElements(version);
 			if (maxVersion == null) {
-				result = boots[i].getAbsolutePath();
+				result = candidates[i].getAbsolutePath();
 				maxVersion = currentVersion;
 			} else {
 				if (compareVersion((Object[]) maxVersion, (Object[]) currentVersion) < 0) {
-					result = boots[i].getAbsolutePath();
+					result = candidates[i].getAbsolutePath();
 					maxVersion = currentVersion;
 				}
 			}
 		}
 		if (result == null)
-			throw new RuntimeException("Could not find bootstrap code. Check location of boot plug-in or specify -boot."); //$NON-NLS-1$
+			return null;
 		return result.replace(File.separatorChar, '/') + "/"; //$NON-NLS-1$
 	}
 	/**
@@ -822,7 +831,7 @@ public class Main {
 		ArrayList args = new ArrayList(Arrays.asList(passThruArgs));
 		if (configURL != null) {
 			args.add(CONFIGURATION);
-			args.add(decode(configURL.toExternalForm()));
+			args.add("file:" + configurationLocation);
 		}
 
 		if (cmdFirstUse) {
@@ -928,7 +937,7 @@ public class Main {
 			// configuration url was specified ... use it
 			result = loadProperties(url);
 			if (debug)
-				System.out.println("Startup: using configuration " + url.toString()); //$NON-NLS-1$
+				System.out.println("Configuration file:\n    " + url.toString()); //$NON-NLS-1$
 		} catch (IOException e) {
 			// the given or computed configuration locations do not have the file we are after.
 			// The file may however be in the pre-defined install location...
@@ -941,11 +950,11 @@ public class Main {
 				result = loadProperties(url);
 				mergeProperties(System.getProperties(), result);
 				if (debug)
-					System.out.println("Startup: using configuration " + url.toString()); //$NON-NLS-1$
+					System.out.println("Configuration file\n    " + url.toString()); //$NON-NLS-1$
 			} catch (IOException e1) {
 				// continue ...
 				if (debug)
-					System.out.println("Startup: unable to load configuration\n" + e1); //$NON-NLS-1$
+					System.out.println("Unable to load configuration\n" + e1); //$NON-NLS-1$
 			}
 		}
 		return result;
@@ -1043,9 +1052,10 @@ public class Main {
 
 		// determine the splash path
 		String location = getSplashLocation(defaultPath);
-		if (debug && location != null) {
+		if (debug)
 			System.out.println("Startup: splash path = " + location); //$NON-NLS-1$
-		}
+		if (location == null)
+			return;
 
 		// Parse the showsplash command into its separate arguments.
 		// The command format is: 
@@ -1119,10 +1129,13 @@ public class Main {
 			ArrayList path = new ArrayList(entries.length);
 			for (int i = 0; i < entries.length; i++) {
 				String entry = resolve(entries[i]);
-				if (entry.startsWith("file:"))
-					path.add(entry.substring(5).replace('/', File.separatorChar));
-				else
-					log("Invalid splash path entry: " + entry);
+				if (entry == null || entry.startsWith("file:")) {	 
+					File entryFile = new File(entry.substring(5).replace('/', File.separatorChar));
+					entry = searchFor(entryFile.getName(), entryFile.getParent());
+					if (entry != null)
+						path.add(entry);
+				} else
+					log("Invalid splash path entry: " + entries[i]);
 			}
 			// see if we can get a splash given the splash path
 			result = searchForSplash((String[]) path.toArray(new String[path.size()]));
@@ -1141,7 +1154,8 @@ public class Main {
 			if (pix != -1) {
 				temp = temp.substring(0, pix);
 				result = searchForSplash(new String[] { temp });
-				System.getProperties().put(CFG_SPLASHLOCATION, result);
+				if (result != null) 
+					System.getProperties().put(CFG_SPLASHLOCATION, result);
 			}
 		}
 		return result;
