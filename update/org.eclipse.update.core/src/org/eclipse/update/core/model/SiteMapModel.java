@@ -21,9 +21,9 @@ public class SiteMapModel extends ModelObject {
 	
 	private String type;
 	private URLEntryModel description;
-	private List /*of FeatureReferenceModel */ featureReferences;
-	private List /*of URLEntryModel */ archiveReferences;
-	private List /*of SiteCategoryModel */ categories;
+	private List /*of FeatureReferenceModel*/ featureReferences;
+	private List /*of ArchiveReferenceModel*/ archiveReferences;
+	private List /*of SiteCategoryModel*/ categories;
 	
 	/**
 	 * Creates an uninitialized model object.
@@ -61,11 +61,11 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public URLEntryModel[] getArchiveReferences() {
+	public ArchiveReferenceModel[] getArchiveReferences() {
 		if (archiveReferences == null)
-			return new URLEntryModel[0];
+			return new ArchiveReferenceModel[0];
 			
-		return (URLEntryModel[]) archiveReferences.toArray(new URLEntryModel[0]);
+		return (ArchiveReferenceModel[]) archiveReferences.toArray(new ArchiveReferenceModel[0]);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void setArchiveReferences(URLEntryModel[] archiveReferences) {
+	public void setArchiveReferences(ArchiveReferenceModel[] archiveReferences) {
 		assertIsWriteable();
 		if (archiveReferences == null)
 			this.archiveReferences = null;
@@ -141,7 +141,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void addArchiveReference(URLEntryModel archiveReference) {
+	public void addArchiveReference(ArchiveReferenceModel archiveReference) {
 		assertIsWriteable();
 		if (this.archiveReferences == null)
 			this.archiveReferences = new ArrayList();
@@ -172,7 +172,7 @@ public class SiteMapModel extends ModelObject {
 	/**
 	 * @since 2.0
 	 */
-	public void removeArchiveReference(URLEntryModel archiveReference) {
+	public void removeArchiveReference(ArchiveReferenceModel archiveReference) {
 		assertIsWriteable();
 		if (this.archiveReferences != null)
 			this.archiveReferences.remove(archiveReference);

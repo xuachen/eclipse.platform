@@ -61,6 +61,15 @@ public class SiteModelFactory {
 	}
 
 	/**
+	 * Returns a new archive reference model which is not initialized.
+	 *
+	 * @return a new archive reference model
+	 */
+	public ArchiveReferenceModel createArchiveReferenceModel() {
+		return new ArchiveReferenceModel();
+	}
+
+	/**
 	 * Returns a new URL Entry model which is not initialized.
 	 *
 	 * @return a new URL Entry model

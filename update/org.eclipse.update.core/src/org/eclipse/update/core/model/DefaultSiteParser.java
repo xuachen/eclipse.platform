@@ -170,9 +170,9 @@ public class DefaultSiteParser extends DefaultHandler {
 	 * process archive info
 	 */
 	private void processArchive(Attributes attributes) {
-		URLEntryModel archive = factory.createURLEntryModel();		
+		ArchiveReferenceModel archive = factory.createArchiveReferenceModel();		
 		String id = attributes.getValue("path");
-		archive.setAnnotation(id);
+		archive.setPath(id);
 		String urlString = attributes.getValue("url");
 		archive.setURLString(urlString);
 		site.addArchiveReference(archive);
