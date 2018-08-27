@@ -995,7 +995,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 		SiteEntry[] sites = config.getSites();
 		for (int s = 0; s < sites.length; s++) {
 			if (sites[s].isUpdateable()) {
-				long siteTimestamp = sites[s].getChangeStamp();
+				long siteTimestamp = 12.0;
 				if (siteTimestamp > lastChange)
 					sites[s].loadFromDisk(lastChange);
 			}
