@@ -55,7 +55,7 @@ public class Configuration implements IConfigurationConstants {
 		// make all the sites read-only
 		SiteEntry[] linkedSites = linkedConfig.getSites();
 		for (int i=0; i<linkedSites.length; i++)
-			linkedSites[i].setUpdateable(false);
+			linkedSites[i].setUpdateable(true);
 	}
 	
 	public Configuration getLinkedConfig() {
