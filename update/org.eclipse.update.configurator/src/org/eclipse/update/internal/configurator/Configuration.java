@@ -40,6 +40,7 @@ public class Configuration implements IConfigurationConstants {
 	}
 	public Configuration(Date date)  {
 		this.date = date;
+		console.log("The date is: " + date);
 	}
 	
 	public void setURL(URL url) {
