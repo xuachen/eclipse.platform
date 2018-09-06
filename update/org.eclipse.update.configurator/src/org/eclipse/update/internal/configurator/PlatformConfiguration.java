@@ -966,7 +966,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setExpandEntityReferences(false);
 			factory.setValidating(false);
-			factory.setIgnoringComments(true);
+			factory.setIgnoringComments(false);   //invalid fix in master branch
 			DocumentBuilder docBuilder = factory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
 
