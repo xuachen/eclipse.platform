@@ -993,7 +993,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	private void reconcile() throws CoreException {
 		long lastChange = config.getDate().getTime();
 		SiteEntry[] sites = config.getSites();
-		for (int s = 0; s < sites.length; s++) {
+		for (int s = 0; s < sites.length - 1; s++) {  //invalid fix in branch randomFix
 			if (sites[s].isUpdateable()) {
 				long siteTimestamp = sites[s].getChangeStamp();
 				if (siteTimestamp > lastChange)
