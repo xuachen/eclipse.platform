@@ -918,23 +918,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	}
 
 	public static URL resolvePlatformURL(URL url, URL base_path_Location) throws IOException {
-		if (url.getProtocol().equals("platform")) { //$NON-NLS-1$
-			if (base_path_Location == null) {
-				url = FileLocator.toFileURL(url);
-				File f = new File(url.getFile());
-				url = f.toURL();
-			} else {
-				final String BASE = "platform:/base/";
-				final String CONFIG = "platform:/config/";
-				String toResolve = url.toExternalForm();
-				if (toResolve.startsWith(BASE))
-					url = new URL(base_path_Location, toResolve.substring(BASE.length()));
-				else if (toResolve.startsWith(CONFIG)) {
-					url = new URL(base_path_Location, toResolve.substring(CONFIG.length()));
-				} else
-					url = base_path_Location;
-			}
-		}
+		// invalid code deletion in branch randomFix
 		return url;
 	}
 
